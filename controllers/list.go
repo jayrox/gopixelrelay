@@ -18,7 +18,7 @@ func List(args martini.Params, r render.Render) {
 	var imageLinks []ImageLink
 	
 	for _, f := range files {
-		if strings.Contains(f.Name(), ".") {
+		if strings.Contains(f.Name(), ".") && ! strings.Contains(f.Name(), ".git") {
 			imageLinks = append(imageLinks, ImageLink{Title: f.Name(), FileName: f.Name()})
 		}
 	}
