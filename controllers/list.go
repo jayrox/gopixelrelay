@@ -1,14 +1,14 @@
 package controllers
 
 import (
-	"io/ioutil"
 	"github.com/codegangsta/martini"
 	"github.com/codegangsta/martini-contrib/render"
+	"io/ioutil"
 	"strings"
 )
 
 type ImageLink struct {
-	Title string
+	Title    string
 	FileName string
 }
 
@@ -16,9 +16,9 @@ func List(args martini.Params, r render.Render) {
 	files, _ := ioutil.ReadDir("./tmp/")
 
 	var imageLinks []ImageLink
-	
+
 	for _, f := range files {
-		if strings.Contains(f.Name(), ".") && ! strings.Contains(f.Name(), ".git") {
+		if strings.Contains(f.Name(), ".") && !strings.Contains(f.Name(), ".git") {
 			imageLinks = append(imageLinks, ImageLink{Title: f.Name(), FileName: f.Name()})
 		}
 	}
@@ -27,5 +27,5 @@ func List(args martini.Params, r render.Render) {
 }
 
 func (il *ImageLink) SetFile(file string) {
-    il.FileName = file
+	il.FileName = file
 }

@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"fmt"
-	"net/http"
 	"github.com/codegangsta/martini"
+	"net/http"
 	ii "pixelrelay/utils"
 	"strings"
 )
@@ -11,16 +11,15 @@ import (
 func Image(args martini.Params, res http.ResponseWriter, req *http.Request) {
 	file := args["name"]
 	fdir := "./tmp/"
-	fname := fdir+file
-	
-	
+	fname := fdir + file
+
 	dir := http.Dir(fdir)
 
 	f, err := dir.Open(file)
 	if err != nil {
-			// discard the error?
-			http.NotFound(res, req)
-			return
+		// discard the error?
+		http.NotFound(res, req)
+		return
 	}
 	defer f.Close()
 
@@ -29,7 +28,7 @@ func Image(args martini.Params, res http.ResponseWriter, req *http.Request) {
 		http.NotFound(res, req)
 		return
 	}
-	
+
 	if strings.Contains(fname, "jpg") {
 		ok := make(chan bool, 1)
 		go ii.ImageOrientation(fname, ok)
@@ -37,6 +36,6 @@ func Image(args martini.Params, res http.ResponseWriter, req *http.Request) {
 		<-ok
 		fmt.Printf("got orientation for %s\n", fname)
 	}
-		
+
 	http.ServeContent(res, req, file, fi.ModTime(), f)
 }

@@ -1,17 +1,20 @@
 package main
 
 import (
+	"github.com/3d0c/martini-contrib/config"
 	"github.com/codegangsta/martini"
 	"github.com/codegangsta/martini-contrib/render"
-	"github.com/3d0c/martini-contrib/config"
+	"log"
+	"net/http"
 	"pixelrelay/controllers"
+	"pixelrelay/utils"
 )
 
 func init() {
-        log.SetFlags(log.Lshortfile | log.Ldate | log.Ltime)
+	log.SetFlags(log.Lshortfile | log.Ldate | log.Ltime)
 
-        config.Init("./pixelrelay.json")
-        config.LoadInto(utils.AppCfg)
+	config.Init("./pixelrelay.json")
+	config.LoadInto(utils.AppCfg)
 }
 
 func main() {
@@ -29,14 +32,16 @@ func main() {
 	m.Get("/", func(r render.Render) {
 		r.HTML(200, "hello", "world")
 	})
-	
+
 	m.Get("/i/:name", controllers.Image)
 	m.Get("/t/:name", controllers.Thumb)
 
 	m.Get("/list", controllers.List)
 
 	m.Post("/up", controllers.UploadImage)
-	
+
+	log.Printf("Listening for connections on %s\n", utils.AppCfg.ListenOn())
+
 	if err := http.ListenAndServe(utils.AppCfg.ListenOn(), m); err != nil {
 		log.Fatal(err)
 	}
