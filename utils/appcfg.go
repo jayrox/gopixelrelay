@@ -16,18 +16,52 @@ type ConfigScheme struct {
 }
 
 type DBScheme struct {
-        App struct {
-                Spec string `json:"spec"`
-                Db_name  string `json:"db_name"`
-				Db_user  string `json:"db_user"`
-				Db_pass  string `json:"db_pass"`
+        DB struct {
+                Host  string `json:"host"`
+                Name  string `json:"name"`
+				User  string `json:"user"`
+				Pass  string `json:"pass"`
         } `json:"database"`
 }
 
+type ImageScheme struct {
+        Image struct {
+                Root	string `json:"root"`
+                Thumbs  string `json:"thumbs"`
+        } `json:"image"`
+}
+
+// App Config
 func (this *ConfigScheme) SecretKey() string {
         return this.App.Secretkey
 }
 
 func (this *ConfigScheme) ListenOn() string {
         return this.App.ListenOn
+}
+
+// Database Config
+func (this *DBScheme) Host() string {
+        return this.DB.Host
+}
+
+func (this *DBScheme) Name() string {
+        return this.DB.Name
+}
+
+func (this *DBScheme) User() string {
+        return this.DB.User
+}
+
+func (this *DBScheme) Pass() string {
+        return this.DB.Pass
+}
+
+// Image Storage Config
+func (this *ImageScheme) Root() string {
+        return this.Image.Root
+}
+
+func (this *ImageScheme) Thumbs() string {
+        return this.Image.Thumbs
 }

@@ -3,11 +3,16 @@
         "secretkey" : "CHANGE_ME!",
         "listen_on" : ":3000"
     },
+	
+	"image" : {
+		"root"	: "./tmp",
+		"thumbs : "thumbs"
+	},
 
     "database" : {
-		"spec"    : "127.0.0.1:27017",
-		"db_name" : "pixelrelay",
-		"db_user" : "user",
-		"db_pass" : "password"
+		"host" : "127.0.0.1:27017",
+		"name" : "pixelrelay",
+		"user" : "user",
+		"pass" : "password"
     }
 }
