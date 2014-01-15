@@ -1,0 +1,17 @@
+CREATE TABLE IF NOT EXISTS `user` (
+  `id` int(3) NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  `password` varchar(64) NOT NULL,
+  `stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF-8 AUTO_INCREMENT=1 ;
+
+
+CREATE TABLE IF NOT EXISTS `images` (
+  `id` int(3) NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  `album` varchar(64) NOT NULL,
+  `user` int(3),
+  `stamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF-8 AUTO_INCREMENT=1 ;
