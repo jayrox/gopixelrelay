@@ -7,7 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
-	ii "pixelrelay/utils"
+	"pixelrelay/utils"
 )
 
 type UploadResult struct {
@@ -36,7 +36,8 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render) {
 
 	ur.SetName(header.Filename)
 
-	tmp_file := "./tmp/" + ur.GetName()
+	tmp_file := utils.ImageCfg.Root() + ur.GetName()
+	
 	if Exists(tmp_file) {
 		ur.SetError(2)
 		ur.SetCode("file exists")
@@ -57,7 +58,7 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render) {
 		}
 
 		ok := make(chan bool, 1)
-		go ii.ImageOrientation(tmp_file, ok)
+		go utils.ImageOrientation(tmp_file, ok)
 		fmt.Printf("get orintation for %s\n", tmp_file)
 		<-ok
 		fmt.Printf("got orientation for %s\n", tmp_file)

@@ -5,8 +5,8 @@
 	},
 
 	"image" : {
-		"root"  : "./tmp",
-		"thumbs": "thumbs"
+		"root"  : "./tmp/",
+		"thumbs": "thumbs/"
 	},
 
 	"database" : {

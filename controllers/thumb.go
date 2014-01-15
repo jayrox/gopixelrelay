@@ -11,13 +11,14 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"pixelrelay/utils"
 )
 
 func Thumb(args martini.Params, res http.ResponseWriter, req *http.Request) {
 	file := args["name"]
 
-	org_dir := "./tmp/"
-	temp_dir := org_dir + "thumbs/"
+	org_dir := utils.ImageCfg.Root()
+	temp_dir := org_dir + utils.ImageCfg.Thumbs()
 
 	org_file := org_dir + file
 	temp_file := temp_dir + file
@@ -53,8 +54,8 @@ func Thumb(args martini.Params, res http.ResponseWriter, req *http.Request) {
 
 func createThumbJpeg(ok chan bool, filename string, h uint, w uint) {
 
-	dir := "./tmp/"
-	temp_dir := dir + "thumbs/"
+	dir := utils.ImageCfg.Root()
+	temp_dir := dir + utils.ImageCfg.Thumbs()
 	org_file := dir + filename
 	temp_file := temp_dir + filename
 
@@ -85,8 +86,8 @@ func createThumbJpeg(ok chan bool, filename string, h uint, w uint) {
 
 func createThumbPng(ok chan bool, filename string, h uint, w uint) {
 
-	dir := "./tmp/"
-	temp_dir := dir + "thumbs/"
+	dir := utils.ImageCfg.Root()
+	temp_dir := dir + utils.ImageCfg.Thumbs()
 	org_file := dir + filename
 	temp_file := temp_dir + filename
 

@@ -3,9 +3,13 @@ package utils
 // https://github.com/3d0c/skeleton/blob/master/utils/appcfg.go
 
 var AppCfg *ConfigScheme
+var DbCfg *DBScheme
+var ImageCfg *ImageScheme
 
 func init() {
 	AppCfg = &ConfigScheme{}
+	DbCfg = &DBScheme{}
+	ImageCfg = &ImageScheme{}
 }
 
 type ConfigScheme struct {

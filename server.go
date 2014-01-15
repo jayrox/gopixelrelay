@@ -15,6 +15,8 @@ func init() {
 
 	config.Init("./pixelrelay.json")
 	config.LoadInto(utils.AppCfg)
+	config.LoadInto(utils.DbCfg)
+	config.LoadInto(utils.ImageCfg)
 }
 
 func main() {

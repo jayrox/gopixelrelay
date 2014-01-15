@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"github.com/codegangsta/martini"
 	"net/http"
-	ii "pixelrelay/utils"
+	"pixelrelay/utils"
 	"strings"
 )
 
 func Image(args martini.Params, res http.ResponseWriter, req *http.Request) {
 	file := args["name"]
-	fdir := "./tmp/"
+	fdir := utils.ImageCfg.Root()
 	fname := fdir + file
 
 	dir := http.Dir(fdir)
@@ -31,7 +31,7 @@ func Image(args martini.Params, res http.ResponseWriter, req *http.Request) {
 
 	if strings.Contains(fname, "jpg") {
 		ok := make(chan bool, 1)
-		go ii.ImageOrientation(fname, ok)
+		go utils.ImageOrientation(fname, ok)
 		fmt.Printf("get orintation for %s\n", fname)
 		<-ok
 		fmt.Printf("got orientation for %s\n", fname)
