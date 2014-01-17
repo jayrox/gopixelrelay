@@ -31,16 +31,14 @@ func main() {
 
 	m.Use(martini.Static("static"))
 
-	m.Get("/", func(r render.Render) {
-		r.HTML(200, "hello", "world")
-	})
+	m.Get("/", controllers.Index)
 
 	m.Get("/i/:name", controllers.Image)
 	m.Get("/t/:name", controllers.Thumb)
 
 	m.Get("/list", controllers.List)
 
-	m.Post("/up", controllers.UploadImage)
+	m.Post("/up", utils.Verify, controllers.UploadImage)
 
 	log.Printf("Listening for connections on %s\n", utils.AppCfg.ListenOn())
 

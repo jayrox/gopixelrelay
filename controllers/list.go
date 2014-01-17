@@ -6,7 +6,6 @@ import (
 	"github.com/codegangsta/martini-contrib/render"
 	"strings"
 	"pixelrelay/utils"
-	"fmt"
 )
 
 type ImageLink struct {
