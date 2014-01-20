@@ -24,16 +24,27 @@ func Thumb(args martini.Params, res http.ResponseWriter, req *http.Request) {
 	temp_file := temp_dir + file
 
 	if !Exists(temp_file) && strings.Contains(temp_file, "jpg") {
+		fmt.Printf("creating thumb for %s\n", temp_file)
+
 		ok := make(chan bool, 1)
 		go createThumbJpeg(ok, file, 150, 150)
-		fmt.Printf("creating thumb for %s\n", temp_file)
 		<-ok
+		
+		tname := temp_dir + file
+		ii := &utils.ImageInfo{FileName: org_file, TempFileName: tname}
+		utils.Load(ii, ok)
+		<-ok
+		
+		fmt.Println("ii: ", ii)
+		go utils.ImageRotate(ii, ok)
+		<-ok
+
 		fmt.Printf("thumb created for %s\n", temp_file)
 	} else if !strings.Contains(temp_file, "jpg") {
 		temp_file = org_file
 		temp_dir = org_dir
 	}
-
+	
 	dir := http.Dir(temp_dir)
 
 	f, err := dir.Open(file)
@@ -49,7 +60,6 @@ func Thumb(args martini.Params, res http.ResponseWriter, req *http.Request) {
 	}
 
 	http.ServeContent(res, req, file, fi.ModTime(), f)
-
 }
 
 func createThumbJpeg(ok chan bool, filename string, h uint, w uint) {

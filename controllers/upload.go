@@ -57,8 +57,11 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render) {
 			fmt.Fprintln(w, err)
 		}
 
+		fImg1, _ := os.Open(tmp_file)
+		defer fImg1.Close()
+
 		ok := make(chan bool, 1)
-		go utils.ImageOrientation(tmp_file, ok)
+		//go utils.ImageOrientation(fImg1) FIXME
 		fmt.Printf("get orintation for %s\n", tmp_file)
 		<-ok
 		fmt.Printf("got orientation for %s\n", tmp_file)

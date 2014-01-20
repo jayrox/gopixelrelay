@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/3d0c/martini-contrib/config"
 	"github.com/codegangsta/martini"
 	"github.com/codegangsta/martini-contrib/render"
@@ -8,6 +9,9 @@ import (
 	"net/http"
 	"pixelrelay/controllers"
 	"pixelrelay/utils"
+	"database/sql"
+	_ "github.com/go-sql-driver/mysql"
+	//"reflect"
 )
 
 func init() {
@@ -29,6 +33,20 @@ func main() {
 		Charset:   "UTF-8",     // Sets encoding for json and html content-types.
 	}))
 
+	sqlConnection := fmt.Sprintf("%s:%s@%s/%s?clientFoundRows=true&charset=UTF8", utils.DbCfg.User(), utils.DbCfg.Pass(), utils.DbCfg.Host(), utils.DbCfg.Name())
+	db, err := sql.Open("mysql", sqlConnection)
+	if err != nil {
+		fmt.Println("db err: ", err)
+	}
+	m.Map(db)
+	
+	//rows, err := db.Query("show databases;")
+	//if err != nil {
+	//	fmt.Println("query err: ", err)
+	//}
+	//fmt.Println("row: ", rows)
+	
+	
 	m.Use(martini.Static("static"))
 
 	m.Get("/", controllers.Index)

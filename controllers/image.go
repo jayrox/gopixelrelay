@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/codegangsta/martini"
 	"net/http"
 	"pixelrelay/utils"
@@ -30,11 +29,12 @@ func Image(args martini.Params, res http.ResponseWriter, req *http.Request) {
 	}
 
 	if strings.Contains(fname, "jpg") {
-		ok := make(chan bool, 1)
-		go utils.ImageOrientation(fname, ok)
-		fmt.Printf("get orintation for %s\n", fname)
-		<-ok
-		fmt.Printf("got orientation for %s\n", fname)
+		//ok := make(chan bool, 1)
+		
+		//go utils.ImageOrientation(fname, ok)
+		//go utils.ImageHeight(fname, ok)
+		//go utils.ImageWidth(fname, ok)
+		//<-ok
 	}
 
 	http.ServeContent(res, req, file, fi.ModTime(), f)
