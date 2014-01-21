@@ -8,6 +8,10 @@ import (
 	"net/http"
 	"os"
 	"pixelrelay/utils"
+	"pixelrelay/db"
+	"pixelrelay/models"
+	//"reflect"
+	"time"
 )
 
 type UploadResult struct {
@@ -16,12 +20,13 @@ type UploadResult struct {
 	Name  string `json:"name"`
 }
 
-func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render) {
+func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render) { 
 	file, header, _ := req.FormFile("uploaded_file")
 	defer file.Close()
 
 	ur := &UploadResult{}
-
+	d := db.InitDB()
+	
 	fmt.Printf("header.Filename: %s\n", header.Filename)
 	fmt.Printf("version: %s\n", req.FormValue("version"))
 	fmt.Printf("user_email: %s\n", req.FormValue("user_email"))
@@ -59,14 +64,18 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render) {
 
 		fImg1, _ := os.Open(tmp_file)
 		defer fImg1.Close()
-
-		ok := make(chan bool, 1)
-		//go utils.ImageOrientation(fImg1) FIXME
-		fmt.Printf("get orintation for %s\n", tmp_file)
-		<-ok
-		fmt.Printf("got orientation for %s\n", tmp_file)
 	}
 
+	u := int64(1) //FIXME!!!
+
+	// Add image
+	image := models.Images{Name: header.Filename, Album: req.FormValue("file_album"), User: u, Timestamp: time.Now().Unix()}
+	db.AddImage(&d, image)
+
+	// Add album
+	album := models.Albums{Name: req.FormValue("file_album"), User: u, Privatekey: req.FormValue("user_private_key"), Private: true, Timestamp: time.Now().Unix()}
+	db.AddAlbum(&d, album)
+	
 	bytesOfJSON, jerr := json.Marshal(ur)
 	if jerr != nil {
 		fmt.Println(jerr)

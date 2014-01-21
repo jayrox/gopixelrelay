@@ -1,11 +1,13 @@
 package controllers
 
 import (
-	"io/ioutil"
+	"fmt"
 	"github.com/codegangsta/martini"
 	"github.com/codegangsta/martini-contrib/render"
-	"strings"
+	"io/ioutil"
 	"pixelrelay/utils"
+	"pixelrelay/db"
+	"strings"
 )
 
 type ImageLink struct {
@@ -14,6 +16,14 @@ type ImageLink struct {
 }
 
 func List(args martini.Params, r render.Render) {
+
+	d := db.InitDB()
+	images := db.GetAllAlbumImages(&d, "private")
+	fmt.Println("images: ", images)
+	
+	albums := db.GetAllAlbums(&d)
+	fmt.Println("albums: ", albums)
+	
 	files, _ := ioutil.ReadDir(utils.ImageCfg.Root())
 
 	var imageLinks []ImageLink

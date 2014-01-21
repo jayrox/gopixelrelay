@@ -1,16 +1,17 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"github.com/3d0c/martini-contrib/config"
 	"github.com/codegangsta/martini"
 	"github.com/codegangsta/martini-contrib/render"
 	"log"
 	"net/http"
 	"pixelrelay/controllers"
+	//"pixelrelay/models"
 	"pixelrelay/utils"
-	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
+	"pixelrelay/db"
+
 	//"reflect"
 )
 
@@ -33,31 +34,20 @@ func main() {
 		Charset:   "UTF-8",     // Sets encoding for json and html content-types.
 	}))
 
-	sqlConnection := fmt.Sprintf("%s:%s@%s/%s?clientFoundRows=true&charset=UTF8", utils.DbCfg.User(), utils.DbCfg.Pass(), utils.DbCfg.Host(), utils.DbCfg.Name())
-	db, err := sql.Open("mysql", sqlConnection)
-	if err != nil {
-		fmt.Println("db err: ", err)
-	}
-	m.Map(db)
-	
-	//rows, err := db.Query("show databases;")
-	//if err != nil {
-	//	fmt.Println("query err: ", err)
-	//}
-	//fmt.Println("row: ", rows)
-	
-	
 	m.Use(martini.Static("static"))
-
+	
+	d := db.InitDB()
+	db.MigrateDB(&d)
+	
+	// Set up routes
 	m.Get("/", controllers.Index)
-
 	m.Get("/i/:name", controllers.Image)
 	m.Get("/t/:name", controllers.Thumb)
-
 	m.Get("/list", controllers.List)
-
 	m.Post("/up", utils.Verify, controllers.UploadImage)
 
+
+	// Start server and begin listening for requests
 	log.Printf("Listening for connections on %s\n", utils.AppCfg.ListenOn())
 
 	if err := http.ListenAndServe(utils.AppCfg.ListenOn(), m); err != nil {
