@@ -10,8 +10,8 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 	"pixelrelay/utils"
+	"strings"
 )
 
 func Thumb(args martini.Params, res http.ResponseWriter, req *http.Request) {
@@ -35,7 +35,6 @@ func Thumb(args martini.Params, res http.ResponseWriter, req *http.Request) {
 		utils.Load(ii, ok)
 		<-ok
 		
-		//fmt.Println("ii: ", ii)
 		go utils.ImageRotate(ii, ok)
 		<-ok
 

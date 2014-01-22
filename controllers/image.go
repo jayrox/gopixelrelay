@@ -4,13 +4,12 @@ import (
 	"github.com/codegangsta/martini"
 	"net/http"
 	"pixelrelay/utils"
-	"strings"
 )
 
 func Image(args martini.Params, res http.ResponseWriter, req *http.Request) {
 	file := args["name"]
 	fdir := utils.ImageCfg.Root()
-	fname := fdir + file
+	//fname := fdir + file
 
 	dir := http.Dir(fdir)
 
@@ -26,15 +25,6 @@ func Image(args martini.Params, res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		http.NotFound(res, req)
 		return
-	}
-
-	if strings.Contains(fname, "jpg") {
-		//ok := make(chan bool, 1)
-		
-		//go utils.ImageOrientation(fname, ok)
-		//go utils.ImageHeight(fname, ok)
-		//go utils.ImageWidth(fname, ok)
-		//<-ok
 	}
 
 	http.ServeContent(res, req, file, fi.ModTime(), f)

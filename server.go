@@ -1,18 +1,14 @@
 package main
 
 import (
-	//"fmt"
 	"github.com/3d0c/martini-contrib/config"
 	"github.com/codegangsta/martini"
 	"github.com/codegangsta/martini-contrib/render"
 	"log"
 	"net/http"
 	"pixelrelay/controllers"
-	//"pixelrelay/models"
-	"pixelrelay/utils"
 	"pixelrelay/db"
-
-	//"reflect"
+	"pixelrelay/utils"
 )
 
 func init() {
@@ -37,6 +33,9 @@ func main() {
 	m.Use(martini.Static("static"))
 	
 	d := db.InitDB()
+	
+	db.AddTables(&d)
+
 	db.MigrateDB(&d)
 	
 	// Set up routes
@@ -44,6 +43,9 @@ func main() {
 	m.Get("/i/:name", controllers.Image)
 	m.Get("/t/:name", controllers.Thumb)
 	m.Get("/list", controllers.List)
+	m.Get("/albums", controllers.Albums)
+	m.Get("/album/:name", controllers.Album)
+	
 	m.Post("/up", utils.Verify, controllers.UploadImage)
 
 

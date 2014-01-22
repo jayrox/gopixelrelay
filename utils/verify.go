@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"net/http"
 	"fmt"
+	"net/http"
 )
 
 type Response map[string]interface{}

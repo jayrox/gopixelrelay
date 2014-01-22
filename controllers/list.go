@@ -5,15 +5,10 @@ import (
 	"github.com/codegangsta/martini"
 	"github.com/codegangsta/martini-contrib/render"
 	"io/ioutil"
-	"pixelrelay/utils"
 	"pixelrelay/db"
+	"pixelrelay/utils"
 	"strings"
 )
-
-type ImageLink struct {
-	Title string
-	FileName string
-}
 
 func List(args martini.Params, r render.Render) {
 
@@ -39,4 +34,9 @@ func List(args martini.Params, r render.Render) {
 
 func (il *ImageLink) SetFile(file string) {
     il.FileName = file
+}
+
+type ImageLink struct {
+	Title string
+	FileName string
 }

@@ -1,0 +1,10 @@
+	<ul>
+{{range .}}
+		<li>
+			<div>
+				<h4>{{.Name}}</h4>
+				<a href="/album/{{.Name}}"><img src="/t/{{.Poster}}" /></a>
+			</div>
+		</li>
+{{ end }}
+	</ul>

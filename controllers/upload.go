@@ -7,10 +7,9 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"pixelrelay/utils"
 	"pixelrelay/db"
 	"pixelrelay/models"
-	//"reflect"
+	"pixelrelay/utils"
 	"time"
 )
 
@@ -69,11 +68,11 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render) {
 	u := int64(1) //FIXME!!!
 
 	// Add image
-	image := models.Images{Name: header.Filename, Album: req.FormValue("file_album"), User: u, Timestamp: time.Now().Unix()}
+	image := models.Image{Name: header.Filename, Album: req.FormValue("file_album"), User: u, Timestamp: time.Now().Unix()}
 	db.AddImage(&d, image)
 
 	// Add album
-	album := models.Albums{Name: req.FormValue("file_album"), User: u, Privatekey: req.FormValue("user_private_key"), Private: true, Timestamp: time.Now().Unix()}
+	album := models.Album{Name: req.FormValue("file_album"), User: u, Privatekey: req.FormValue("user_private_key"), Private: true, Timestamp: time.Now().Unix()}
 	db.AddAlbum(&d, album)
 	
 	bytesOfJSON, jerr := json.Marshal(ur)

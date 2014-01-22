@@ -1,12 +1,12 @@
 package db
 
 import (
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jinzhu/gorm"
 	"fmt"
 	"log"
 	"pixelrelay/models"
 	"pixelrelay/utils"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
 )
 
 func InitDB() gorm.DB {
@@ -27,28 +27,28 @@ func InitDB() gorm.DB {
 
 func MigrateDB(db *gorm.DB) {
 	fmt.Println("updating tables")
-	db.AutoMigrate(models.Users{})
-	db.AutoMigrate(models.Albums{})
-	db.AutoMigrate(models.Images{})
+	db.AutoMigrate(models.User{})
+	db.AutoMigrate(models.Album{})
+	db.AutoMigrate(models.Image{})
 	fmt.Println("completed updating tables")
 }
 
 // GetAllAlbumImages returns all Images in the album database
-func GetAllAlbumImages(db *gorm.DB, album string) []models.Images {
-    var images []models.Images
+func GetAllAlbumImages(db *gorm.DB, album string) []models.Image {
+    var images []models.Image
     db.Where("album = ?", album).Find(&images)
     return images
 }
 
 // GetAllAlbums returns all albums
-func GetAllAlbums(db *gorm.DB) []models.Albums {
-    var albums []models.Albums
+func GetAllAlbums(db *gorm.DB) []models.Album {
+    var albums []models.Album
     db.Where("name != ''").Find(&albums)
     return albums
 }
 
 // Add new album image
-func AddImage(db *gorm.DB, image models.Images) {
+func AddImage(db *gorm.DB, image models.Image) {
 	db.NewRecord(&image)
 	db.Save(&image)
 	db.NewRecord(&image)
@@ -56,9 +56,31 @@ func AddImage(db *gorm.DB, image models.Images) {
 }
 
 // Add new album
-func AddAlbum(db *gorm.DB, album models.Albums) {
+func AddAlbum(db *gorm.DB, album models.Album) {
 	db.NewRecord(&album)
 	db.Save(&album)
 	db.NewRecord(&album)
 	fmt.Println("add album: ", &album)
+}
+
+func DropTables(db *gorm.DB) {
+	fmt.Println("dropping tables")
+	db.DropTable(models.Album{})
+	db.DropTable(models.Image{})
+	db.DropTable(models.User{})
+}
+
+func AddTables(db *gorm.DB) {
+	fmt.Println("adding tables")
+	db.CreateTable(models.Album{})
+	db.CreateTable(models.Image{})
+	db.CreateTable(models.User{})
+}
+
+func FirstImage(db *gorm.DB, album string) []models.Image {
+	fmt.Println("getting first album image")
+	
+	var image []models.Image
+	db.First(&image, "album = ?", album)
+	return image
 }
