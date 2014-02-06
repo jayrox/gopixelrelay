@@ -14,8 +14,11 @@ func init() {
 
 type ConfigScheme struct {
 	App struct {
-		Secretkey string `json:"secretkey"`
-		ListenOn  string `json:"listen_on"`
+		MobileAlbumCreation string `json:"mobile_album_creation"`
+		Debug               bool   `json:"debug"`
+		ListenOn            string `json:"listen_on"`
+		ListenOnSetup       string `json:"listen_on_setup"`
+		Url                 string `json:"url"`
 	} `json:"application"`
 }
 
@@ -30,18 +33,31 @@ type DBScheme struct {
 
 type ImageScheme struct {
 	Image struct {
-		Root   string `json:"root"`
-		Thumbs string `json:"thumbs"`
+		Root      string `json:"root"`
+		Secretkey string `json:"secretkey"`
+		Thumbs    string `json:"thumbs"`
 	} `json:"image"`
 }
 
 // App Config
-func (this *ConfigScheme) SecretKey() string {
-	return this.App.Secretkey
+func (this *ConfigScheme) MobileAlbumCreation() string {
+	return this.App.MobileAlbumCreation
+}
+
+func (this *ConfigScheme) Debug() bool {
+	return this.App.Debug
 }
 
 func (this *ConfigScheme) ListenOn() string {
 	return this.App.ListenOn
+}
+
+func (this *ConfigScheme) ListenOnSetup() string {
+	return this.App.ListenOnSetup
+}
+
+func (this *ConfigScheme) Url() string {
+	return this.App.Url
 }
 
 // Database Config
@@ -68,4 +84,8 @@ func (this *ImageScheme) Root() string {
 
 func (this *ImageScheme) Thumbs() string {
 	return this.Image.Thumbs
+}
+
+func (this *ImageScheme) SecretKey() string {
+	return this.Image.Secretkey
 }

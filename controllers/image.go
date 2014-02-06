@@ -9,7 +9,6 @@ import (
 func Image(args martini.Params, res http.ResponseWriter, req *http.Request) {
 	file := args["name"]
 	fdir := utils.ImageCfg.Root()
-	//fname := fdir + file
 
 	dir := http.Dir(fdir)
 
@@ -27,5 +26,6 @@ func Image(args martini.Params, res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	res.Header().Set("X-Content-Type-Options", "nosniff")
 	http.ServeContent(res, req, file, fi.ModTime(), f)
 }

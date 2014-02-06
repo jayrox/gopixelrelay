@@ -12,12 +12,12 @@ import (
 )
 
 type ImageInfo struct {
-	FileName string
+	FileName     string
 	TempFileName string
-	Orientation int
-	Height int
-	Width int
-	Ratio float32
+	Orientation  int
+	Height       int
+	Width        int
+	Ratio        float32
 }
 
 func Load(ii *ImageInfo, ok chan bool) {
@@ -48,20 +48,18 @@ func ImageOrientation(ii *ImageInfo, x *exif.Exif) {
 	ii.Orientation = int(orientation.Val[1])
 }
 
-
 func ImageWidth(ii *ImageInfo, x *exif.Exif) {
 	imageWidth, _ := x.Get(exif.ImageWidth)
 	wu8 := imageWidth.Val
-    wu32BE := binary.BigEndian.Uint32(wu8)
+	wu32BE := binary.BigEndian.Uint32(wu8)
 
 	ii.Width = int(wu32BE)
 }
 
-
 func ImageHeight(ii *ImageInfo, x *exif.Exif) {
 	imageLength, _ := x.Get(exif.ImageLength)
 	hu8 := imageLength.Val
-    hu32BE := binary.BigEndian.Uint32(hu8)
+	hu32BE := binary.BigEndian.Uint32(hu8)
 
 	ii.Height = int(hu32BE)
 }
@@ -86,13 +84,13 @@ func ImageRotate(ii *ImageInfo, ok chan bool) {
 	// 1 landscape, left		// 90
 	// 8 portrait upside down	// 180
 	// 3 landscape, right		// 270
-	
+
 	fn, err := os.Open(ii.TempFileName)
 	if err != nil {
 		fmt.Println("ir fn err: ", err)
 	}
 	defer fn.Close()
-	
+
 	img, _, err := image.Decode(fn)
 	if err != nil {
 		fmt.Println("err: ", err)
@@ -100,21 +98,21 @@ func ImageRotate(ii *ImageInfo, ok chan bool) {
 
 	r := 0.0
 	switch ii.Orientation {
-		case 6:
-			r = math.Pi / 2
-		case 3:
-			r = math.Pi
-		case 8:
-			r = math.Pi * 1.5
-		case 1:
-			r = 0.0
+	case 6:
+		r = math.Pi / 2
+	case 3:
+		r = math.Pi
+	case 8:
+		r = math.Pi * 1.5
+	case 1:
+		r = 0.0
 	}
-		
+
 	if r == 0 {
 		ok <- true
 		return
 	}
-	
+
 	h := 120
 	w := 120
 	if ii.Height > ii.Width {
@@ -122,9 +120,9 @@ func ImageRotate(ii *ImageInfo, ok chan bool) {
 	} else {
 		w = int(float32(w) * ii.Ratio)
 	}
-	
+
 	m := image.NewRGBA(image.Rect(0, 0, w, h))
-	
+
 	graphics.Rotate(m, img, &graphics.RotateOptions{r})
 
 	toimg, err := os.Create(ii.TempFileName)
@@ -133,7 +131,7 @@ func ImageRotate(ii *ImageInfo, ok chan bool) {
 	}
 	defer toimg.Close()
 
-	jpeg.Encode(toimg, m, &jpeg.Options{Quality:90})
+	jpeg.Encode(toimg, m, &jpeg.Options{Quality: 90})
 
 	ok <- true
 }

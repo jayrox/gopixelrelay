@@ -15,16 +15,16 @@ func List(args martini.Params, r render.Render) {
 	d := db.InitDB()
 	images := db.GetAllAlbumImages(&d, "private")
 	fmt.Println("images: ", images)
-	
+
 	albums := db.GetAllAlbums(&d)
 	fmt.Println("albums: ", albums)
-	
+
 	files, _ := ioutil.ReadDir(utils.ImageCfg.Root())
 
 	var imageLinks []ImageLink
-	
+
 	for _, f := range files {
-		if strings.Contains(f.Name(), ".") && ! strings.Contains(f.Name(), ".git") {
+		if strings.Contains(f.Name(), ".") && !strings.Contains(f.Name(), ".git") {
 			imageLinks = append(imageLinks, ImageLink{Title: f.Name(), FileName: f.Name()})
 		}
 	}
@@ -32,11 +32,7 @@ func List(args martini.Params, r render.Render) {
 	r.HTML(200, "image_link", imageLinks)
 }
 
-func (il *ImageLink) SetFile(file string) {
-    il.FileName = file
-}
-
 type ImageLink struct {
-	Title string
+	Title    string
 	FileName string
 }

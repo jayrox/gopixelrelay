@@ -1,6 +1,6 @@
 package models
 
 type AlbumList struct {
-	Name string
+	Name   string
 	Poster string
 }

@@ -29,12 +29,12 @@ func Thumb(args martini.Params, res http.ResponseWriter, req *http.Request) {
 		ok := make(chan bool, 1)
 		go createThumbJpeg(ok, file, 150, 150)
 		<-ok
-		
+
 		tname := temp_dir + file
 		ii := &utils.ImageInfo{FileName: org_file, TempFileName: tname}
 		utils.Load(ii, ok)
 		<-ok
-		
+
 		go utils.ImageRotate(ii, ok)
 		<-ok
 
@@ -43,7 +43,7 @@ func Thumb(args martini.Params, res http.ResponseWriter, req *http.Request) {
 		temp_file = org_file
 		temp_dir = org_dir
 	}
-	
+
 	dir := http.Dir(temp_dir)
 
 	f, err := dir.Open(file)
@@ -58,6 +58,7 @@ func Thumb(args martini.Params, res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	res.Header().Set("X-Content-Type-Options", "nosniff")
 	http.ServeContent(res, req, file, fi.ModTime(), f)
 }
 
