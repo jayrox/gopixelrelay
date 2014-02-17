@@ -64,6 +64,7 @@ func (this *ConfigScheme) Url() string {
 func (this *ConfigScheme) SecretKey() string {
 	return this.App.SecretKey
 }
+
 // Database Config
 func (this *DBScheme) Host() string {
 	return this.DB.Host
