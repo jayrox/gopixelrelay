@@ -35,6 +35,9 @@ func init() {
 func main() {
 	m := martini.Classic()
 
+	// Create sessions cookie store
+	store := sessions.NewCookieStore([]byte(utils.AppCfg.SecretKey()))
+    m.Use(sessions.Sessions("pixelrelay", store))
 	m.Use(render.Renderer(render.Options{
 		Directory: "templates", // Specify what path to load the templates from.
 		Layout:    "layout",    // Specify a layout template. Layouts can call {{ yield }} to render the current template.
