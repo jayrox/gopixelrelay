@@ -1,4 +1,4 @@
-GoPixelRelay is a sample PixelRelay server written in Go
+GoPixelRelay is a sample [PixelRelay](http://pixelrelay.com) server written in Go
 
 # Get Started #
 
