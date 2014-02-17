@@ -1,5 +1,8 @@
 GoPixelRelay is a sample PixelRelay server written in Go
 
+# Get Started #
+
+install Go and setup your [GOPATH](http://golang.org/doc/code.html#GOPATH)
 
 install dependencies:
 
