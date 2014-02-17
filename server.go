@@ -18,7 +18,8 @@ import (
 	"pixelrelay/utils"
 )
 
-var initSetup *bool
+var flagInit *bool
+var flagMigrate *bool
 
 func init() {
 	log.SetFlags(log.Lshortfile | log.Ldate | log.Ltime)
@@ -28,7 +29,8 @@ func init() {
 	config.LoadInto(utils.DbCfg)
 	config.LoadInto(utils.ImageCfg)
 
-	initSetup = flag.Bool("init", false, "Initial Setup")
+	flagInit = flag.Bool("init", false, "Initial Setup")
+	flagMigrate = flag.Bool("migrate", false, "Migrate Database Changes")
 	flag.Parse()
 }
 
@@ -38,25 +40,31 @@ func main() {
 	// Create sessions cookie store
 	store := sessions.NewCookieStore([]byte(utils.AppCfg.SecretKey()))
     m.Use(sessions.Sessions("pixelrelay", store))
+	
+	// Setup render options
 	m.Use(render.Renderer(render.Options{
 		Directory: "templates", // Specify what path to load the templates from.
 		Layout:    "layout",    // Specify a layout template. Layouts can call {{ yield }} to render the current template.
 		Charset:   "UTF-8",     // Sets encoding for json and html content-types.
 	}))
 
+	// Setup static file handling
 	m.Use(martini.Static("static"))
 
+	// Init DB
 	d := db.InitDB()
-	db.MigrateDB(&d)
 
 	// Set up routes
 	m.Get("/", controllers.Index)
-	m.Get("/i/:name", controllers.Image)
-	m.Get("/t/:name", controllers.Thumb)
+	m.Get("/i/:name", middleware.VerifyFile, controllers.Image)
+	m.Get("/t/:name", middleware.VerifyFile, controllers.Thumb)
 	m.Get("/list", controllers.List)
 	m.Get("/albums", controllers.Albums)
 	m.Get("/album/:name", controllers.Album)
 	m.Get("/auth/:password", controllers.Auth)
+	m.Get("/tags", controllers.Tags)
+	m.Get("/tag/:name", controllers.Tagged)
+	m.Get("/tag/:name/:image", controllers.TagImage)
 
 	//binding.MaxMemory = int64(1024 * 1024 * 30)
 	//binding.Bind(models.PostImage{}),
@@ -77,8 +85,10 @@ func main() {
 	*   if this mode is left running.
 	*	restart server with the "-init" flag
 	*   unset.
+	* 
+	*   usage: -init
 	 */
-	if *initSetup == true {
+	if *flagInit {
 		fmt.Println("\x1b[31;1mInitial Setup flag (-init) has been set to\x1b[0m \x1b[32;1mTRUE\x1b[0m")
 		fmt.Println("\x1b[31;1mOnce setup is complete please restart server with this flag disabled.\x1b[0m")
 
@@ -98,5 +108,21 @@ func main() {
 
 		go http.ListenAndServe(utils.AppCfg.ListenOnSetup(), su)
 	}
+	
+	/******************************************
+	*	MIGRATE DATABASE UPDATES
+	*
+	*   Migrates changes to database tables
+	*   
+	*   You should backup the database before 
+	*   migrating. As there is a potential risk
+	*   of data loss
+	*
+	*   usage: -migrate
+	*/
+	if *flagMigrate {
+		db.MigrateDB(&d)
+	}
+	
 	select {}
 }

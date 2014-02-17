@@ -12,10 +12,9 @@ type Response map[string]interface{}
 func Verify(res http.ResponseWriter, req *http.Request, r render.Render) {
 	pk := req.FormValue("user_private_key")
 	a := req.FormValue("file_album")
-	
+
 	d := db.InitDB()
 	album := db.GetAlbum(&d, a)
-	
 
 	if album.Id > 0 && album.Privatekey == pk {
 		return
