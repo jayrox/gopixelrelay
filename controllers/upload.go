@@ -107,7 +107,7 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render) {
 	
 	if !Exists(string(tname)) && strings.Contains(tmp_file, "jpg") {
 		okc := make(chan bool, 1)
-		utils.CreateThumb(okc, tmp_file, temp_file)
+		utils.CreateThumb(okc, tmp_file, tname)
 		<- okc
 	}
 	
