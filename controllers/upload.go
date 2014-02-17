@@ -106,21 +106,9 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render) {
 	fmt.Printf("tname: %s\n", tname)
 	
 	if !Exists(string(tname)) && strings.Contains(tmp_file, "jpg") {
-		fmt.Printf("creating thumb for %s\n", tmp_file)
-
-		ok := make(chan bool, 1)
-		go utils.CreateThumbJpeg(ok, tmp_file, tname, 150, 150)
-		<-ok
-
-		tname := utils.ImageCfg.Thumbs() + ur.GetName()
-		ii := &utils.ImageInfo{FileName: tmp_file, TempFileName: tname}
-		utils.Load(ii, ok)
-		<-ok
-
-		go utils.ImageRotate(ii, ok)
-		<-ok
-
-		fmt.Printf("thumb created for %s\n", tmp_file)
+		okc := make(chan bool, 1)
+		utils.CreateThumb(okc, tmp_file, temp_file)
+		<- okc
 	}
 	
 	// Add image to database
