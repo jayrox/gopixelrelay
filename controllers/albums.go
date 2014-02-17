@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/codegangsta/martini"
-	"github.com/codegangsta/martini-contrib/render"
+	"github.com/martini-contrib/render"
 	"pixelrelay/db"
 	"pixelrelay/models"
 )
