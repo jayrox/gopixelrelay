@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/codegangsta/martini"
-	"github.com/codegangsta/martini-contrib/render"
+	"github.com/martini-contrib/render"
+	"github.com/martini-contrib/sessions"
 	"pixelrelay/db"
 )
 
