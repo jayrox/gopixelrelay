@@ -10,6 +10,7 @@ import (
 	"pixelrelay/models"
 	"pixelrelay/utils"
 	//"reflect"
+	"strings"
 	"time"
 )
 
@@ -97,7 +98,32 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render) {
 		r.JSON(500, ur)
 		return
 	}
+	
+	fmt.Printf("tmp_file: %s\n", tmp_file)
+	
+	// Create Thumb
+	tname := utils.ImageCfg.Thumbs() + ur.GetName()
+	fmt.Printf("tname: %s\n", tname)
+	
+	if !Exists(string(tname)) && strings.Contains(tmp_file, "jpg") {
+		fmt.Printf("creating thumb for %s\n", tmp_file)
 
+		ok := make(chan bool, 1)
+		go utils.CreateThumbJpeg(ok, tmp_file, tname, 150, 150)
+		<-ok
+
+		tname := utils.ImageCfg.Thumbs() + ur.GetName()
+		ii := &utils.ImageInfo{FileName: tmp_file, TempFileName: tname}
+		utils.Load(ii, ok)
+		<-ok
+
+		go utils.ImageRotate(ii, ok)
+		<-ok
+
+		fmt.Printf("thumb created for %s\n", tmp_file)
+	}
+	
+	// Add image to database
 	u := int64(1) //FIXME!!!
 
 	// Add image
