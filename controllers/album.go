@@ -18,7 +18,7 @@ func Album(args martini.Params, session sessions.Session, r render.Render) {
 	for _, f := range images {
 		imageLinks = append(imageLinks, ImageLink{Title: f.Name, FileName: f.Name})
 	}
-	
+
 	v := session.Get("album")
 	fmt.Printf("sessions: %s\n", v)
 

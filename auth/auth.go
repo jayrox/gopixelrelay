@@ -33,13 +33,10 @@ import (
 	"crypto/sha512"
 	"encoding/base64"
 	"encoding/hex"
-	//"errors"
-	//"fmt"
 	"hash"
 	"net/http"
 	"strings"
 	"sync"
-	//"time"
 )
 
 //Get Basic user password

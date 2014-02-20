@@ -9,7 +9,6 @@ import (
 	"pixelrelay/db"
 	"pixelrelay/models"
 	"pixelrelay/utils"
-	//"reflect"
 	"strings"
 	"time"
 )
@@ -98,19 +97,19 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render) {
 		r.JSON(500, ur)
 		return
 	}
-	
+
 	fmt.Printf("tmp_file: %s\n", tmp_file)
-	
+
 	// Create Thumb
 	tname := utils.ImageCfg.Thumbs() + ur.GetName()
 	fmt.Printf("tname: %s\n", tname)
-	
+
 	if !Exists(string(tname)) && strings.Contains(tmp_file, "jpg") {
 		okc := make(chan bool, 1)
 		utils.CreateThumb(okc, tmp_file, tname)
-		<- okc
+		<-okc
 	}
-	
+
 	// Add image to database
 	u := int64(1) //FIXME!!!
 

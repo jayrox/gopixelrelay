@@ -1,5 +1,11 @@
+{{if .User.Email}}
+<div id="user">
+{{.User.Email}}
+</div>
+{{end}}
+
 	<ul>
-{{range .}}
+{{range .AlbumsList}}
 		<li>
 			<div>
 				<h4>{{.Name}}</h4>

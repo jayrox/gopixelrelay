@@ -41,6 +41,7 @@ func MigrateDB(db *gorm.DB) {
 	db.AutoMigrate(models.Tag{})
 	db.AutoMigrate(models.Uploader{})
 	db.AutoMigrate(models.User{})
+	db.AutoMigrate(models.UserSession{})
 	fmt.Println("completed updating tables")
 }
 
@@ -135,6 +136,7 @@ func DropTables(db *gorm.DB) {
 	db.DropTable(models.Tag{})
 	db.DropTable(models.Uploader{})
 	db.DropTable(models.User{})
+	db.DropTable(models.UserSession{})
 }
 
 func AddTables(db *gorm.DB) {
@@ -145,6 +147,7 @@ func AddTables(db *gorm.DB) {
 	db.CreateTable(models.Tag{})
 	db.CreateTable(models.Uploader{})
 	db.CreateTable(models.User{})
+	db.CreateTable(models.UserSession{})
 }
 
 // Get first image in album for album thumbnail
@@ -152,4 +155,34 @@ func FirstImage(db *gorm.DB, album string) []models.Image {
 	var image []models.Image
 	db.First(&image, "album = ?", album)
 	return image
+}
+
+func GetUserByEmail(db *gorm.DB, email string) models.User {
+	var user models.User
+	db.Where("email = ?", email).Find(&user)
+	return user
+}
+
+func GetUserById(db *gorm.DB, id int64) models.User {
+	var user models.User
+	db.Where("id = ?", id).Find(&user)
+	return user
+}
+
+func InsertUser(db *gorm.DB, user models.User) models.User {
+	db.NewRecord(&user)
+	db.Save(&user)
+	db.NewRecord(&user)
+	return user
+}
+
+func UpdateUser(db *gorm.DB, user models.User) models.User {
+	db.Save(&user)
+	return user
+}
+
+func CreateSession(db *gorm.DB, session models.UserSession) {
+	fmt.Println(session)
+	db.Save(&session)
+	return
 }

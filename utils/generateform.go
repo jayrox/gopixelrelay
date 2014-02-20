@@ -20,6 +20,11 @@ func GenerateForm(fields interface{}, action string, method string, errs map[str
 		typeField := val.Type().Field(i)
 		tag := typeField.Tag
 
+		// Ignore "-" form fields
+		if tag.Get("form") == "-" {
+			continue
+		}
+		
 		var extras string
 		var label string
 
@@ -76,7 +81,7 @@ func GenerateForm(fields interface{}, action string, method string, errs map[str
 		}
 	}
 
-	form += "</form>\n"
+	form += "    </form>\n"
 
 	return template.HTML(form)
 }

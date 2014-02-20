@@ -9,7 +9,7 @@ import (
 
 func Thumb(args martini.Params, res http.ResponseWriter, req *http.Request) {
 	file := args["name"]
-	
+
 	org_dir := utils.ImageCfg.Root()
 	temp_dir := utils.ImageCfg.Thumbs()
 
@@ -19,7 +19,7 @@ func Thumb(args martini.Params, res http.ResponseWriter, req *http.Request) {
 	if !Exists(temp_file) && strings.Contains(temp_file, "jpg") {
 		okc := make(chan bool, 1)
 		utils.CreateThumb(okc, org_file, temp_file)
-		<- okc
+		<-okc
 	} else if !strings.Contains(temp_file, "jpg") {
 		temp_file = org_file
 		temp_dir = org_dir

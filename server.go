@@ -14,12 +14,13 @@ import (
 	"pixelrelay/db"
 	"pixelrelay/forms"
 	"pixelrelay/middleware"
-	//"pixelrelay/models"
 	"pixelrelay/utils"
 )
 
-var flagInit *bool
-var flagMigrate *bool
+var (
+	flagInit *bool
+	flagMigrate *bool
+)
 
 func init() {
 	log.SetFlags(log.Lshortfile | log.Ldate | log.Ltime)
@@ -59,12 +60,15 @@ func main() {
 	m.Get("/i/:name", middleware.VerifyFile, controllers.Image)
 	m.Get("/t/:name", middleware.VerifyFile, controllers.Thumb)
 	m.Get("/list", controllers.List)
-	m.Get("/albums", controllers.Albums)
+	m.Get("/albums", controllers.Albums) //middleware.VerifyUser, 
 	m.Get("/album/:name", controllers.Album)
 	m.Get("/auth/:password", controllers.Auth)
 	m.Get("/tags", controllers.Tags)
 	m.Get("/tag/:name", controllers.Tagged)
 	m.Get("/tag/:name/:image", controllers.TagImage)
+	
+	m.Get("/login", controllers.Login)
+	m.Post("/login", binding.Bind(forms.Login{}), binding.ErrorHandler, controllers.LoginPost)
 
 	//binding.MaxMemory = int64(1024 * 1024 * 30)
 	//binding.Bind(models.PostImage{}),
@@ -96,6 +100,9 @@ func main() {
 		db.AddTables(&d)
 
 		su := martini.Classic()
+		
+		store := sessions.NewCookieStore([]byte(utils.AppCfg.SecretKey()))
+		su.Use(sessions.Sessions("pixelrelay", store))
 		su.Use(render.Renderer(render.Options{
 			Directory: "templates", // Specify what path to load the templates from.
 			Layout:    "layout",    // Specify a layout template. Layouts can call {{ yield }} to render the current template.
