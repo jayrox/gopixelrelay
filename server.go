@@ -40,7 +40,7 @@ func main() {
 
 	// Create sessions cookie store
 	store := sessions.NewCookieStore([]byte(utils.AppCfg.SecretKey()))
-    m.Use(sessions.Sessions("pixelrelay", store))
+	m.Use(sessions.Sessions("pixelrelay", store))
 	
 	// Setup render options
 	m.Use(render.Renderer(render.Options{
