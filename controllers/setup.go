@@ -2,16 +2,18 @@ package controllers
 
 import (
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
-	"net/http"
+
 	"pixelrelay/auth"
 	"pixelrelay/db"
 	"pixelrelay/forms"
 	"pixelrelay/models"
 	"pixelrelay/utils"
-	"time"
 )
 
 func SetupAdmin(args martini.Params, session sessions.Session, r render.Render) {

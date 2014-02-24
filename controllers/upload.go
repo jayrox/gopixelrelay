@@ -2,15 +2,17 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/martini-contrib/render"
 	"io"
 	"net/http"
 	"os"
+	"strings"
+	"time"
+
+	"github.com/martini-contrib/render"
+
 	"pixelrelay/db"
 	"pixelrelay/models"
 	"pixelrelay/utils"
-	"strings"
-	"time"
 )
 
 type UploadResult struct {

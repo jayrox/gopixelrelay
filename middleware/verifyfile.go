@@ -1,9 +1,10 @@
 package middleware
 
 import (
-	"github.com/codegangsta/martini"
 	"net/http"
 	"strings"
+
+	"github.com/codegangsta/martini"
 )
 
 func VerifyFile(args martini.Params, res http.ResponseWriter, req *http.Request) {

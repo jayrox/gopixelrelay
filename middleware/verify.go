@@ -1,8 +1,10 @@
 package middleware
 
 import (
-	"github.com/martini-contrib/render"
 	"net/http"
+
+	"github.com/martini-contrib/render"
+
 	"pixelrelay/db"
 	"pixelrelay/utils"
 )

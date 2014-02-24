@@ -1,2 +1,4 @@
 nohup.out
 pixelrelay.json
+tmp/*
+uploads/*

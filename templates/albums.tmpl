@@ -1,16 +1,10 @@
-{{if .User.Email}}
-<div id="user">
-{{.User.Email}}
-</div>
-{{end}}
-
+	{{if .AlbumUser.Name}}<h1 id="albumowner">{{.AlbumUser.Name}}</h1>{{end}}
 	<ul>
-{{range .AlbumsList}}
-		<li>
+{{range .AlbumsList}}		<li>
 			<div>
 				<h4>{{.Name}}</h4>
 				<a href="/album/{{.Name}}"><img src="/t/{{.Poster}}" /></a>
+				<span>{{if .Private}}<a href="/manage/album/{{.Name}}/private/false"><img src="/lock.png" title="Private"></a>{{else}}<a href="/manage/album/{{.Name}}/private/true" title="Not Private"><img src="/unlock.png"></a>{{end}}</span>
 			</div>
 		</li>
-{{ end }}
-	</ul>
+{{ end }}	</ul>

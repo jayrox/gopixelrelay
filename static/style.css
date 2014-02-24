@@ -1,0 +1,44 @@
+img[src*="/t/"] {
+	width: 150px;
+	height: 150px;
+	margin: 10px 10px;
+	border: 1px solid black;
+}
+ul {
+	margin: 20px auto;
+	column-width:175px;
+	-moz-column-width:175px; /* Firefox */
+	-webkit-column-width:175px; /* Safari and Chrome */
+}
+li {
+	width: 170px;
+	min-height: 200px;
+	border: 1px solid #000;
+	display: -moz-inline-stack;
+	display: inline-block;
+	vertical-align: top;
+	margin: 5px;
+	zoom: 1;
+	*display: inline;
+	_height: 250px;
+}
+li div h4 {
+	text-align:center;
+}
+li div span {
+	text-align:right;
+	width: auto;
+	display: block;
+	padding-right:8px;
+}
+
+#user {
+	position: absolute;
+	top: 5px;
+	right: 50px;
+	width: 100px;			
+}
+h1 {
+	width: 200px;
+	margin: 20px auto;
+}

@@ -2,9 +2,12 @@ package db
 
 import (
 	"fmt"
+	"log"
+	"time"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
-	"log"
+
 	"pixelrelay/models"
 	"pixelrelay/utils"
 )
@@ -23,7 +26,7 @@ func InitDB() gorm.DB {
 	}
 
 	if utils.AppCfg.Debug() {
-		Logger(&DB, true)
+		Logger(&DB, utils.DbCfg.Debug())
 	}
 
 	return DB
@@ -49,7 +52,6 @@ func MigrateDB(db *gorm.DB) {
 func GetAllAlbumImages(db *gorm.DB, album string) []models.Image {
 	var images []models.Image
 	db.Where("album = ?", album).Find(&images)
-	fmt.Println(images)
 	return images
 }
 
@@ -60,12 +62,40 @@ func GetAllAlbums(db *gorm.DB) []models.Album {
 	return albums
 }
 
+// GetAllAlbumsByUserId returns all albums owned by Id
+func GetAllAlbumsByUserId(db *gorm.DB, uid int64) []models.Album {
+	var albums []models.Album
+	db.Where("name != '' and user = ?", uid).Find(&albums)
+	return albums
+}
+
 // GetAlbum returns album
 func GetAlbum(db *gorm.DB, albumname string) models.Album {
 	var album models.Album
-	fmt.Println(albumname)
 	db.Where("name = ?", albumname).Find(&album)
 	return album
+}
+
+// GetAlbum returns album
+func GetAlbumByUserId(db *gorm.DB, albumname string, uid int64) models.Album {
+	var album models.Album
+	db.Where("name = ? and user = ?", albumname, uid).Find(&album)
+	return album
+}
+
+func SetAlbumPrivacy(db *gorm.DB, uid int64, albumname string, state bool) {
+	fmt.Println("id: ", uid)
+	fmt.Println("albumname: ", albumname)
+	fmt.Println("state: ", state)
+
+	var udb models.Album
+	album := GetAlbumByUserId(db, albumname, uid)
+	fmt.Println("album: ", album)
+	album.Private = state
+	db.Model(&udb).Where("id = ? and user = ?", album.Id, uid).Limit(1).Updates(&album)
+	//return user
+
+	return
 }
 
 // Add new album image
@@ -77,7 +107,7 @@ func AddImage(db *gorm.DB, image models.Image) models.Image {
 }
 
 // Tag Image
-func TagImage(db *gorm.DB, tag string, name string) models.ImageTag {
+func TagImage(db *gorm.DB, tag, name string) models.ImageTag {
 	// Get tag id or create tag
 	var mTag models.Tag
 	db.Where(models.Tag{Name: tag}).FirstOrCreate(&mTag)
@@ -169,6 +199,27 @@ func GetUserById(db *gorm.DB, id int64) models.User {
 	return user
 }
 
+func GetUserByIdSessionKey(db *gorm.DB, uid int64, sessionkey string) models.UserSession {
+	var usersession models.UserSession
+	
+	db.Where("user_id = ? and session_key = ?", uid, sessionkey).Find(&usersession)
+	return usersession
+}
+
+func GetUserIdByUserName(db *gorm.DB, auser string) int64 {
+	var user models.User
+	
+	db.Where("user_name = ?", auser).Find(&user)
+	return user.Id
+}
+
+func GetUserByUserName(db *gorm.DB, auser string) models.User {
+	var user models.User
+	
+	db.Where("user_name = ?", auser).Find(&user)
+	return user
+}
+
 func InsertUser(db *gorm.DB, user models.User) models.User {
 	db.NewRecord(&user)
 	db.Save(&user)
@@ -177,12 +228,19 @@ func InsertUser(db *gorm.DB, user models.User) models.User {
 }
 
 func UpdateUser(db *gorm.DB, user models.User) models.User {
-	db.Save(&user)
+	var udb models.User
+	db.Model(&udb).Where("id = ?", user.Id).Limit(1).Updates(&user)
 	return user
 }
 
 func CreateSession(db *gorm.DB, session models.UserSession) {
-	fmt.Println(session)
 	db.Save(&session)
+	return
+}
+
+func DestroySession(db *gorm.DB, uid int64, sessionkey string) {
+	var usersession models.UserSession
+	
+	db.Model(&usersession).Where("user_id = ? and session_key = ?", uid, sessionkey).Limit(1).Updates(models.UserSession{UserId: uid, Active: false, Timestamp: time.Now().Unix()})
 	return
 }

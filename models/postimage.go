@@ -9,5 +9,5 @@ type PostImage struct {
 	Album      string `form:"file_album"`
 	Name       string `form:"file_name"`
 	Mime       string `form:"file_mime"`
-	unexported string `form:"-"` // skip binding of unexported fields
+	unexported string `form:"-"`
 }

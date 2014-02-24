@@ -1,10 +1,12 @@
 package controllers
 
 import (
-	"github.com/codegangsta/martini"
 	"net/http"
-	"pixelrelay/utils"
 	"strings"
+
+	"github.com/codegangsta/martini"
+
+	"pixelrelay/utils"
 )
 
 func Thumb(args martini.Params, res http.ResponseWriter, req *http.Request) {

@@ -1,18 +1,24 @@
 {
 	"application" : {
-		"secretkey" : "CHANGE_ME!",
-		"listen_on" : ":3000"
+		"mobile_album_creation" : "all",
+		"debug"		: true,
+		"listen_on" : ":3000",
+		"listen_on_setup" : ":3001",
+		"secretkey" : "CHANGE_ME",
+		"url"		: "http://example.com"
 	},
 
 	"image" : {
-		"root"  : "./tmp/",
-		"thumbs": "thumbs/"
+		"root"  : "./uploads/",
+		"secretkey" : "asdfzxcvqwertyhb",
+		"thumbs": "./uploads/thumbs/"
 	},
 
 	"database" : {
-		"host" : "127.0.0.1:27017",
-		"name" : "pixelrelay",
+		"host" : "localhost",
+		"name" : "db",
 		"user" : "user",
-		"pass" : "password"
+		"pass" : "pass",
+		"debug": false
 	}
 }

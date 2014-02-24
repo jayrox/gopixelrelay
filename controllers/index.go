@@ -1,11 +1,20 @@
 package controllers
 
 import (
+	"net/http"
+
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
-	"net/http"
+
+	"pixelrelay/models"
 )
 
-func Index(args martini.Params, res http.ResponseWriter, req *http.Request, ren render.Render) {
-	ren.HTML(200, "index", "")
+type IndexVars struct {
+	User models.User
+}
+
+func Index(args martini.Params, su models.User, res http.ResponseWriter, req *http.Request, ren render.Render) {
+	var indexVars IndexVars
+	indexVars.User = su
+	ren.HTML(200, "index", indexVars)
 }
