@@ -1,11 +1,15 @@
 package controllers
 
 import (
+	"fmt"
+	"io/ioutil"
+	"strings"
+
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
-	"io/ioutil"
+
 	"pixelrelay/utils"
-	"strings"
+	"pixelrelay/models"
 )
 
 type ImageLink struct {
