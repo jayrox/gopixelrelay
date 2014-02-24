@@ -2,9 +2,12 @@ package controllers
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
+
 	"pixelrelay/db"
 	"pixelrelay/models"
 )
@@ -22,28 +25,33 @@ func Albums(args martini.Params, su models.User, session sessions.Session, r ren
 	}
 
 	d := db.InitDB()
-	albums := db.GetAllAlbums(&d)
-
-	loggedin := session.Get("loggedin")
-	if loggedin != nil {
-		fmt.Println("logged in")
+	
+	auser := args["user"]
+	var albumUser models.User
+	if auser != "" {
+		albumUser = db.GetUserByUserName(&d, auser)
+		fmt.Println("albumUser: ", albumUser)
+		albumsVars.AlbumUser = albumUser
 	}
-
-	uid := session.Get("uid")
-	if uid != nil {
-		albumsVars.User.Id = uid.(int64)
+	
+	if auser != "" && albumUser.Id == 0 {
+		// handle user not found a little better?
+		fmt.Println("auser: ", auser, " albumUser: ", albumUser)
+		http.NotFound(res, req)
+		return
 	}
-
-	// If email set, apply to form
-	email := session.Get("email")
-	if email != nil {
-		albumsVars.User.Email = email.(string)
+	
+	var albums []models.Album
+	if albumUser.Id > 0 {
+		albums = db.GetAllAlbumsByUserId(&d, albumUser.Id)
+	}else{
+		albums = db.GetAllAlbums(&d)
 	}
-
+	
 	var albumList []models.AlbumList
 	for _, f := range albums {
 		i := db.FirstImage(&d, f.Name)
-		albumList = append(albumList, models.AlbumList{Name: f.Name, Poster: i[0].Name})
+		albumList = append(albumList, models.AlbumList{Name: f.Name, Poster: i[0].Name, Private: f.Private})
 	}
 	albumsVars.AlbumsList = albumList
 
