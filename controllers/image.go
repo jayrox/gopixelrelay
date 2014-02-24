@@ -1,8 +1,10 @@
 package controllers
 
 import (
-	"github.com/codegangsta/martini"
 	"net/http"
+
+	"github.com/codegangsta/martini"
+
 	"pixelrelay/utils"
 )
 
