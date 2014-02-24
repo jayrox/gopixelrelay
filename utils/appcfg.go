@@ -29,6 +29,7 @@ type DBScheme struct {
 		Name string `json:"name"`
 		User string `json:"user"`
 		Pass string `json:"pass"`
+		Debug bool  `json:"debug"`
 	} `json:"database"`
 }
 
@@ -80,6 +81,10 @@ func (this *DBScheme) User() string {
 
 func (this *DBScheme) Pass() string {
 	return this.DB.Pass
+}
+
+func (this *DBScheme) Debug() bool {
+	return this.DB.Debug
 }
 
 // Image Storage Config
