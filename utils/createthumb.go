@@ -2,12 +2,13 @@ package utils
 
 import(
 	"fmt"
-	"github.com/nfnt/resize"
 	"image"
 	"image/jpeg"
 	"image/png"
 	"log"
 	"os"
+	
+	"github.com/nfnt/resize"
 )
 
 func CreateThumb(okc chan bool, fname string, tname string) {
