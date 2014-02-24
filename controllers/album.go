@@ -2,25 +2,44 @@ package controllers
 
 import (
 	"fmt"
+
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
+	
 	"pixelrelay/db"
+	"pixelrelay/models"
 )
 
-func Album(args martini.Params, session sessions.Session, r render.Render) {
+type AlbumVars struct {
+	User       models.User
+	ImageLinks []ImageLink
+	AlbumUser  models.User
+}
+
+func Album(args martini.Params, su models.User, session sessions.Session, r render.Render) {
+	var albumVars AlbumVars
+	
+	if su.Id > 0 {
+		albumVars.User = su
+	}
+
 	album := args["name"]
+	auser := args["user"]
+
+	if auser != "" {
+		fmt.Println("auser: ", auser)
+	}
+
 	d := db.InitDB()
 	images := db.GetAllAlbumImages(&d, album)
-	session.Set("album", album)
 
 	var imageLinks []ImageLink
 	for _, f := range images {
 		imageLinks = append(imageLinks, ImageLink{Title: f.Name, FileName: f.Name})
 	}
 
-	v := session.Get("album")
-	fmt.Printf("sessions: %s\n", v)
+	albumVars.ImageLinks = imageLinks
 
-	r.HTML(200, "image_link", imageLinks)
+	r.HTML(200, "image_link", albumVars)
 }
