@@ -12,10 +12,14 @@ import (
 type AlbumsVars struct {
 	User       models.User
 	AlbumsList []models.AlbumList
+	AlbumUser  models.User
 }
 
-func Albums(args martini.Params, session sessions.Session, r render.Render) {
+func Albums(args martini.Params, su models.User, session sessions.Session, r render.Render, res http.ResponseWriter, req *http.Request) {
 	var albumsVars AlbumsVars
+	if su.Id > 0 {
+		albumsVars.User = su
+	}
 
 	d := db.InitDB()
 	albums := db.GetAllAlbums(&d)
