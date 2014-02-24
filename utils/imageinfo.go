@@ -1,14 +1,15 @@
 package utils
 
 import (
-	"code.google.com/p/graphics-go/graphics"
 	"encoding/binary"
 	"fmt"
-	"github.com/rwcarlsen/goexif/exif"
 	"image"
 	"image/jpeg"
 	"math"
 	"os"
+
+	"code.google.com/p/graphics-go/graphics"
+	"github.com/rwcarlsen/goexif/exif"
 )
 
 type ImageInfo struct {
