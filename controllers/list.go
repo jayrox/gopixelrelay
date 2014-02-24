@@ -12,12 +12,18 @@ import (
 	"pixelrelay/models"
 )
 
+type ListVars struct {
+	ImageLinks []ImageLink
+	User models.User
+}
+
 type ImageLink struct {
 	Title    string
 	FileName string
 }
 
-func List(args martini.Params, r render.Render) {
+func List(args martini.Params, su models.User, r render.Render) {
+	var listVars ListVars
 
 	files, _ := ioutil.ReadDir(utils.ImageCfg.Root())
 
@@ -29,5 +35,10 @@ func List(args martini.Params, r render.Render) {
 		}
 	}
 
-	r.HTML(200, "image_link", imageLinks)
+	listVars.User = su
+	listVars.ImageLinks = imageLinks
+
+	fmt.Println(su)
+
+	r.HTML(200, "image_link", listVars)
 }
