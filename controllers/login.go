@@ -1,50 +1,61 @@
 package controllers
 
 import (
+	"crypto/sha1"
+	"encoding/base64"
 	"fmt"
-	"github.com/codegangsta/martini"
+	"html/template"
+	"net/http"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
-	"net/http"
+
 	"pixelrelay/auth"
 	"pixelrelay/db"
 	"pixelrelay/forms"
 	"pixelrelay/models"
 	"pixelrelay/utils"
-	"strings"
-	"time"
 
-	"crypto/sha1"
-	"encoding/base64"
-	"strconv"
 )
 
-func Login(args martini.Params, session sessions.Session, res http.ResponseWriter, req *http.Request, ren render.Render) {
+type LoginVars struct {
+	LoginForm template.HTML
+	User models.User
+}
+
+func Login(session sessions.Session, su models.User, r render.Render, res http.ResponseWriter, req *http.Request) {
+
+	// Check if we are already logged in
+	if su.Id > 0 {
+		http.Redirect(res, req, strings.Join([]string{utils.AppCfg.Url(), "albums"}, "/"), http.StatusMovedPermanently)
+		return
+	}
+
 	session.Set("loggedin", "false")
-	form := &forms.Login{}
 
 	// Init error holder
 	errs := make(map[string]string)
 
-	// If email set, apply to form
-	email := session.Get("email")
-	if email != nil {
-		form.Email = email.(string)
-		session.Set("email", nil)
-	}
-
-	// If error_p is set, apply error test to password field
+	// If error_p is set, apply error text to password field
 	err_pass := session.Get("error_p")
 	if err_pass != nil {
 		errs["password"] = err_pass.(string)
 		session.Set("error_p", nil)
 	}
 
-	genform := utils.GenerateForm(form, "/login", "POST", errs)
-	ren.HTML(200, "login", genform)
+	genform := utils.GenerateForm(&forms.Login{}, "/login", "POST", errs)
+
+	var loginVars LoginVars
+	loginVars.User = su
+	loginVars.LoginForm = genform
+
+	r.HTML(200, "login", loginVars)
 }
 
-func LoginPost(lu forms.Login, args martini.Params, session sessions.Session, r render.Render, res http.ResponseWriter, req *http.Request) {
+func LoginPost(lu forms.Login, session sessions.Session, res http.ResponseWriter, req *http.Request) {
 	errs := ValidateLogin(&lu)
 	if len(errs) > 0 {
 		fmt.Printf(`{"errors":"%v"}`, errs)
@@ -64,15 +75,28 @@ func LoginPost(lu forms.Login, args martini.Params, session sessions.Session, r 
 		session.Set("email", user.Email)
 		session.Set("key", sessionkey)
 
-		db.CreateSession(&d, models.UserSession{UserId: user.Id, Key: sessionkey, Active: true, Timestamp: time.Now().Unix()})
-		
+		db.CreateSession(&d, models.UserSession{UserId: user.Id, SessionKey: sessionkey, Active: true, Timestamp: time.Now().Unix()})
+
 		http.Redirect(res, req, strings.Join([]string{utils.AppCfg.Url(), "albums"}, "/"), http.StatusMovedPermanently)
 		return
 	}
 
-	session.Set("error_p", "Invalid Password")
-	session.Set("email", lu.Email)
+	session.Set("error_p", "Invalid Username or Password")
 	http.Redirect(res, req, strings.Join([]string{utils.AppCfg.Url(), "login"}, "/"), http.StatusMovedPermanently)
+}
+
+func Logout(session sessions.Session, res http.ResponseWriter, req *http.Request) {
+	sessionkey := session.Get("key")
+	uid := session.Get("uid")
+
+	session.Set("loggedin", "false")
+	session.Set("uid", nil)
+	session.Set("email", nil)
+	session.Set("key", nil)
+
+	d := db.InitDB()
+	db.DestroySession(&d, uid.(int64), sessionkey.(string))
+	http.Redirect(res, req, utils.AppCfg.Url(), http.StatusMovedPermanently)
 }
 
 func ValidateLogin(lu *forms.Login) map[string]string {
