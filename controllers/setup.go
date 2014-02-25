@@ -24,7 +24,7 @@ func SetupAdmin(args martini.Params, session sessions.Session, r render.Render) 
 	r.HTML(200, "setup", genform)
 }
 
-func SetupAdminPost(sa forms.SetupAdmin, args martini.Params, session sessions.Session, r render.Render, res http.ResponseWriter) {
+func SetupAdminPost(sa forms.SetupAdmin, args martini.Params, session sessions.Session, r render.Render, res http.ResponseWriter, dbh *db.Dbh) {
 	errs := Validate(&sa)
 	if len(errs) > 0 {
 		fmt.Printf(`{"errors":"%v"}`, errs)
@@ -37,8 +37,7 @@ func SetupAdminPost(sa forms.SetupAdmin, args martini.Params, session sessions.S
 		return
 	}
 
-	d := db.InitDB()
-	user := db.GetUserByEmail(&d, sa.Email)
+	user := dbh.GetUserByEmail(sa.Email)
 
 	if user.Id > 0 {
 		fmt.Println("user already exists")
@@ -52,7 +51,7 @@ func SetupAdminPost(sa forms.SetupAdmin, args martini.Params, session sessions.S
 			fmt.Println("hash err: ", err, "\n")
 		}
 		newuser := models.User{Name: sa.Name, Email: sa.Email, Password: hash, Salt: salt, Timestamp: time.Now().Unix()}
-		db.InsertUser(&d, newuser)
+		dbh.InsertUser(newuser)
 		session.Set("uid", newuser.Id)
 	}
 

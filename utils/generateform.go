@@ -52,6 +52,8 @@ func GenerateForm(fields interface{}, action string, method string, errs map[str
 					extras += " autofocus"
 				case "checked":
 					extras += " checked"
+				case "class":
+					extras += fmt.Sprintf(" class=\"%s\"", val)
 				case "label":
 					label = fmt.Sprintf("\t<label for=\"%s\">%s</label>\n", tag.Get("form"), val)
 				case "maxlength":

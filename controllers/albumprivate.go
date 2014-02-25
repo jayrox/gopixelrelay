@@ -15,7 +15,7 @@ import (
 	"pixelrelay/utils"
 )
 
-func AlbumPrivate(args martini.Params, session sessions.Session, su models.User, r render.Render, res http.ResponseWriter, req *http.Request) {
+func AlbumPrivate(args martini.Params, session sessions.Session, su models.User, r render.Render, res http.ResponseWriter, req *http.Request, dbh *db.Dbh) {
 	name := args["name"]
 	state, err := strconv.ParseBool(args["state"])
 	if err != nil {
@@ -25,9 +25,7 @@ func AlbumPrivate(args martini.Params, session sessions.Session, su models.User,
 	fmt.Printf("name: %s state: %t\n", name, state)
 	fmt.Println(su)
 
-	d := db.InitDB()
-
-	db.SetAlbumPrivacy(&d, su.Id, name, state)
+	dbh.SetAlbumPrivacy(su.Id, name, state)
 
 	http.Redirect(res, req, strings.Join([]string{utils.AppCfg.Url(), "albums"}, "/"), http.StatusFound)
 	return

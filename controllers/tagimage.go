@@ -9,11 +9,11 @@ import (
 	"pixelrelay/db"
 )
 
-func TagImage(args martini.Params, r render.Render) {
+func TagImage(args martini.Params, r render.Render, dbh *db.Dbh) {
 	tag := args["name"]
 	image := args["image"]
-	d := db.InitDB()
-	imagetag := db.TagImage(&d, tag, image)
+
+	imagetag := dbh.TagImage(tag, image)
 
 	fmt.Println(imagetag)
 	//r.HTML(200, "image_link", imageLinks)

@@ -17,7 +17,7 @@ type AlbumVars struct {
 	AlbumUser  models.User
 }
 
-func Album(args martini.Params, su models.User, session sessions.Session, r render.Render) {
+func Album(args martini.Params, su models.User, session sessions.Session, r render.Render, dbh *db.Dbh) {
 	var albumVars AlbumVars
 	
 	if su.Id > 0 {
@@ -31,8 +31,7 @@ func Album(args martini.Params, su models.User, session sessions.Session, r rend
 		fmt.Println("auser: ", auser)
 	}
 
-	d := db.InitDB()
-	images := db.GetAllAlbumImages(&d, album)
+	images := dbh.GetAllAlbumImages(album)
 
 	var imageLinks []ImageLink
 	for _, f := range images {

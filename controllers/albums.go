@@ -18,18 +18,17 @@ type AlbumsVars struct {
 	AlbumUser  models.User
 }
 
-func Albums(args martini.Params, su models.User, session sessions.Session, r render.Render, res http.ResponseWriter, req *http.Request) {
+func Albums(args martini.Params, su models.User, session sessions.Session, r render.Render, res http.ResponseWriter, req *http.Request, dbh *db.Dbh) {
 	var albumsVars AlbumsVars
 	if su.Id > 0 {
 		albumsVars.User = su
 	}
 
-	d := db.InitDB()
-	
 	auser := args["user"]
 	var albumUser models.User
 	if auser != "" {
-		albumUser = db.GetUserByUserName(&d, auser)
+		//albumUser = db.GetUserByUserName(&d, auser)
+		albumUser = dbh.GetUserByUserName(auser)
 		fmt.Println("albumUser: ", albumUser)
 		albumsVars.AlbumUser = albumUser
 	}
@@ -43,14 +42,14 @@ func Albums(args martini.Params, su models.User, session sessions.Session, r ren
 	
 	var albums []models.Album
 	if albumUser.Id > 0 {
-		albums = db.GetAllAlbumsByUserId(&d, albumUser.Id)
+		albums = dbh.GetAllAlbumsByUserId(albumUser.Id)
 	}else{
-		albums = db.GetAllAlbums(&d)
+		albums = dbh.GetAllAlbums()
 	}
 	
 	var albumList []models.AlbumList
 	for _, f := range albums {
-		i := db.FirstImage(&d, f.Name)
+		i := dbh.FirstImage(f.Name)
 		albumList = append(albumList, models.AlbumList{Name: f.Name, Poster: i[0].Name, Private: f.Private})
 	}
 	albumsVars.AlbumsList = albumList

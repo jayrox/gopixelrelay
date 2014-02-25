@@ -7,10 +7,10 @@ import (
 	"pixelrelay/db"
 )
 
-func Tagged(args martini.Params, r render.Render) {
+func Tagged(args martini.Params, r render.Render, dbh *db.Dbh) {
 	tag := args["name"]
-	d := db.InitDB()
-	images := db.GetImagesWithTag(&d, tag)
+
+	images := dbh.GetImagesWithTag(tag)
 
 	var imageLinks []ImageLink
 	for _, f := range images {

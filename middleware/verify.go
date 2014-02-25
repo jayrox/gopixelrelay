@@ -11,12 +11,11 @@ import (
 
 type Response map[string]interface{}
 
-func Verify(res http.ResponseWriter, req *http.Request, r render.Render) {
+func Verify(res http.ResponseWriter, req *http.Request, r render.Render, dbh *db.Dbh) {
 	pk := req.FormValue("user_private_key")
 	a := req.FormValue("file_album")
 
-	d := db.InitDB()
-	album := db.GetAlbum(&d, a)
+	album := dbh.GetAlbum(a)
 
 	if album.Id > 0 && album.Privatekey == pk {
 		return

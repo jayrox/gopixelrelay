@@ -21,16 +21,11 @@ type UploadResult struct {
 	Name  string `json:"name"`
 }
 
-//pimage models.PostImage,
-func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render) {
+func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render, dbh *db.Dbh) {
 	file, header, _ := req.FormFile("uploaded_file")
 	defer file.Close()
 
-	//fmt.Println(reflect.TypeOf(file))
-	//fmt.Println(reflect.TypeOf(req.FormFile("uploaded_file")))
-
 	ur := &UploadResult{}
-	d := db.InitDB()
 
 	fmt.Printf("header.Filename: %s\n", header.Filename)
 	fmt.Printf("version: %s\n", req.FormValue("version"))
@@ -40,8 +35,6 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render) {
 	fmt.Printf("file_album: %s\n", req.FormValue("file_album"))
 	fmt.Printf("file_name: %s\n", req.FormValue("file_name"))
 	fmt.Printf("file_mime: %s\n", req.FormValue("file_mime"))
-
-	//fmt.Println("pimage: ", pimage)
 
 	ur.SetError(200)
 	ur.SetCode("success")
@@ -118,16 +111,17 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render) {
 	// Add image
 	image := models.Image{Name: header.Filename, Album: req.FormValue("file_album"), User: u, Timestamp: time.Now().Unix()}
 	var ui models.Image
-	ui = db.AddImage(&d, image)
+
+	ui = dbh.AddImage(image)
 	fmt.Println("ui: ", ui.Id)
 
 	// Add album
 	album := models.Album{Name: req.FormValue("file_album"), User: u, Privatekey: req.FormValue("user_private_key"), Private: true, Timestamp: time.Now().Unix()}
-	db.AddAlbum(&d, album)
+	dbh.AddAlbum(album)
 
 	if ui.Id > 0 {
 		uploader := models.Uploader{User: u, Image: ui.Id, Email: req.FormValue("user_email"), Timestamp: time.Now().Unix()}
-		db.AddUpload(&d, uploader)
+		dbh.AddUpload(uploader)
 		ur.SetName(utils.AppCfg.Url() + "/i/" + header.Filename)
 	}
 	r.JSON(200, ur)

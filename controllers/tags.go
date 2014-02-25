@@ -8,11 +8,10 @@ import (
 	"pixelrelay/models"
 )
 
-func Tags(args martini.Params, r render.Render) {
-	d := db.InitDB()
-
+func Tags(args martini.Params, r render.Render, dbh *db.Dbh) {
 	var tags []models.Tag
-	tags = db.GetAllTags(&d)
+
+	tags = dbh.GetAllTags()
 
 	r.HTML(200, "tags", tags)
 }

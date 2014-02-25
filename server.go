@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	//"reflect"
 	
 
 	"github.com/3d0c/martini-contrib/config"
@@ -53,12 +54,12 @@ func main() {
 		Charset:   "UTF-8",     // Sets encoding for json and html content-types.
 	}))
 
+	dbh := db.Init(&db.Dbh{})
+	m.Map(dbh)
+
 	// Setup static file handling
 	m.Use(martini.Static("static"))
-	m.Use(middleware.UserAuth(models.User{}))
-
-	// Init DB
-	d := db.InitDB()
+	m.Use(middleware.UserAuth(models.User{}, dbh))
 
 	// Set up routes
 	m.Get("/", controllers.Index)
@@ -111,7 +112,7 @@ func main() {
 		fmt.Println("\x1b[31;1mOnce setup is complete please restart server with this flag disabled.\x1b[0m")
 
 		// Add default tables
-		db.AddTables(&d)
+		dbh.AddTables()
 
 		su := martini.Classic()
 
@@ -142,7 +143,7 @@ func main() {
 	*   usage: -migrate
 	 */
 	if *flagMigrate {
-		db.MigrateDB(&d)
+		dbh.MigrateDB()
 	}
 
 	select {}

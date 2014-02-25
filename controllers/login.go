@@ -55,15 +55,14 @@ func Login(session sessions.Session, su models.User, r render.Render, res http.R
 	r.HTML(200, "login", loginVars)
 }
 
-func LoginPost(lu forms.Login, session sessions.Session, res http.ResponseWriter, req *http.Request) {
+func LoginPost(lu forms.Login, session sessions.Session, res http.ResponseWriter, req *http.Request, dbh *db.Dbh) {
 	errs := ValidateLogin(&lu)
 	if len(errs) > 0 {
 		fmt.Printf(`{"errors":"%v"}`, errs)
 		fmt.Println("\n")
 	}
 
-	d := db.InitDB()
-	user := db.GetUserByEmail(&d, lu.Email)
+	user := dbh.GetUserByEmail(lu.Email)
 
 	match := auth.MatchPassword(lu.Password, user.Password, user.Salt)
 
@@ -75,7 +74,7 @@ func LoginPost(lu forms.Login, session sessions.Session, res http.ResponseWriter
 		session.Set("email", user.Email)
 		session.Set("key", sessionkey)
 
-		db.CreateSession(&d, models.UserSession{UserId: user.Id, SessionKey: sessionkey, Active: true, Timestamp: time.Now().Unix()})
+		dbh.CreateSession(models.UserSession{UserId: user.Id, SessionKey: sessionkey, Active: true, Timestamp: time.Now().Unix()})
 
 		http.Redirect(res, req, strings.Join([]string{utils.AppCfg.Url(), "albums"}, "/"), http.StatusMovedPermanently)
 		return
@@ -85,7 +84,7 @@ func LoginPost(lu forms.Login, session sessions.Session, res http.ResponseWriter
 	http.Redirect(res, req, strings.Join([]string{utils.AppCfg.Url(), "login"}, "/"), http.StatusMovedPermanently)
 }
 
-func Logout(session sessions.Session, res http.ResponseWriter, req *http.Request) {
+func Logout(session sessions.Session, res http.ResponseWriter, req *http.Request, dbh *db.Dbh) {
 	sessionkey := session.Get("key")
 	uid := session.Get("uid")
 
@@ -94,8 +93,7 @@ func Logout(session sessions.Session, res http.ResponseWriter, req *http.Request
 	session.Set("email", nil)
 	session.Set("key", nil)
 
-	d := db.InitDB()
-	db.DestroySession(&d, uid.(int64), sessionkey.(string))
+	dbh.DestroySession(uid.(int64), sessionkey.(string))
 	http.Redirect(res, req, utils.AppCfg.Url(), http.StatusMovedPermanently)
 }
 

@@ -12,17 +12,17 @@ import (
 )
 
 
-func UserAuth(formStruct interface{}, ifacePtr ...interface{}) martini.Handler {
+func UserAuth(formStruct interface{}, dbh *db.Dbh, ifacePtr ...interface{}) martini.Handler {
 	return func(context martini.Context, session sessions.Session, req *http.Request) {
 		formStruct := reflect.New(reflect.TypeOf(formStruct))
 
-		su := getSessionUser(session)
+		su := getSessionUser(session, dbh)
 		assignSessionUser(formStruct, su)
 		validateAndMap(formStruct, context, ifacePtr...)
 	}
 }
 
-func getSessionUser(session sessions.Session) models.User {
+func getSessionUser(session sessions.Session, dbh *db.Dbh) models.User {
 	var user models.User
 	var email, sessionkey, loggedin string
 	var suid int64
@@ -51,18 +51,16 @@ func getSessionUser(session sessions.Session) models.User {
 		return user
 	}
 
-	d := db.InitDB()
-
-	usk := db.GetUserByIdSessionKey(&d, suid, sessionkey)
+	usk := dbh.GetUserByIdSessionKey(suid, sessionkey)
 	if usk.Active != true || usk.Id < 1 {
 		return user
 	}
 
-	u := db.GetUserById(&d, suid)
+	u := dbh.GetUserById(suid)
 	if u.Email != email {
 		return user
 	}
-
+	
 	return u
 }
 

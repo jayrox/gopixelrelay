@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"album",
+				"albumUser"
+			],
+			[
 				"P",
 				"Println	n int, err error ƒ"
 			]
@@ -34,6 +38,8 @@
 		"height": 126.0,
 		"history":
 		[
+			"open_file",
+			"gs_fmt",
 			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
 		]
 	},
@@ -48,20 +54,28 @@
 	},
 	"file_history":
 	[
-		"/C/dev/gopixelrelay/server.go",
-		"/C/Users/jboehm/AppData/Roaming/Sublime Text 3/Packages/GoSublime/GoSublime.sublime-settings",
+		"/C/dev/gopixelrelay/pixelrelay.json",
+		"/C/dev/gopixelrelay/db/db.go",
 		"/C/dev/gopixelrelay/controllers/albums.go",
+		"/C/dev/gopixelrelay/server.go",
+		"/C/dev/gopixelrelay/controllers/albumprivate.go",
+		"/C/dev/gopixelrelay/templates/albums.tmpl",
+		"/C/dev/gopixelrelay/templates/image_link.tmpl",
+		"/C/dev/gopixelrelay/static/style.css",
+		"/C/dev/gopixelrelay/templates/body.tmpl",
+		"/C/dev/gopixelrelay/templates/head.tmpl",
+		"/C/dev/gopixelrelay/controllers/index.go",
+		"/C/dev/gopixelrelay/nohup.out",
+		"/C/dev/gopixelrelay/pixelrelay-sample.json",
+		"/C/Users/jboehm/AppData/Roaming/Sublime Text 3/Packages/GoSublime/Default (Windows).sublime-keymap",
+		"/C/Users/jboehm/AppData/Roaming/Sublime Text 3/Packages/GoSublime/GoSublime.sublime-settings",
 		"/C/dev/gopixelrelay/db/db2.go",
 		"/C/dev/gopixelrelay/models/usersession.go",
 		"/C/dev/gopixelrelay/middleware/verifyuser.go",
 		"/C/dev/gopixelrelay/templates/notfound.tmpl",
-		"/C/dev/gopixelrelay/controllers/index.go",
 		"/C/dev/gopixelrelay/controllers/album.go",
 		"/C/dev/gopixelrelay/models/user.go",
 		"/C/dev/gopixelrelay/controllers/login.go",
-		"/C/dev/gopixelrelay/pixelrelay.json",
-		"/C/dev/gopixelrelay/pixelrelay-sample.json",
-		"/C/dev/gopixelrelay/db/db.go",
 		"/C/Users/jboehm/AppData/Roaming/Sublime Text 3/Packages/GoSublime/CHANGELOG.md",
 		"/C/Users/jboehm/AppData/Roaming/Sublime Text 3/Packages/GoSublime/USAGE.md"
 	],
