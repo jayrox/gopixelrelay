@@ -27,7 +27,6 @@ func Albums(args martini.Params, su models.User, session sessions.Session, r ren
 	auser := args["user"]
 	var albumUser models.User
 	if auser != "" {
-		//albumUser = db.GetUserByUserName(&d, auser)
 		albumUser = dbh.GetUserByUserName(auser)
 		log.Println("albumUser: ", albumUser)
 		albumsVars.AlbumUser = albumUser
