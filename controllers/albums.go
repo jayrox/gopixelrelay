@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/codegangsta/martini"
@@ -29,13 +29,13 @@ func Albums(args martini.Params, su models.User, session sessions.Session, r ren
 	if auser != "" {
 		//albumUser = db.GetUserByUserName(&d, auser)
 		albumUser = dbh.GetUserByUserName(auser)
-		fmt.Println("albumUser: ", albumUser)
+		log.Println("albumUser: ", albumUser)
 		albumsVars.AlbumUser = albumUser
 	}
 	
 	if auser != "" && albumUser.Id == 0 {
 		// handle user not found a little better?
-		fmt.Println("auser: ", auser, " albumUser: ", albumUser)
+		log.Println("auser: ", auser, " albumUser: ", albumUser)
 		http.NotFound(res, req)
 		return
 	}
