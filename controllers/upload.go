@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -27,14 +27,18 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render, dbh 
 
 	ur := &UploadResult{}
 
-	fmt.Printf("header.Filename: %s\n", header.Filename)
-	fmt.Printf("version: %s\n", req.FormValue("version"))
-	fmt.Printf("user_email: %s\n", req.FormValue("user_email"))
-	fmt.Printf("user_private_key: %s\n", req.FormValue("user_private_key"))
-	fmt.Printf("file_host: %s\n", req.FormValue("file_host"))
-	fmt.Printf("file_album: %s\n", req.FormValue("file_album"))
-	fmt.Printf("file_name: %s\n", req.FormValue("file_name"))
-	fmt.Printf("file_mime: %s\n", req.FormValue("file_mime"))
+	rEmail := req.FormValue("user_email")
+	rAlbum := req.FormValue("file_album")
+	rPrivateKey := req.FormValue("user_private_key")
+
+	log.Printf("header.Filename: %s\n", header.Filename)
+	log.Printf("version: %s\n", req.FormValue("version"))
+	log.Printf("user_email: %s\n", rEmail)
+	log.Printf("user_private_key: %s\n", rPrivateKey)
+	log.Printf("file_host: %s\n", req.FormValue("file_host"))
+	log.Printf("file_album: %s\n", rAlbum)
+	log.Printf("file_name: %s\n", req.FormValue("file_name"))
+	log.Printf("file_mime: %s\n", req.FormValue("file_mime"))
 
 	ur.SetError(200)
 	ur.SetCode("success")
@@ -69,7 +73,7 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render, dbh 
 
 	fi, err := os.Open(tmp_file)
 	if err != nil {
-		fmt.Println("fi err: ", err)
+		log.Println("fi err: ", err)
 		ur.SetError(500)
 		ur.SetCode(err.Error())
 		r.JSON(500, ur)
@@ -80,7 +84,7 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render, dbh 
 	buf := make([]byte, 512)
 	n, err := fi.Read(buf)
 	if err != nil {
-		fmt.Println("mime err: ", err)
+		log.Println("mime err: ", err)
 		r.JSON(500, ur)
 	}
 
@@ -93,11 +97,11 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render, dbh 
 		return
 	}
 
-	fmt.Printf("tmp_file: %s\n", tmp_file)
+	log.Printf("tmp_file: %s\n", tmp_file)
 
 	// Create Thumb
 	tname := utils.ImageCfg.Thumbs() + ur.GetName()
-	fmt.Printf("tname: %s\n", tname)
+	log.Printf("tname: %s\n", tname)
 
 	if !Exists(string(tname)) && strings.Contains(tmp_file, "jpg") {
 		okc := make(chan bool, 1)
