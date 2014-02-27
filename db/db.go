@@ -242,6 +242,12 @@ func (db *Dbh) UpdateUser(user models.User) models.User {
 	return user
 }
 
+/****************
+*
+*  Sessions
+*
+ */
+
 func (db *Dbh) CreateSession(session models.UserSession) {
 	db.DB.Save(&session)
 	return
@@ -249,7 +255,27 @@ func (db *Dbh) CreateSession(session models.UserSession) {
 
 func (db *Dbh) DestroySession(uid int64, sessionkey string) {
 	var usersession models.UserSession
-	
+
 	db.DB.Model(&usersession).Where("user_id = ? and session_key = ?", uid, sessionkey).Limit(1).Updates(models.UserSession{UserId: uid, Active: false, Timestamp: time.Now().Unix()})
 	return
+}
+
+/****************
+*
+*  History
+*
+ */
+
+// Add upload to uploader list
+func (db *Dbh) AddUploader(upload models.Uploader) {
+	db.DB.NewRecord(&upload)
+	db.DB.Save(&upload)
+	db.DB.NewRecord(&upload)
+}
+
+//
+func (db *Dbh) GetUploaderByEmail(email string) models.User {
+	var user models.User
+	db.DB.Where("email = ?", email).Find(&user)
+	return user
 }
