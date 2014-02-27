@@ -11,7 +11,6 @@ import (
 	"pixelrelay/models"
 )
 
-
 func UserAuth(formStruct interface{}, dbh *db.Dbh, ifacePtr ...interface{}) martini.Handler {
 	return func(context martini.Context, session sessions.Session, req *http.Request) {
 		formStruct := reflect.New(reflect.TypeOf(formStruct))
@@ -36,7 +35,7 @@ func getSessionUser(session sessions.Session, dbh *db.Dbh) models.User {
 	if semail != nil {
 		email = semail.(string)
 	}
-	
+
 	ssessionkey := session.Get("key")
 	if ssessionkey != nil {
 		sessionkey = ssessionkey.(string)
@@ -60,7 +59,7 @@ func getSessionUser(session sessions.Session, dbh *db.Dbh) models.User {
 	if u.Email != email {
 		return user
 	}
-	
+
 	return u
 }
 
@@ -70,14 +69,14 @@ func assignSessionUser(formStruct reflect.Value, su models.User) {
 		typeField := typ.Field(i)
 		structField := formStruct.Elem().Field(i)
 		switch typeField.Name {
-			case "Id":
-				structField.SetInt(su.Id)
-			case "Name": 
-				structField.SetString(su.Name)
-			case "UserName":
-				structField.SetString(su.UserName)
-			case "Email":
-				structField.SetString(su.Email)
+		case "Id":
+			structField.SetInt(su.Id)
+		case "Name":
+			structField.SetString(su.Name)
+		case "UserName":
+			structField.SetString(su.UserName)
+		case "Email":
+			structField.SetString(su.Email)
 		}
 	}
 }

@@ -26,18 +26,15 @@ func Init(db *Dbh) *Dbh {
 	if err != nil {
 		log.Fatalf("Got error when connect database, the error is '%v'", err)
 	}
-	//defer db.DB.DB().Close()
-	
+
 	if utils.AppCfg.Debug() {
 		db.Logger(utils.DbCfg.Debug())
 	}
-	
-	//DB.DB().SetMaxIdleConns(10)
-	//DB.DB().SetMaxOpenConns(100)
-	//DB.DB().Ping()
-	
-	//db.DB = dbc
-	
+
+	db.DB.DB().SetMaxIdleConns(10)
+	db.DB.DB().SetMaxOpenConns(100)
+	db.DB.DB().Ping()
+
 	return db
 }
 
@@ -45,37 +42,17 @@ func (db *Dbh) Logger(enable bool) {
 	db.DB.LogMode(enable)
 }
 
-func (db *Dbh) MigrateDB() {
-	log.Println("updating tables")
-	db.DB.AutoMigrate(models.Album{})
-	db.DB.AutoMigrate(models.Image{})
-	db.DB.AutoMigrate(models.ImageTag{})
-	db.DB.AutoMigrate(models.Tag{})
-	db.DB.AutoMigrate(models.Uploader{})
-	db.DB.AutoMigrate(models.User{})
-	db.DB.AutoMigrate(models.UserSession{})
-	log.Println("completed updating tables")
-}
+/****************
+*
+*  Albums
+*
+ */
 
-// GetAllAlbumImages returns all Images in the album database
-func (db *Dbh) GetAllAlbumImages(album string) []models.Image {
-	var images []models.Image
-	db.DB.Where("album = ?", album).Find(&images)
-	return images
-}
-
-// GetAllAlbums returns all albums
-func (db *Dbh) GetAllAlbums() []models.Album {
-	var albums []models.Album
-	db.DB.Where("name != ''").Find(&albums)
-	return albums
-}
-
-// GetAllAlbumsByUserId returns all albums owned by Id
-func (db *Dbh) GetAllAlbumsByUserId(uid int64) []models.Album {
-	var albums []models.Album
-	db.DB.Where("name != '' and user = ?", uid).Find(&albums)
-	return albums
+// Add new album
+func (db *Dbh) AddAlbum(album models.Album) {
+	db.DB.NewRecord(&album)
+	db.DB.Save(&album)
+	db.DB.NewRecord(&album)
 }
 
 // GetAlbum returns album
@@ -85,6 +62,13 @@ func (db *Dbh) GetAlbum(name string) models.Album {
 	return album
 }
 
+// GetAllAlbums returns all albums
+func (db *Dbh) GetAllAlbums() []models.Album {
+	var albums []models.Album
+	db.DB.Where("name != ''").Find(&albums)
+	return albums
+}
+
 // GetAlbum returns album
 func (db *Dbh) GetAlbumByUserId(name string, uid int64) models.Album {
 	var album models.Album
@@ -92,21 +76,36 @@ func (db *Dbh) GetAlbumByUserId(name string, uid int64) models.Album {
 	return album
 }
 
-func (db *Dbh) SetAlbumPrivacy(uid int64, name string, state bool) {
-	log.Println("id: ", uid)
-	log.Println("name: ", name)
-	log.Println("state: ", state)
+// GetAllAlbumsByUserId returns all albums owned by Id
+func (db *Dbh) GetAllAlbumsByUserId(uid int64) []models.Album {
+	var albums []models.Album
+	db.DB.Where("name != '' and user = ?", uid).Find(&albums)
+	return albums
+}
 
+// GetAllAlbumImages returns all Images in the album database
+func (db *Dbh) GetAllAlbumImages(album string) []models.Image {
+	var images []models.Image
+	db.DB.Where("album = ?", album).Find(&images)
+	return images
+}
+
+// SetAlbumPrivacy changes private state
+func (db *Dbh) SetAlbumPrivacy(uid int64, name string, state bool) {
 	var udb models.Album
 	album := db.GetAlbumByUserId(name, uid)
-	log.Println("album: ", album)
-	
+
 	album.Private = state
 	db.DB.Model(&udb).Where("id = ? and user = ?", album.Id, uid).Limit(1).Updates(&album)
-	//return user
 
 	return
 }
+
+/****************
+*
+*  Images
+*
+ */
 
 // Add new album image
 func (db *Dbh) AddImage(image models.Image) models.Image {
@@ -115,6 +114,19 @@ func (db *Dbh) AddImage(image models.Image) models.Image {
 	db.DB.NewRecord(&image)
 	return image
 }
+
+// Get first image in album for album thumbnail
+func (db *Dbh) FirstImage(album string) []models.Image {
+	var image []models.Image
+	db.DB.First(&image, "album = ?", album)
+	return image
+}
+
+/****************
+*
+*  Tags
+*
+ */
 
 // Tag Image
 func (db *Dbh) TagImage(tag, name string) models.ImageTag {
@@ -134,14 +146,13 @@ func (db *Dbh) TagImage(tag, name string) models.ImageTag {
 	db.DB.NewRecord(&imagetag)
 	db.DB.Save(&imagetag)
 	db.DB.NewRecord(&imagetag)
-	
+
 	return imagetag
 }
 
 // Get Images with Tag
 func (db *Dbh) GetImagesWithTag(tag string) []models.TaggedImage {
 	var images []models.TaggedImage
-	//query := db.Exec("SELECT images.id as image_id, images.name as name, tags.name as tag FROM images LEFT JOIN image_tags ON (image_tags.img_id = images.id) LEFT JOIN tags ON (image_tags.tag_id = tags.id AND image_tags.img_id = images.id) WHERE tags.name = ? ORDER BY images.id ASC", tag).Scan(&images)
 	db.DB.Table("images").Select("images.id as image_id, images.name as name, tags.name as tag").Joins("LEFT JOIN image_tags ON (image_tags.img_id = images.id) LEFT JOIN tags ON (image_tags.tag_id = tags.id AND image_tags.img_id = images.id)").Where("tags.name = ?", tag).Order("images.id ASC").Scan(&images)
 	log.Println(images)
 	return images
@@ -154,18 +165,21 @@ func (db *Dbh) GetAllTags() []models.Tag {
 	return tags
 }
 
-// Add upload to uploader history/logging
-func (db *Dbh) AddUpload(upload models.Uploader) {
-	db.DB.NewRecord(&upload)
-	db.DB.Save(&upload)
-	db.DB.NewRecord(&upload)
-}
+/****************
+*
+*  Tables
+*
+ */
 
-// Add new album
-func (db *Dbh) AddAlbum(album models.Album) {
-	db.DB.NewRecord(&album)
-	db.DB.Save(&album)
-	db.DB.NewRecord(&album)
+func (db *Dbh) AddTables() {
+	log.Println("adding tables")
+	db.DB.CreateTable(models.Album{})
+	db.DB.CreateTable(models.Image{})
+	db.DB.CreateTable(models.ImageTag{})
+	db.DB.CreateTable(models.Tag{})
+	db.DB.CreateTable(models.Uploader{})
+	db.DB.CreateTable(models.User{})
+	db.DB.CreateTable(models.UserSession{})
 }
 
 func (db *Dbh) DropTables() {
@@ -179,23 +193,23 @@ func (db *Dbh) DropTables() {
 	db.DB.DropTable(models.UserSession{})
 }
 
-func (db *Dbh) AddTables() {
-	log.Println("adding tables")
-	db.DB.CreateTable(models.Album{})
-	db.DB.CreateTable(models.Image{})
-	db.DB.CreateTable(models.ImageTag{})
-	db.DB.CreateTable(models.Tag{})
-	db.DB.CreateTable(models.Uploader{})
-	db.DB.CreateTable(models.User{})
-	db.DB.CreateTable(models.UserSession{})
+func (db *Dbh) MigrateDB() {
+	log.Println("updating tables")
+	db.DB.AutoMigrate(models.Album{})
+	db.DB.AutoMigrate(models.Image{})
+	db.DB.AutoMigrate(models.ImageTag{})
+	db.DB.AutoMigrate(models.Tag{})
+	db.DB.AutoMigrate(models.Uploader{})
+	db.DB.AutoMigrate(models.User{})
+	db.DB.AutoMigrate(models.UserSession{})
+	log.Println("completed updating tables")
 }
 
-// Get first image in album for album thumbnail
-func (db *Dbh) FirstImage(album string) []models.Image {
-	var image []models.Image
-	db.DB.First(&image, "album = ?", album)
-	return image
-}
+/****************
+*
+*  Users
+*
+ */
 
 func (db *Dbh) GetUserByEmail(email string) models.User {
 	var user models.User
@@ -217,14 +231,14 @@ func (db *Dbh) GetUserByIdSessionKey(uid int64, sessionkey string) models.UserSe
 
 func (db *Dbh) GetUserIdByUserName(auser string) int64 {
 	var user models.User
-	
+
 	db.DB.Where("user_name = ?", auser).Find(&user)
 	return user.Id
 }
 
 func (db *Dbh) GetUserByUserName(auser string) models.User {
 	var user models.User
-	
+
 	db.DB.Where("user_name = ?", auser).Find(&user)
 	return user
 }

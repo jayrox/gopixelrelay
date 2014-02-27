@@ -24,7 +24,7 @@ func GenerateForm(fields interface{}, action string, method string, errs map[str
 		if tag.Get("form") == "-" {
 			continue
 		}
-		
+
 		var extras string
 		var label string
 
@@ -46,30 +46,30 @@ func GenerateForm(fields interface{}, action string, method string, errs map[str
 			}
 
 			switch ele {
-				case "alt":
-					extras += fmt.Sprintf(" alt=\"%s\"", val)
-				case "autofocus":
-					extras += " autofocus"
-				case "checked":
-					extras += " checked"
-				case "class":
-					extras += fmt.Sprintf(" class=\"%s\"", val)
-				case "label":
-					label = fmt.Sprintf("\t<label for=\"%s\">%s</label>\n", tag.Get("form"), val)
-				case "maxlength":
-					extras += fmt.Sprintf(" maxlength=\"%s\"", val)
-				case "min":
-					extras += fmt.Sprintf(" min=\"%s\"", val)
-				case "placeholder":
-					extras += fmt.Sprintf(" placeholder=\"%s\"", val)
-				case "readonly":
-					extras += " readonly"
-				case "required":
-					extras += " required"
-				case "type":
-					fType = val
-				case "value":
-					extras += fmt.Sprintf(" value=\"%s\"", val)
+			case "alt":
+				extras += fmt.Sprintf(" alt=\"%s\"", val)
+			case "autofocus":
+				extras += " autofocus"
+			case "checked":
+				extras += " checked"
+			case "class":
+				extras += fmt.Sprintf(" class=\"%s\"", val)
+			case "label":
+				label = fmt.Sprintf("\t<label for=\"%s\">%s</label>\n", tag.Get("form"), val)
+			case "maxlength":
+				extras += fmt.Sprintf(" maxlength=\"%s\"", val)
+			case "min":
+				extras += fmt.Sprintf(" min=\"%s\"", val)
+			case "placeholder":
+				extras += fmt.Sprintf(" placeholder=\"%s\"", val)
+			case "readonly":
+				extras += " readonly"
+			case "required":
+				extras += " required"
+			case "type":
+				fType = val
+			case "value":
+				extras += fmt.Sprintf(" value=\"%s\"", val)
 			}
 		}
 

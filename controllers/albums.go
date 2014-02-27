@@ -31,24 +31,27 @@ func Albums(args martini.Params, su models.User, session sessions.Session, r ren
 		log.Println("albumUser: ", albumUser)
 		albumsVars.AlbumUser = albumUser
 	}
-	
+
 	if auser != "" && albumUser.Id == 0 {
 		// handle user not found a little better?
 		log.Println("auser: ", auser, " albumUser: ", albumUser)
 		http.NotFound(res, req)
 		return
 	}
-	
+
 	var albums []models.Album
 	if albumUser.Id > 0 {
 		albums = dbh.GetAllAlbumsByUserId(albumUser.Id)
-	}else{
+	} else {
 		albums = dbh.GetAllAlbums()
 	}
-	
+
 	var albumList []models.AlbumList
 	for _, f := range albums {
 		i := dbh.FirstImage(f.Name)
+		if f.Private && su.Id != f.User {
+			continue
+		}
 		albumList = append(albumList, models.AlbumList{Name: f.Name, Poster: i[0].Name, Private: f.Private})
 	}
 	albumsVars.AlbumsList = albumList

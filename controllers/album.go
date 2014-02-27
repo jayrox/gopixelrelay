@@ -6,7 +6,7 @@ import (
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
-	
+
 	"pixelrelay/db"
 	"pixelrelay/models"
 )
@@ -19,7 +19,7 @@ type AlbumVars struct {
 
 func Album(args martini.Params, su models.User, session sessions.Session, r render.Render, dbh *db.Dbh) {
 	var albumVars AlbumVars
-	
+
 	if su.Id > 0 {
 		albumVars.User = su
 	}

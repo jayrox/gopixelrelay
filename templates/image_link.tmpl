@@ -1,7 +1,9 @@
-	<ul>{{range .ImageLinks}}
+	<ul>
+{{range .ImageLinks}}
 		<li>
 			<div>
 				<a href="/i/{{.FileName}}"><img src="/t/{{.FileName}}" /></a>
 			</div>
-		</li>{{ end }}
+		</li>
+{{ end }}
 	</ul>

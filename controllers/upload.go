@@ -40,6 +40,7 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render, dbh 
 	log.Printf("file_name: %s\n", req.FormValue("file_name"))
 	log.Printf("file_mime: %s\n", req.FormValue("file_mime"))
 
+
 	ur.SetError(200)
 	ur.SetCode("success")
 
@@ -110,24 +111,30 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render, dbh 
 	}
 
 	// Add image to database
-	u := int64(1) //FIXME!!!
+	dbh.AddUploader(models.Uploader{Email: rEmail, Timestamp: time.Now().Unix()})
+
+	var user models.User
+	user = dbh.GetUserByEmail(rEmail)
+	log.Println("user: ", user)
+	if user.Id == 0 {
+		user = dbh.GetUploaderByEmail(rEmail)
+		log.Println("uploader: ", user)
+	} 
+	log.Println("user: ", user)
 
 	// Add image
-	image := models.Image{Name: header.Filename, Album: req.FormValue("file_album"), User: u, Timestamp: time.Now().Unix()}
-	var ui models.Image
-
-	ui = dbh.AddImage(image)
-	fmt.Println("ui: ", ui.Id)
+	image := models.Image{Name: header.Filename, Album: rAlbum, User: user.Id, Timestamp: time.Now().Unix()}
+	ai := dbh.AddImage(image)
+	log.Println("ai: ", ai)
 
 	// Add album
-	album := models.Album{Name: req.FormValue("file_album"), User: u, Privatekey: req.FormValue("user_private_key"), Private: true, Timestamp: time.Now().Unix()}
+	album := models.Album{Name: rAlbum, User: user.Id, Privatekey: rPrivateKey, Private: true, Timestamp: time.Now().Unix()}
 	dbh.AddAlbum(album)
+	log.Println("album: ", album)
 
-	if ui.Id > 0 {
-		uploader := models.Uploader{User: u, Image: ui.Id, Email: req.FormValue("user_email"), Timestamp: time.Now().Unix()}
-		dbh.AddUpload(uploader)
-		ur.SetName(utils.AppCfg.Url() + "/i/" + header.Filename)
-	}
+	ur.SetName(utils.AppCfg.Url() + "/i/" + header.Filename)
+	log.Println("ur: ", ur)
+
 	r.JSON(200, ur)
 }
 

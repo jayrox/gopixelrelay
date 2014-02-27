@@ -18,18 +18,18 @@ type ConfigScheme struct {
 		Debug               bool   `json:"debug"`
 		ListenOn            string `json:"listen_on"`
 		ListenOnSetup       string `json:"listen_on_setup"`
-		SecretKey       	string `json:"secretkey"`
+		SecretKey           string `json:"secretkey"`
 		Url                 string `json:"url"`
 	} `json:"application"`
 }
 
 type DBScheme struct {
 	DB struct {
-		Host string `json:"host"`
-		Name string `json:"name"`
-		User string `json:"user"`
-		Pass string `json:"pass"`
-		Debug bool  `json:"debug"`
+		Host  string `json:"host"`
+		Name  string `json:"name"`
+		User  string `json:"user"`
+		Pass  string `json:"pass"`
+		Debug bool   `json:"debug"`
 	} `json:"database"`
 }
 

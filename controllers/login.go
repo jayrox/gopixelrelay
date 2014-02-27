@@ -18,7 +18,6 @@ import (
 	"pixelrelay/forms"
 	"pixelrelay/models"
 	"pixelrelay/utils"
-
 )
 
 type LoginVars struct {

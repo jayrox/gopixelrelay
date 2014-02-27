@@ -1,3 +1,22 @@
+html, article {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+article {
+	display: block;
+	min-height: 768px;
+	min-width: 1366px;
+}
+
+footer {
+	display: block;
+	text-align: center;
+	width: 100%;
+}
+
 img[src*="/t/"] {
 	width: 150px;
 	height: 150px;
@@ -41,4 +60,24 @@ li div span {
 h1 {
 	width: 200px;
 	margin: 20px auto;
+}
+
+.sprite {
+	background: url('/sprite.png');
+	text-indent: 9999;
+	text-decoration: none;
+}
+
+.lock {
+	background-position: -0px -0px;
+	width: 11px;
+	height: 15px;
+	display: inline-block;
+}
+
+.unlock {
+	background-position: -0px -25px;
+	width: 11px;
+	height: 15px;
+	display: inline-block;
 }

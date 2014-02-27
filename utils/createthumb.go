@@ -1,13 +1,13 @@
 package utils
 
-import(
+import (
 	"fmt"
 	"image"
 	"image/jpeg"
 	"image/png"
 	"log"
 	"os"
-	
+
 	"github.com/nfnt/resize"
 )
 

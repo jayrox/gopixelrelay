@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	//"reflect"
-	
 
 	"github.com/3d0c/martini-contrib/config"
 	"github.com/codegangsta/martini"
