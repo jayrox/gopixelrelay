@@ -23,7 +23,7 @@ import (
 
 type LoginVars struct {
 	LoginForm template.HTML
-	User models.User
+	User      models.User
 }
 
 func Login(session sessions.Session, su models.User, r render.Render, res http.ResponseWriter, req *http.Request) {

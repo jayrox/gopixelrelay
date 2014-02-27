@@ -8,13 +8,13 @@ import (
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
 
-	"pixelrelay/utils"
 	"pixelrelay/models"
+	"pixelrelay/utils"
 )
 
 type ListVars struct {
 	ImageLinks []ImageLink
-	User models.User
+	User       models.User
 }
 
 type ImageLink struct {
