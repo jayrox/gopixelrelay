@@ -61,6 +61,7 @@ func main() {
 
 	// Set up routes
 	m.Get("/", controllers.Index)
+	m.Get("/image/:name", middleware.VerifyFile, controllers.ImagePage)
 	m.Get("/i/:name", middleware.VerifyFile, controllers.Image)
 	m.Get("/t/:name", middleware.VerifyFile, controllers.Thumb)
 	m.Get("/list", controllers.List)
