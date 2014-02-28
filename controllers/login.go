@@ -110,14 +110,14 @@ func ValidateLogin(lu *forms.Login) map[string]string {
 }
 
 // Generate session key
-func SessionKey(email string, password string, salt string) string {
+func SessionKey(email string, password string, salt string) (sha string) {
 	tnow := strconv.FormatInt(time.Now().Unix(), 10)
 	str := strings.Join([]string{tnow, email, password, salt}, "//")
 	bv := []byte(str)
 
 	hasher := sha1.New()
 	hasher.Write(bv)
-	sha := base64.URLEncoding.EncodeToString(hasher.Sum(nil))
+	sha = base64.URLEncoding.EncodeToString(hasher.Sum(nil))
 
-	return sha
+	return
 }

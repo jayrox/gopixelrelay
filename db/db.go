@@ -56,38 +56,33 @@ func (db *Dbh) AddAlbum(album models.Album) {
 }
 
 // GetAlbum returns album
-func (db *Dbh) GetAlbum(name string) models.Album {
-	var album models.Album
+func (db *Dbh) GetAlbum(name string) (album models.Album) {
 	db.DB.Where("name = ?", name).Find(&album)
-	return album
+	return
 }
 
 // GetAllAlbums returns all albums
-func (db *Dbh) GetAllAlbums() []models.Album {
-	var albums []models.Album
+func (db *Dbh) GetAllAlbums() (albums []models.Album) {
 	db.DB.Where("name != ''").Find(&albums)
-	return albums
+	return
 }
 
 // GetAlbum returns album
-func (db *Dbh) GetAlbumByUserId(name string, uid int64) models.Album {
-	var album models.Album
+func (db *Dbh) GetAlbumByUserId(name string, uid int64) (album models.Album) {
 	db.DB.Where("name = ? and user = ?", name, uid).Find(&album)
-	return album
+	return
 }
 
 // GetAllAlbumsByUserId returns all albums owned by Id
-func (db *Dbh) GetAllAlbumsByUserId(uid int64) []models.Album {
-	var albums []models.Album
+func (db *Dbh) GetAllAlbumsByUserId(uid int64) (albums []models.Album) {
 	db.DB.Where("name != '' and user = ?", uid).Find(&albums)
-	return albums
+	return
 }
 
 // GetAllAlbumImages returns all Images in the album database
-func (db *Dbh) GetAllAlbumImages(album string) []models.Image {
-	var images []models.Image
+func (db *Dbh) GetAllAlbumImages(album string) (images []models.Image) {
 	db.DB.Where("album = ?", album).Find(&images)
-	return images
+	return
 }
 
 // SetAlbumPrivacy changes private state
@@ -129,7 +124,7 @@ func (db *Dbh) FirstImage(album string) []models.Image {
  */
 
 // Tag Image
-func (db *Dbh) TagImage(tag, name string) models.ImageTag {
+func (db *Dbh) TagImage(tag, name string) (imagetag models.ImageTag) {
 	// Get tag id or create tag
 	var mTag models.Tag
 	db.DB.Where(models.Tag{Name: tag}).FirstOrCreate(&mTag)
@@ -140,14 +135,14 @@ func (db *Dbh) TagImage(tag, name string) models.ImageTag {
 	db.DB.First(&image, "name = ?", name)
 
 	// Add tag to image
-	imagetag := models.ImageTag{ImgId: image.Id, TagId: mTag.Id}
+	imagetag = models.ImageTag{ImgId: image.Id, TagId: mTag.Id}
 
 	// Save tag
 	db.DB.NewRecord(&imagetag)
 	db.DB.Save(&imagetag)
 	db.DB.NewRecord(&imagetag)
 
-	return imagetag
+	return
 }
 
 // Get Images with Tag
@@ -159,10 +154,10 @@ func (db *Dbh) GetImagesWithTag(tag string) []models.TaggedImage {
 }
 
 // Get all tags
-func (db *Dbh) GetAllTags() []models.Tag {
-	var tags []models.Tag
+func (db *Dbh) GetAllTags() (tags []models.Tag) {
 	db.DB.Where("name != ''").Find(&tags)
-	return tags
+	return
+}
 }
 
 /****************
@@ -211,22 +206,19 @@ func (db *Dbh) MigrateDB() {
 *
  */
 
-func (db *Dbh) GetUserByEmail(email string) models.User {
-	var user models.User
+func (db *Dbh) GetUserByEmail(email string) (user models.User) {
 	db.DB.Where("email = ?", email).Find(&user)
-	return user
+	return
 }
 
-func (db *Dbh) GetUserById(id int64) models.User {
-	var user models.User
+func (db *Dbh) GetUserById(id int64) (user models.User) {
 	db.DB.Where("id = ?", id).Find(&user)
-	return user
+	return
 }
 
-func (db *Dbh) GetUserByIdSessionKey(uid int64, sessionkey string) models.UserSession {
-	var usersession models.UserSession
+func (db *Dbh) GetUserByIdSessionKey(uid int64, sessionkey string) (usersession models.UserSession) {
 	db.DB.Where("user_id = ? and session_key = ?", uid, sessionkey).Find(&usersession)
-	return usersession
+	return
 }
 
 func (db *Dbh) GetUserIdByUserName(auser string) int64 {
@@ -236,11 +228,9 @@ func (db *Dbh) GetUserIdByUserName(auser string) int64 {
 	return user.Id
 }
 
-func (db *Dbh) GetUserByUserName(auser string) models.User {
-	var user models.User
-
+func (db *Dbh) GetUserByUserName(auser string) (user models.User) {
 	db.DB.Where("user_name = ?", auser).Find(&user)
-	return user
+	return
 }
 
 func (db *Dbh) InsertUser(user models.User) models.User {
