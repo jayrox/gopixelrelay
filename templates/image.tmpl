@@ -1,0 +1,10 @@
+<div id="ic">
+{{ if .Image.Name }}<a href="/i/{{.Image.Name}}"><img src="/i/{{.Image.Name}}"></a>{{ end }}
+{{ if .Tags }}<div><h4>TAGS</h4>
+	<ul>
+	{{range .Tags}}
+		<li>{{.Tag}}</li>
+	{{end}}
+	</ul>
+</div>{{ end }}
+</div>
