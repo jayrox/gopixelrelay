@@ -115,6 +115,11 @@ func (db *Dbh) FirstImageByAlbum(album string) (image []models.Image) {
 	db.DB.First(&image, "album = ?", album)
 	return
 }
+
+// Get first image by image name
+func (db *Dbh) FirstImageByName(name string) (image models.Image) {
+	db.DB.First(&image, "name = ?", name)
+	return
 }
 
 /****************
