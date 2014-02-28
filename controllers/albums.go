@@ -45,7 +45,7 @@ func Albums(args martini.Params, su models.User, session sessions.Session, r ren
 
 	var albumList []models.AlbumList
 	for _, f := range albums {
-		i := dbh.FirstImage(f.Name)
+		i := dbh.FirstImageByAlbum(f.Name)
 		if f.Private && su.Id != f.User {
 			continue
 		}
