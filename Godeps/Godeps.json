@@ -1,0 +1,80 @@
+{
+	"ImportPath": "pixelrelay",
+	"GoVersion": "go1.2",
+	"Deps": [
+		{
+			"ImportPath": "code.google.com/p/go.crypto/bcrypt",
+			"Comment": "null-189",
+			"Rev": "61c59dda830a42de20e0152d4deefa5320d0e131"
+		},
+		{
+			"ImportPath": "code.google.com/p/go.crypto/blowfish",
+			"Comment": "null-189",
+			"Rev": "61c59dda830a42de20e0152d4deefa5320d0e131"
+		},
+		{
+			"ImportPath": "code.google.com/p/graphics-go/graphics",
+			"Comment": "null-25",
+			"Rev": "f843bfcd8ac420072c7f6804599995b0a229070b"
+		},
+		{
+			"ImportPath": "github.com/3d0c/martini-contrib/config",
+			"Comment": "v0.1-101-g1fbcfff",
+			"Rev": "1fbcfff1c59954324af0ce7a4bbf24cb738631ed"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/inject",
+			"Rev": "346a984957aa24276ebc5e7b16b3ac6a50fe8138"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/martini",
+			"Comment": "v0.1-72-g9eab46a",
+			"Rev": "9eab46a1e15cdc0c9644b0505ffbd2ca905ab997"
+		},
+		{
+			"ImportPath": "github.com/go-sql-driver/mysql",
+			"Comment": "go1",
+			"Rev": "9a7aa3606b82e2081a13a008ada88dfdb96c20fd"
+		},
+		{
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "a08edd30ad9e104612741163dc087a613829a23c"
+		},
+		{
+			"ImportPath": "github.com/gorilla/securecookie",
+			"Rev": "972f32923fd3555b7f0ea39acdc4e3d4d5412ee8"
+		},
+		{
+			"ImportPath": "github.com/gorilla/sessions",
+			"Rev": "aaa7e50fe124565b8ad00e2837b51c418fa90739"
+		},
+		{
+			"ImportPath": "github.com/jinzhu/gorm",
+			"Rev": "0156c26cfad235d7ade9af4f0ccf1baadde0692c"
+		},
+		{
+			"ImportPath": "github.com/martini-contrib/binding",
+			"Rev": "eebf0bfeee6b301001cb12c193bce692b359dd62"
+		},
+		{
+			"ImportPath": "github.com/martini-contrib/render",
+			"Rev": "353026dcfd17ec2719c7262f011b3f15e94ad00a"
+		},
+		{
+			"ImportPath": "github.com/martini-contrib/sessions",
+			"Rev": "15d5893a85aef24034ebc59546992326ec797574"
+		},
+		{
+			"ImportPath": "github.com/nfnt/resize",
+			"Rev": "f8ec7103308a536c5928f3161605b5257da21210"
+		},
+		{
+			"ImportPath": "github.com/rwcarlsen/goexif/exif",
+			"Rev": "fa6df12acb8cf5459d522620e9b8291ffdcb9af3"
+		},
+		{
+			"ImportPath": "github.com/rwcarlsen/goexif/tiff",
+			"Rev": "fa6df12acb8cf5459d522620e9b8291ffdcb9af3"
+		}
+	]
+}

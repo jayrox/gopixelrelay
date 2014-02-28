@@ -1,0 +1,11 @@
+{
+    "name" : "xxx",
+    "map" : {
+        "one" : {
+            "field" : "whatever"
+        },
+        "two" : {
+            "field" : "onemore"
+        }
+    }
+}
