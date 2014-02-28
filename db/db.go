@@ -111,10 +111,10 @@ func (db *Dbh) AddImage(image models.Image) models.Image {
 }
 
 // Get first image in album for album thumbnail
-func (db *Dbh) FirstImage(album string) []models.Image {
-	var image []models.Image
+func (db *Dbh) FirstImageByAlbum(album string) (image []models.Image) {
 	db.DB.First(&image, "album = ?", album)
-	return image
+	return
+}
 }
 
 /****************
@@ -146,11 +146,10 @@ func (db *Dbh) TagImage(tag, name string) (imagetag models.ImageTag) {
 }
 
 // Get Images with Tag
-func (db *Dbh) GetImagesWithTag(tag string) []models.TaggedImage {
-	var images []models.TaggedImage
+func (db *Dbh) GetImagesWithTag(tag string) (images []models.TaggedImage) {
 	db.DB.Table("images").Select("images.id as image_id, images.name as name, tags.name as tag").Joins("LEFT JOIN image_tags ON (image_tags.img_id = images.id) LEFT JOIN tags ON (image_tags.tag_id = tags.id AND image_tags.img_id = images.id)").Where("tags.name = ?", tag).Order("images.id ASC").Scan(&images)
 	log.Println(images)
-	return images
+	return
 }
 
 // Get all tags
