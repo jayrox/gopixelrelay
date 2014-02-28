@@ -81,10 +81,13 @@ func main() {
 
 	m.NotFound(func(r render.Render, su models.User) {
 		type fourohfour struct {
-			User models.User
+			User  models.User
+			Title string
 		}
 		var fof fourohfour
 		fof.User = su
+		fof.Title = utils.AppCfg.Title()
+		log.Println("404")
 		r.HTML(404, "notfound", fof)
 	})
 

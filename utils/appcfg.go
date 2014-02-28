@@ -20,6 +20,7 @@ type ConfigScheme struct {
 		ListenOnSetup       string `json:"listen_on_setup"`
 		SecretKey           string `json:"secretkey"`
 		Url                 string `json:"url"`
+		Title               string `json:"title"`
 	} `json:"application"`
 }
 
@@ -64,6 +65,10 @@ func (this *ConfigScheme) Url() string {
 
 func (this *ConfigScheme) SecretKey() string {
 	return this.App.SecretKey
+}
+
+func (this *ConfigScheme) Title() string {
+	return this.App.Title
 }
 
 // Database Config
