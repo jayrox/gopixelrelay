@@ -8,10 +8,19 @@ import (
 	"pixelrelay/models"
 )
 
-func Tags(args martini.Params, r render.Render, dbh *db.Dbh) {
+type TagVars struct {
+	User models.User
+	Tags []models.Tag
+}
+
+func Tags(args martini.Params, r render.Render, su models.User, dbh *db.Dbh) {
 	var tags []models.Tag
+	var tagVars TagVars
 
 	tags = dbh.GetAllTags()
 
-	r.HTML(200, "tags", tags)
+	tagVars.User = su
+	tagVars.Tags = tags
+
+	r.HTML(200, "tags", tagVars)
 }

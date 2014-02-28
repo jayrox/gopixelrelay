@@ -5,9 +5,17 @@ import (
 	"github.com/martini-contrib/render"
 
 	"pixelrelay/db"
+	"pixelrelay/models"
 )
 
-func Tagged(args martini.Params, r render.Render, dbh *db.Dbh) {
+type TaggedVars struct {
+	User       models.User
+	ImageLinks []ImageLink
+}
+
+func Tagged(args martini.Params, r render.Render, su models.User, dbh *db.Dbh) {
+	var taggedVars TaggedVars
+
 	tag := args["name"]
 
 	images := dbh.GetImagesWithTag(tag)
@@ -17,5 +25,8 @@ func Tagged(args martini.Params, r render.Render, dbh *db.Dbh) {
 		imageLinks = append(imageLinks, ImageLink{Title: f.Name, FileName: f.Name})
 	}
 
-	r.HTML(200, "image_link", imageLinks)
+	taggedVars.User = su
+	taggedVars.ImageLinks = imageLinks
+
+	r.HTML(200, "image_link", taggedVars)
 }
