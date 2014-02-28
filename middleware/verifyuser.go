@@ -21,8 +21,7 @@ func UserAuth(formStruct interface{}, dbh *db.Dbh, ifacePtr ...interface{}) mart
 	}
 }
 
-func getSessionUser(session sessions.Session, dbh *db.Dbh) models.User {
-	var user models.User
+func getSessionUser(session sessions.Session, dbh *db.Dbh) (user models.User) {
 	var email, sessionkey, loggedin string
 	var suid int64
 
@@ -47,17 +46,17 @@ func getSessionUser(session sessions.Session, dbh *db.Dbh) models.User {
 	}
 
 	if loggedin != "true" || sessionkey == "" {
-		return user
+		return
 	}
 
 	usk := dbh.GetUserByIdSessionKey(suid, sessionkey)
 	if usk.Active != true || usk.Id < 1 {
-		return user
+		return
 	}
 
 	u := dbh.GetUserById(suid)
 	if u.Email != email {
-		return user
+		return
 	}
 
 	return u
