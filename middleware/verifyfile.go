@@ -2,9 +2,12 @@ package middleware
 
 import (
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/codegangsta/martini"
+
+	"pixelrelay/utils"
 )
 
 func VerifyFile(args martini.Params, res http.ResponseWriter, req *http.Request) {
@@ -16,5 +19,20 @@ func VerifyFile(args martini.Params, res http.ResponseWriter, req *http.Request)
 		return
 	}
 
+	fullpath := strings.Join([]string{utils.ImageCfg.Root(), file}, "")
+	if !Exists(fullpath) {
+		http.NotFound(res, req)
+		return
+	}
+
 	return
+}
+
+func Exists(name string) bool {
+	if _, err := os.Stat(name); err != nil {
+		if os.IsNotExist(err) {
+			return false
+		}
+	}
+	return true
 }

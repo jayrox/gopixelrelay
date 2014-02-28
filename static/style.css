@@ -23,6 +23,11 @@ img[src*="/t/"] {
 	margin: 10px 10px;
 	border: 1px solid black;
 }
+
+img[src*="/i/"] {
+	max-width: 768px;
+}
+
 ul {
 	margin: 20px auto;
 	column-width:175px;
@@ -49,6 +54,15 @@ li div span {
 	width: auto;
 	display: block;
 	padding-right:8px;
+}
+
+#ic{
+	margin: 20px auto;
+	width: 800px;
+}
+
+#ic li {
+	border: none;
 }
 
 #user {

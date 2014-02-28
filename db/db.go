@@ -162,6 +162,12 @@ func (db *Dbh) GetAllTags() (tags []models.Tag) {
 	db.DB.Where("name != ''").Find(&tags)
 	return
 }
+
+// Get all tags
+func (db *Dbh) GetAllTagsByImageId(id int64) (tags []models.TagList) {
+	db.DB.Table("image_tags").Select("image_tags.img_id as id, tags.id as tag_id, tags.name as tag").Joins("LEFT JOIN tags ON (image_tags.tag_id = tags.id)").Where("image_tags.img_id = ?", id).Scan(&tags)
+	//db.DB.Where("img_id = ?", id).Find(&tags)
+	return
 }
 
 /****************
@@ -263,7 +269,6 @@ func (db *Dbh) CreateSession(session models.UserSession) {
 
 func (db *Dbh) DestroySession(uid int64, sessionkey string) {
 	var usersession models.UserSession
-
 	db.DB.Model(&usersession).Where("user_id = ? and session_key = ?", uid, sessionkey).Limit(1).Updates(models.UserSession{UserId: uid, Active: false, Timestamp: time.Now().Unix()})
 	return
 }
@@ -282,8 +287,7 @@ func (db *Dbh) AddUploader(upload models.Uploader) {
 }
 
 //
-func (db *Dbh) GetUploaderByEmail(email string) models.User {
-	var user models.User
+func (db *Dbh) GetUploaderByEmail(email string) (user models.User) {
 	db.DB.Where("email = ?", email).Find(&user)
-	return user
+	return
 }
