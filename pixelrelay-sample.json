@@ -5,7 +5,8 @@
 		"listen_on" : ":3000",
 		"listen_on_setup" : ":3001",
 		"secretkey" : "CHANGE_ME",
-		"url"		: "http://example.com"
+		"url"		: "http://example.com",
+		"title"		: "PixelRelay"
 	},
 
 	"image" : {
