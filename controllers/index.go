@@ -10,13 +10,14 @@ import (
 )
 
 type IndexVars struct {
-	User  models.User
-	Title string
+	Page *models.Page
 }
 
-func Index(args martini.Params, su models.User, res http.ResponseWriter, req *http.Request, ren render.Render) {
+func Index(args martini.Params, su models.User, res http.ResponseWriter, req *http.Request, ren render.Render, p *models.Page) {
 	var indexVars IndexVars
-	indexVars.User = su
-	indexVars.Title = "JustRiot!"
+
+	indexVars.Page = p
+	indexVars.Page.SetUser(su)
+	indexVars.Page.SetTitle("JustRiot!")
 	ren.HTML(200, "index", indexVars)
 }

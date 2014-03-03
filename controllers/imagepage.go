@@ -11,16 +11,18 @@ import (
 )
 
 type ImagePageVars struct {
-	User  models.User
 	Image models.Image
 	Tags  []models.TagList
+	Page  *models.Page
 }
 
-func ImagePage(args martini.Params, su models.User, res http.ResponseWriter, req *http.Request, ren render.Render, dbh *db.Dbh) {
+func ImagePage(args martini.Params, su models.User, res http.ResponseWriter, req *http.Request, ren render.Render, dbh *db.Dbh, p *models.Page) {
 	var ipv ImagePageVars
 	name := args["name"]
 
-	ipv.User = su
+	ipv.Page = p
+	ipv.Page.SetUser(su)
+	ipv.Page.SetTitle("Image")
 	ipv.Image.Name = name
 
 	image := dbh.FirstImageByName(name)

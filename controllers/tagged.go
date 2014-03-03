@@ -9,11 +9,11 @@ import (
 )
 
 type TaggedVars struct {
-	User       models.User
 	ImageLinks []ImageLink
+	Page       *models.Page
 }
 
-func Tagged(args martini.Params, r render.Render, su models.User, dbh *db.Dbh) {
+func Tagged(args martini.Params, r render.Render, su models.User, dbh *db.Dbh, p *models.Page) {
 	var taggedVars TaggedVars
 
 	tag := args["name"]
@@ -25,7 +25,9 @@ func Tagged(args martini.Params, r render.Render, su models.User, dbh *db.Dbh) {
 		imageLinks = append(imageLinks, ImageLink{Title: f.Name, FileName: f.Name})
 	}
 
-	taggedVars.User = su
+	taggedVars.Page = p
+	taggedVars.Page.SetUser(su)
+	taggedVars.Page.SetTitle("Tagged")
 	taggedVars.ImageLinks = imageLinks
 
 	r.HTML(200, "image_link", taggedVars)

@@ -12,17 +12,13 @@ import (
 )
 
 type AlbumVars struct {
-	User       models.User
 	ImageLinks []ImageLink
 	AlbumUser  models.User
+	Page       *models.Page
 }
 
-func Album(args martini.Params, su models.User, session sessions.Session, r render.Render, dbh *db.Dbh) {
+func Album(args martini.Params, su models.User, session sessions.Session, r render.Render, dbh *db.Dbh, p *models.Page) {
 	var albumVars AlbumVars
-
-	if su.Id > 0 {
-		albumVars.User = su
-	}
 
 	album := args["name"]
 	auser := args["user"]
@@ -39,6 +35,10 @@ func Album(args martini.Params, su models.User, session sessions.Session, r rend
 	}
 
 	albumVars.ImageLinks = imageLinks
+
+	albumVars.Page = p
+	albumVars.Page.SetTitle("Album")
+	albumVars.Page.SetUser(su)
 
 	r.HTML(200, "image_link", albumVars)
 }

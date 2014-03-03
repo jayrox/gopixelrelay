@@ -14,7 +14,7 @@ import (
 
 type ListVars struct {
 	ImageLinks []ImageLink
-	User       models.User
+	Page       *models.Page
 }
 
 type ImageLink struct {
@@ -22,7 +22,7 @@ type ImageLink struct {
 	FileName string
 }
 
-func List(args martini.Params, su models.User, r render.Render) {
+func List(args martini.Params, su models.User, r render.Render, p *models.Page) {
 	var listVars ListVars
 
 	files, _ := ioutil.ReadDir(utils.ImageCfg.Root())
@@ -35,7 +35,9 @@ func List(args martini.Params, su models.User, r render.Render) {
 		}
 	}
 
-	listVars.User = su
+	listVars.Page = p
+	listVars.Page.SetUser(su)
+	listVars.Page.SetTitle("List")
 	listVars.ImageLinks = imageLinks
 
 	fmt.Println(su)

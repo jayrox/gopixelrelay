@@ -12,16 +12,13 @@ import (
 )
 
 type AlbumsVars struct {
-	User       models.User
 	AlbumsList []models.AlbumList
 	AlbumUser  models.User
+	Page       *models.Page
 }
 
-func Albums(args martini.Params, su models.User, session sessions.Session, r render.Render, res http.ResponseWriter, req *http.Request, dbh *db.Dbh) {
+func Albums(args martini.Params, su models.User, session sessions.Session, r render.Render, res http.ResponseWriter, req *http.Request, dbh *db.Dbh, p *models.Page) {
 	var albumsVars AlbumsVars
-	if su.Id > 0 {
-		albumsVars.User = su
-	}
 
 	auser := args["user"]
 	var albumUser models.User
@@ -52,6 +49,9 @@ func Albums(args martini.Params, su models.User, session sessions.Session, r ren
 		albumList = append(albumList, models.AlbumList{Name: f.Name, Poster: i[0].Name, Private: f.Private})
 	}
 	albumsVars.AlbumsList = albumList
+	albumsVars.Page = p
+	albumsVars.Page.SetTitle("Albums")
+	albumsVars.Page.SetUser(su)
 
 	r.HTML(200, "albums", albumsVars)
 }

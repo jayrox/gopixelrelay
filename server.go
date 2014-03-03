@@ -52,8 +52,13 @@ func main() {
 		Charset:   "UTF-8",     // Sets encoding for json and html content-types.
 	}))
 
+	// Setup DB
 	dbh := db.Init(&db.Dbh{})
 	m.Map(dbh)
+
+	// Setup Page
+	p := models.InitPage(&models.Page{})
+	m.Map(p)
 
 	// Setup static file handling
 	m.Use(martini.Static("static"))
@@ -61,33 +66,41 @@ func main() {
 
 	// Set up routes
 	m.Get("/", controllers.Index)
+
+	// Images
 	m.Get("/image/:name", middleware.VerifyFile, controllers.ImagePage)
 	m.Get("/i/:name", middleware.VerifyFile, controllers.Image)
 	m.Get("/t/:name", middleware.VerifyFile, controllers.Thumb)
-	m.Get("/list", controllers.List)
+	m.Get("/list", middleware.AuthRequired, controllers.List)
+
+	// Albums
 	m.Get("/albums", controllers.Albums)
 	m.Get("/album/:name", controllers.Album)
 	m.Get("/:user/albums", controllers.Albums)
 	m.Get("/:user/album/:name", controllers.Album)
-	m.Get("/auth/:password", controllers.Auth)
+	m.Get("/manage/album/:name/private/:state", controllers.AlbumPrivate)
+
+	// Tag
 	m.Get("/tags", controllers.Tags)
 	m.Get("/tag/:name", controllers.Tagged)
 	m.Get("/tag/:name/:image", controllers.TagImage)
+
+	// Auth
 	m.Get("/login", controllers.Login)
 	m.Post("/login", binding.Bind(forms.Login{}), binding.ErrorHandler, controllers.LoginPost)
 	m.Get("/logout", controllers.Logout)
-	m.Post("/up", middleware.Verify, controllers.UploadImage)
-	m.Get("/manage/album/:name/private/:state", controllers.AlbumPrivate)
 
+	// Upload
+	m.Post("/up", middleware.Verify, controllers.UploadImage)
+
+	// 404
 	m.NotFound(func(r render.Render, su models.User) {
 		type fourohfour struct {
-			User  models.User
-			Title string
+			Page models.Page
 		}
 		var fof fourohfour
-		fof.User = su
-		fof.Title = utils.AppCfg.Title()
-		log.Println("404")
+		fof.Page.SetUser(su)
+		fof.Page.SetTitle("404")
 		r.HTML(404, "notfound", fof)
 	})
 

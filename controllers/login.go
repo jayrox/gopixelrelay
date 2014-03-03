@@ -22,14 +22,14 @@ import (
 
 type LoginVars struct {
 	LoginForm template.HTML
-	User      models.User
+	Page      *models.Page
 }
 
-func Login(session sessions.Session, su models.User, r render.Render, res http.ResponseWriter, req *http.Request) {
+func Login(session sessions.Session, su models.User, r render.Render, res http.ResponseWriter, req *http.Request, p *models.Page) {
 
 	// Check if we are already logged in
 	if su.Id > 0 {
-		http.Redirect(res, req, strings.Join([]string{utils.AppCfg.Url(), "albums"}, "/"), http.StatusMovedPermanently)
+		http.Redirect(res, req, strings.Join([]string{utils.AppCfg.Url(), "albums"}, "/"), http.StatusFound)
 		return
 	}
 
@@ -38,17 +38,18 @@ func Login(session sessions.Session, su models.User, r render.Render, res http.R
 	// Init error holder
 	errs := make(map[string]string)
 
-	// If error_p is set, apply error text to password field
-	err_pass := session.Get("error_p")
-	if err_pass != nil {
-		errs["password"] = err_pass.(string)
-		session.Set("error_p", nil)
+	err_flash := session.Get("flash")
+	if err_flash != nil {
+		errs["flash"] = err_flash.(string)
+		session.Set("flash", nil)
 	}
 
 	genform := utils.GenerateForm(&forms.Login{}, "/login", "POST", errs)
 
 	var loginVars LoginVars
-	loginVars.User = su
+	loginVars.Page = p
+	loginVars.Page.SetUser(su)
+	loginVars.Page.SetTitle("Login")
 	loginVars.LoginForm = genform
 
 	r.HTML(200, "login", loginVars)
@@ -75,12 +76,12 @@ func LoginPost(lu forms.Login, session sessions.Session, res http.ResponseWriter
 
 		dbh.CreateSession(models.UserSession{UserId: user.Id, SessionKey: sessionkey, Active: true, Timestamp: time.Now().Unix()})
 
-		http.Redirect(res, req, strings.Join([]string{utils.AppCfg.Url(), "albums"}, "/"), http.StatusMovedPermanently)
+		http.Redirect(res, req, strings.Join([]string{utils.AppCfg.Url(), "albums"}, "/"), http.StatusFound)
 		return
 	}
 
-	session.Set("error_p", "Invalid Username or Password")
-	http.Redirect(res, req, strings.Join([]string{utils.AppCfg.Url(), "login"}, "/"), http.StatusMovedPermanently)
+	session.Set("flash", "Invalid Email or Password")
+	http.Redirect(res, req, strings.Join([]string{utils.AppCfg.Url(), "login"}, "/"), http.StatusFound)
 }
 
 func Logout(session sessions.Session, res http.ResponseWriter, req *http.Request, dbh *db.Dbh) {
@@ -93,7 +94,7 @@ func Logout(session sessions.Session, res http.ResponseWriter, req *http.Request
 	session.Set("key", nil)
 
 	dbh.DestroySession(uid.(int64), sessionkey.(string))
-	http.Redirect(res, req, utils.AppCfg.Url(), http.StatusMovedPermanently)
+	http.Redirect(res, req, utils.AppCfg.Url(), http.StatusFound)
 }
 
 func ValidateLogin(lu *forms.Login) map[string]string {

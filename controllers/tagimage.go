@@ -1,20 +1,23 @@
 package controllers
 
 import (
-	"fmt"
+	"log"
+	"net/http"
+	"strings"
 
 	"github.com/codegangsta/martini"
-	"github.com/martini-contrib/render"
 
 	"pixelrelay/db"
+	"pixelrelay/utils"
 )
 
-func TagImage(args martini.Params, r render.Render, dbh *db.Dbh) {
+func TagImage(args martini.Params, res http.ResponseWriter, req *http.Request, dbh *db.Dbh) {
 	tag := args["name"]
 	image := args["image"]
 
 	imagetag := dbh.TagImage(tag, image)
+	log.Println(imagetag)
 
-	fmt.Println(imagetag)
-	//r.HTML(200, "image_link", imageLinks)
+	http.Redirect(res, req, strings.Join([]string{utils.AppCfg.Url(), "image", image}, "/"), http.StatusFound)
+	return
 }
