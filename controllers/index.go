@@ -18,6 +18,6 @@ func Index(args martini.Params, su models.User, res http.ResponseWriter, req *ht
 
 	indexVars.Page = p
 	indexVars.Page.SetUser(su)
-	indexVars.Page.SetTitle("JustRiot!")
+	indexVars.Page.SetTitle("")
 	ren.HTML(200, "index", indexVars)
 }

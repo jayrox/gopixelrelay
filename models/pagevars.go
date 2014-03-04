@@ -21,8 +21,13 @@ func (p *Page) SetUrl(url string) {
 	p.Url = url
 }
 
-func (p *Page) SetTitle(title string) {
-	p.Title = strings.Join([]string{utils.AppCfg.Title(), title}, " :: ")
+func (p *Page) SetTitle(title ...string) {
+	if title[0] == "" {
+		p.Title = utils.AppCfg.Title()
+		return
+	}
+	ntitle := strings.Join(title, Seperator)
+	p.Title = strings.Join([]string{utils.AppCfg.Title(), ntitle}, Seperator)
 }
 
 func (p *Page) SetSiteTitle(title string) {

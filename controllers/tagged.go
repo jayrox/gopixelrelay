@@ -27,7 +27,7 @@ func Tagged(args martini.Params, r render.Render, su models.User, dbh *db.Dbh, p
 
 	taggedVars.Page = p
 	taggedVars.Page.SetUser(su)
-	taggedVars.Page.SetTitle("Tagged")
+	taggedVars.Page.SetTitle("Tagged", tag)
 	taggedVars.ImageLinks = imageLinks
 
 	r.HTML(200, "image_link", taggedVars)

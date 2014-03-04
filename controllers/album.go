@@ -37,7 +37,7 @@ func Album(args martini.Params, su models.User, session sessions.Session, r rend
 	albumVars.ImageLinks = imageLinks
 
 	albumVars.Page = p
-	albumVars.Page.SetTitle("Album")
+	albumVars.Page.SetTitle("Album", album)
 	albumVars.Page.SetUser(su)
 
 	r.HTML(200, "image_link", albumVars)
