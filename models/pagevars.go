@@ -44,3 +44,9 @@ func InitPage(p *Page) *Page {
 	p.SetDefaults()
 	return p
 }
+
+var (
+	// Seperator is used to seperate the parts of the title
+	// Set this to whatever value you prefer; default is " :: "
+	Seperator = string(" :: ")
+)
