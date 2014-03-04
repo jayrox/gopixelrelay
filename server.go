@@ -42,10 +42,12 @@ func init() {
 func main() {
 	m := martini.Classic()
 
+	// Gzip all
+	m.Use(gzip.All())
+
 	// Create sessions cookie store
 	store := sessions.NewCookieStore([]byte(utils.AppCfg.SecretKey()))
 	m.Use(sessions.Sessions("pixelrelay", store))
-	m.Use(gzip.All())
 
 	// Setup render options
 	m.Use(render.Renderer(render.Options{
@@ -97,15 +99,7 @@ func main() {
 	m.Post("/up", middleware.Verify, controllers.UploadImage)
 
 	// 404
-	m.NotFound(func(r render.Render, su models.User) {
-		type fourohfour struct {
-			Page models.Page
-		}
-		var fof fourohfour
-		fof.Page.SetUser(su)
-		fof.Page.SetTitle("404")
-		r.HTML(404, "notfound", fof)
-	})
+	m.NotFound(controllers.NotFound)
 
 	// Start server and begin listening for requests
 	log.Printf("Listening for connections on \x1b[32;1m%s\x1b[0m\n", utils.AppCfg.ListenOn())

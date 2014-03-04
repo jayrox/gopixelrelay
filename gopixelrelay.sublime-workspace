@@ -82,8 +82,9 @@
 	},
 	"file_history":
 	[
-		"/C/dev/gopixelrelay/controllers/login.go",
 		"/C/dev/gopixelrelay/server.go",
+		"/C/dev/gopixelrelay/controllers/notfound.go",
+		"/C/dev/gopixelrelay/controllers/login.go",
 		"/C/dev/gopixelrelay/db/db.go",
 		"/C/dev/gopixelrelay/controllers/tagimage.go",
 		"/C/dev/gopixelrelay/templates/image.tmpl",
@@ -96,7 +97,6 @@
 		"/C/dev/gopixelrelay/models/pagevars.go",
 		"/C/dev/gopixelrelay/pixelrelay.json",
 		"/C/dev/gopixelrelay/utils/appcfg.go",
-		"/C/dev/gopixelrelay/controllers/notfound.go",
 		"/C/dev/gopixelrelay/templates/head.tmpl",
 		"/C/dev/gopixelrelay/static/style.css",
 		"/C/dev/gopixelrelay/templates/layout.tmpl",
