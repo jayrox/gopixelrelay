@@ -83,7 +83,7 @@ func main() {
 	// Tag
 	m.Get("/tags", controllers.Tags)
 	m.Get("/tag/:name", controllers.Tagged)
-	m.Get("/tag/:name/:image", controllers.TagImage)
+	m.Post("/tag", middleware.AuthRequired, controllers.TagImage)
 
 	// Auth
 	m.Get("/login", controllers.Login)
