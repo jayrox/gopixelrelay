@@ -9,6 +9,7 @@ import (
 	"github.com/3d0c/martini-contrib/config"
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/binding"
+	"github.com/martini-contrib/gzip"
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
 
@@ -44,6 +45,7 @@ func main() {
 	// Create sessions cookie store
 	store := sessions.NewCookieStore([]byte(utils.AppCfg.SecretKey()))
 	m.Use(sessions.Sessions("pixelrelay", store))
+	m.Use(gzip.All())
 
 	// Setup render options
 	m.Use(render.Renderer(render.Options{
@@ -61,7 +63,8 @@ func main() {
 	m.Map(p)
 
 	// Setup static file handling
-	m.Use(martini.Static("static"))
+	opts := martini.StaticOptions{SkipLogging: false}
+	m.Use(martini.Static("static", opts))
 	m.Use(middleware.UserAuth(models.User{}, dbh))
 
 	// Set up routes
