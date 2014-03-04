@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"min-",
+				"min-height"
+			],
+			[
 				"type",
 				"typeField	reflect.StructField ν"
 			],
@@ -82,12 +86,16 @@
 	},
 	"file_history":
 	[
+		"/C/dev/gopixelrelay/templates/image.tmpl",
+		"/C/dev/gopixelrelay/templates/foot.tmpl",
+		"/C/dev/gopixelrelay/static/style.css",
+		"/C/dev/gopixelrelay/templates/layout.tmpl",
+		"/C/dev/gopixelrelay/templates/body.tmpl",
 		"/C/dev/gopixelrelay/server.go",
 		"/C/dev/gopixelrelay/controllers/notfound.go",
 		"/C/dev/gopixelrelay/controllers/login.go",
 		"/C/dev/gopixelrelay/db/db.go",
 		"/C/dev/gopixelrelay/controllers/tagimage.go",
-		"/C/dev/gopixelrelay/templates/image.tmpl",
 		"/C/dev/gopixelrelay/controllers/imagepage.go",
 		"/C/dev/gopixelrelay/utils/generateform.go",
 		"/C/dev/gopixelrelay/models/tag.go",
@@ -98,10 +106,7 @@
 		"/C/dev/gopixelrelay/pixelrelay.json",
 		"/C/dev/gopixelrelay/utils/appcfg.go",
 		"/C/dev/gopixelrelay/templates/head.tmpl",
-		"/C/dev/gopixelrelay/static/style.css",
-		"/C/dev/gopixelrelay/templates/layout.tmpl",
 		"/C/dev/gopixelrelay/templates/image_link.tmpl",
-		"/C/dev/gopixelrelay/templates/body.tmpl",
 		"/C/dev/gopixelrelay/controllers/upload.go",
 		"/C/dev/gopixelrelay/middleware/verifyfile.go",
 		"/C/dev/gopixelrelay/controllers/image.go",
