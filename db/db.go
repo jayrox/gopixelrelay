@@ -166,7 +166,6 @@ func (db *Dbh) GetAllTags() (tags []models.Tag) {
 // Get all tags
 func (db *Dbh) GetAllTagsByImageId(id int64) (tags []models.TagList) {
 	db.DB.Table("image_tags").Select("image_tags.img_id as id, tags.id as tag_id, tags.name as tag").Joins("LEFT JOIN tags ON (image_tags.tag_id = tags.id)").Where("image_tags.img_id = ?", id).Scan(&tags)
-	//db.DB.Where("img_id = ?", id).Find(&tags)
 	return
 }
 
