@@ -5,15 +5,13 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/codegangsta/martini"
-
 	"pixelrelay/db"
 	"pixelrelay/utils"
 )
 
-func TagImage(args martini.Params, res http.ResponseWriter, req *http.Request, dbh *db.Dbh) {
-	tag := args["name"]
-	image := args["image"]
+func TagImage(res http.ResponseWriter, req *http.Request, dbh *db.Dbh) {
+	tag := req.FormValue("tag")
+	image := req.FormValue("image")
 
 	imagetag := dbh.TagImage(tag, image)
 	log.Println(imagetag)
