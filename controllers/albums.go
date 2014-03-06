@@ -13,8 +13,8 @@ import (
 )
 
 type AlbumsVars struct {
-	AlbumsList []models.AlbumList
-	AlbumUser  models.User
+	AlbumUser  models.User        `json:"owner"`
+	AlbumsList []models.AlbumList `json:"albums"`
 }
 
 func Albums(args martini.Params, su models.User, session sessions.Session, r render.Render, res http.ResponseWriter, req *http.Request, dbh *db.Dbh, p *models.Page) {
@@ -48,7 +48,7 @@ func Albums(args martini.Params, su models.User, session sessions.Session, r ren
 
 	p.SetTitle("Albums")
 	p.SetUser(su)
-	p.Data = AlbumsVars{AlbumsList: albumList, AlbumUser: albumUser}
+	p.Data = AlbumsVars{AlbumUser: albumUser, AlbumsList: albumList}
 
 	encoder.Render(p.Encoding, 200, "albums", p, r)
 }
