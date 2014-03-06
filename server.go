@@ -62,7 +62,8 @@ func main() {
 	m.Map(dbh)
 
 	// Setup static file handling
-	opts := martini.StaticOptions{SkipLogging: false}
+	// Set expires to something like "access plus 1 week"
+	opts := martini.StaticOptions{SkipLogging: false, Expires: "-1"}
 	m.Use(martini.Static("static", opts))
 
 	// Auth user and assign to session
