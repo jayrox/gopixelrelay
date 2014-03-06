@@ -1,6 +1,7 @@
-	{{if .AlbumUser.Name}}<h1 id="albumowner">{{.AlbumUser.Name}}</h1>{{end}}
+<div id="content">
+	{{if .Data.AlbumUser.Name}}<h1 id="albumowner">{{.Data.AlbumUser.Name}}</h1>{{end}}
 	<ul>
-{{range .AlbumsList}}
+{{range .Data.AlbumsList}}
 		<li>
 			<div>
 				<h4>{{.Name}}</h4>
@@ -10,3 +11,4 @@
 		</li>
 {{ end }}
 	</ul>
+</div>

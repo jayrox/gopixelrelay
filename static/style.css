@@ -3,6 +3,7 @@ html, body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
+	background-color: #94c2cf;
 }
 
 body { margin: 2em auto; font-family: 'Open Sans', sans-serif; color: #333; }
@@ -26,19 +27,27 @@ footer {
 	width: 100%;
 }
 
+div#content {
+	background-color: white;
+}
+
 div#nav {
-	background-color: #ddd;
+	background-color: #94c2cf;
 	width: 100%;
 	position:absolute;
 	top: 0;
 	left: 0;
 	height: 3em;
+	color: white;
+}
+
+footer {
+	background-color: #94c2cf;
 }
 
 div#nav div#title {
 	display: block;
 	margin: 1em;
-	color:#47a;
 	font-size: 1em;
 	width: 500px;
 }
@@ -46,7 +55,6 @@ div#nav div#title {
 div#nav div#user {
 	display: block;
 	margin: 1em;
-	color:#47a;
 	font-size: 1em;
 	position: absolute;
 	top:0;
@@ -83,10 +91,13 @@ li {
 	display: inline-block;
 	border: 1px solid #000;
 	margin: 5px;
+	background-color: white;
 }
 
 li div h4 {
 	text-align:center;
+	margin: 0;
+	padding-top: 1em;
 }
 
 li div span {

@@ -1,28 +1,19 @@
 package controllers
 
 import (
-	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
 
 	"pixelrelay/db"
+	"pixelrelay/encoder"
 	"pixelrelay/models"
 )
 
-type TagVars struct {
-	Page *models.Page
-	Tags []models.Tag
-}
+func Tags(su models.User, dbh *db.Dbh, p *models.Page, r render.Render) {
+	tags := dbh.GetAllTags()
 
-func Tags(args martini.Params, r render.Render, su models.User, dbh *db.Dbh, p *models.Page) {
-	var tags []models.Tag
-	var tagVars TagVars
+	p.SetUser(su)
+	p.SetTitle("Tags")
+	p.Data = tags
 
-	tags = dbh.GetAllTags()
-
-	tagVars.Page = p
-	tagVars.Page.SetUser(su)
-	tagVars.Page.SetTitle("Tags")
-	tagVars.Tags = tags
-
-	r.HTML(200, "tags", tagVars)
+	encoder.Render(p.Encoding, 200, "tags", p, r)
 }

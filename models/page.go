@@ -7,10 +7,12 @@ import (
 )
 
 type Page struct {
-	Url       string
-	User      User
+	Encoding  string
 	SiteTitle string
 	Title     string
+	Url       string
+	User      User
+	Data      interface{}
 }
 
 func (p *Page) SetUser(user User) {
@@ -38,6 +40,11 @@ func (p *Page) SetDefaults() {
 	p.SiteTitle = utils.AppCfg.Title()
 	p.Title = utils.AppCfg.Title()
 	p.Url = utils.AppCfg.Url()
+	p.Encoding = "html"
+}
+
+func (p *Page) SetEncoding(encoding string) {
+	p.Encoding = encoding
 }
 
 func InitPage(p *Page) *Page {

@@ -1,5 +1,6 @@
+<div id="content">
 	<ul id="il">
-{{range .ImageLinks}}
+{{range .Data.ImageLinks}}
 		<li>
 			<div>
 				<a href="/image/{{.FileName}}"><img src="/t/{{.FileName}}" /></a>
@@ -7,3 +8,4 @@
 		</li>
 {{ end }}
 	</ul>
+</div>

@@ -2,41 +2,36 @@ package controllers
 
 import (
 	"html/template"
-	"log"
 	"net/http"
 
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
 
 	"pixelrelay/db"
+	"pixelrelay/encoder"
 	"pixelrelay/forms"
 	"pixelrelay/models"
 	"pixelrelay/utils"
 )
 
 type ImagePageVars struct {
-	Image   models.Image
+	Name    string
 	Tags    []models.TagList
-	Page    *models.Page
 	TagForm template.HTML
 }
 
-func ImagePage(args martini.Params, su models.User, res http.ResponseWriter, req *http.Request, ren render.Render, dbh *db.Dbh, p *models.Page) {
-	var ipv ImagePageVars
+func ImagePage(args martini.Params, su models.User, res http.ResponseWriter, req *http.Request, r render.Render, dbh *db.Dbh, p *models.Page) {
 	name := args["name"]
-
-	ipv.Page = p
-	ipv.Page.SetUser(su)
-	ipv.Page.SetTitle("Image")
-	ipv.Image.Name = name
 
 	image := dbh.FirstImageByName(name)
 	tags := dbh.GetAllTagsByImageId(image.Id)
-	ipv.Tags = tags
 
 	errs := make(map[string]string)
-	log.Println("generating form")
-	ipv.TagForm = utils.GenerateForm(&forms.Tag{Image: name}, "/tag", "POST", errs)
+	form := utils.GenerateForm(&forms.Tag{Image: name}, "/tag", "POST", errs)
 
-	ren.HTML(200, "image", ipv)
+	p.SetUser(su)
+	p.SetTitle("Image")
+	p.Data = ImagePageVars{Name: name, Tags: tags, TagForm: form}
+
+	encoder.Render(p.Encoding, 200, "image", p, r)
 }

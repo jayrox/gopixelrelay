@@ -15,6 +15,7 @@ import (
 
 	"pixelrelay/controllers"
 	"pixelrelay/db"
+	"pixelrelay/encoder"
 	"pixelrelay/forms"
 	"pixelrelay/middleware"
 	"pixelrelay/models"
@@ -60,14 +61,19 @@ func main() {
 	dbh := db.Init(&db.Dbh{})
 	m.Map(dbh)
 
-	// Setup Page
-	p := models.InitPage(&models.Page{})
-	m.Map(p)
-
 	// Setup static file handling
 	opts := martini.StaticOptions{SkipLogging: false}
 	m.Use(martini.Static("static", opts))
+
+	// Auth user and assign to session
 	m.Use(middleware.UserAuth(models.User{}, dbh))
+
+	// Encoder for .html or .json encoding
+	m.Use(encoder.MapEncoder)
+
+	// Setup Page
+	p := models.InitPage(&models.Page{})
+	m.Map(p)
 
 	// Set up routes
 	m.Get("/", controllers.Index)

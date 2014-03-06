@@ -5,16 +5,15 @@ import (
 	"github.com/martini-contrib/render"
 
 	"pixelrelay/db"
+	"pixelrelay/encoder"
 	"pixelrelay/models"
 )
 
 type TaggedVars struct {
-	ImageLinks []ImageLink
-	Page       *models.Page
+	ImageLinks []ImageLink `json:"images"`
 }
 
 func Tagged(args martini.Params, r render.Render, su models.User, dbh *db.Dbh, p *models.Page) {
-	var taggedVars TaggedVars
 
 	tag := args["name"]
 
@@ -25,10 +24,9 @@ func Tagged(args martini.Params, r render.Render, su models.User, dbh *db.Dbh, p
 		imageLinks = append(imageLinks, ImageLink{Title: f.Name, FileName: f.Name})
 	}
 
-	taggedVars.Page = p
-	taggedVars.Page.SetUser(su)
-	taggedVars.Page.SetTitle("Tagged", tag)
-	taggedVars.ImageLinks = imageLinks
+	p.SetUser(su)
+	p.SetTitle("Tagged", tag)
+	p.Data = TaggedVars{ImageLinks: imageLinks}
 
-	r.HTML(200, "image_link", taggedVars)
+	encoder.Render(p.Encoding, 200, "image_link", p, r)
 }

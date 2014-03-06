@@ -1,23 +1,15 @@
 package controllers
 
 import (
-	"net/http"
-
-	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
 
+	"pixelrelay/encoder"
 	"pixelrelay/models"
 )
 
-type IndexVars struct {
-	Page *models.Page
-}
+func Index(su models.User, r render.Render, p *models.Page) {
 
-func Index(args martini.Params, su models.User, res http.ResponseWriter, req *http.Request, ren render.Render, p *models.Page) {
-	var indexVars IndexVars
-
-	indexVars.Page = p
-	indexVars.Page.SetUser(su)
-	indexVars.Page.SetTitle("")
-	ren.HTML(200, "index", indexVars)
+	p.SetUser(su)
+	p.SetTitle("")
+	encoder.Render(p.Encoding, 200, "index", p, r)
 }

@@ -8,23 +8,20 @@ import (
 	"github.com/martini-contrib/sessions"
 
 	"pixelrelay/db"
+	"pixelrelay/encoder"
 	"pixelrelay/models"
 )
 
 type AlbumsVars struct {
 	AlbumsList []models.AlbumList
 	AlbumUser  models.User
-	Page       *models.Page
 }
 
 func Albums(args martini.Params, su models.User, session sessions.Session, r render.Render, res http.ResponseWriter, req *http.Request, dbh *db.Dbh, p *models.Page) {
-	var albumsVars AlbumsVars
-
 	auser := args["user"]
 	var albumUser models.User
 	if auser != "" {
 		albumUser = dbh.GetUserByUserName(auser)
-		albumsVars.AlbumUser = albumUser
 	}
 
 	if auser != "" && albumUser.Id == 0 {
@@ -48,10 +45,10 @@ func Albums(args martini.Params, su models.User, session sessions.Session, r ren
 		}
 		albumList = append(albumList, models.AlbumList{Name: f.Name, Poster: i[0].Name, Private: f.Private})
 	}
-	albumsVars.AlbumsList = albumList
-	albumsVars.Page = p
-	albumsVars.Page.SetTitle("Albums")
-	albumsVars.Page.SetUser(su)
 
-	r.HTML(200, "albums", albumsVars)
+	p.SetTitle("Albums")
+	p.SetUser(su)
+	p.Data = AlbumsVars{AlbumsList: albumList, AlbumUser: albumUser}
+
+	encoder.Render(p.Encoding, 200, "albums", p, r)
 }

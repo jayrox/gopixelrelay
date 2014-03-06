@@ -8,18 +8,16 @@ import (
 	"github.com/martini-contrib/sessions"
 
 	"pixelrelay/db"
+	"pixelrelay/encoder"
 	"pixelrelay/models"
 )
 
 type AlbumVars struct {
 	ImageLinks []ImageLink
 	AlbumUser  models.User
-	Page       *models.Page
 }
 
 func Album(args martini.Params, su models.User, session sessions.Session, r render.Render, dbh *db.Dbh, p *models.Page) {
-	var albumVars AlbumVars
-
 	album := args["name"]
 	auser := args["user"]
 
@@ -34,11 +32,9 @@ func Album(args martini.Params, su models.User, session sessions.Session, r rend
 		imageLinks = append(imageLinks, ImageLink{Title: f.Name, FileName: f.Name})
 	}
 
-	albumVars.ImageLinks = imageLinks
+	p.SetTitle("Album", album)
+	p.SetUser(su)
+	p.Data = AlbumVars{ImageLinks: imageLinks}
 
-	albumVars.Page = p
-	albumVars.Page.SetTitle("Album", album)
-	albumVars.Page.SetUser(su)
-
-	r.HTML(200, "image_link", albumVars)
+	encoder.Render(p.Encoding, 200, "image_link", p, r)
 }

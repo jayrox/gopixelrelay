@@ -1,20 +1,19 @@
 package controllers
 
 import (
-	"fmt"
 	"io/ioutil"
 	"strings"
 
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
 
+	"pixelrelay/encoder"
 	"pixelrelay/models"
 	"pixelrelay/utils"
 )
 
 type ListVars struct {
 	ImageLinks []ImageLink
-	Page       *models.Page
 }
 
 type ImageLink struct {
@@ -23,7 +22,7 @@ type ImageLink struct {
 }
 
 func List(args martini.Params, su models.User, r render.Render, p *models.Page) {
-	var listVars ListVars
+	//var listVars ListVars
 
 	files, _ := ioutil.ReadDir(utils.ImageCfg.Root())
 
@@ -35,12 +34,9 @@ func List(args martini.Params, su models.User, r render.Render, p *models.Page) 
 		}
 	}
 
-	listVars.Page = p
-	listVars.Page.SetUser(su)
-	listVars.Page.SetTitle("List")
-	listVars.ImageLinks = imageLinks
+	p.SetUser(su)
+	p.SetTitle("List")
+	p.Data = ListVars{ImageLinks: imageLinks}
 
-	fmt.Println(su)
-
-	r.HTML(200, "image_link", listVars)
+	encoder.Render(p.Encoding, 200, "image_link", p, r)
 }

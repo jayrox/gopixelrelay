@@ -1,15 +1,15 @@
 <div id="ic">
-{{ if .Image.Name }}<a href="/i/{{.Image.Name}}"><img src="/i/{{.Image.Name}}" alt="{{.Image.Name}}"></a>{{ end }}
-{{ if .Tags }}
+{{ if .Data.Name }}<a href="/i/{{.Data.Name}}"><img src="/i/{{.Data.Name}}" alt="{{.Data.Name}}"></a>{{ end }}
+{{ if .Data.Tags }}
 	<div><h4>TAGS</h4>
 		<ul>
-		{{range .Tags}}
+		{{range .Data.Tags}}
 			<li>{{.Tag}}</li>
 		{{end}}
 		</ul>
 	</div>
 {{ end }}
 	<div id="addtag">
-		{{ .TagForm }}
+		{{ .Data.TagForm }}
 	</div>
 </div>
