@@ -15,9 +15,9 @@ import (
 )
 
 type ImagePageVars struct {
-	Name    string
-	Tags    []models.TagList
-	TagForm template.HTML
+	Name string
+	Tags []models.TagList
+	Form template.HTML `json:"-"`
 }
 
 func ImagePage(args martini.Params, su models.User, res http.ResponseWriter, req *http.Request, r render.Render, dbh *db.Dbh, p *models.Page) {
@@ -31,7 +31,7 @@ func ImagePage(args martini.Params, su models.User, res http.ResponseWriter, req
 
 	p.SetUser(su)
 	p.SetTitle("Image")
-	p.Data = ImagePageVars{Name: name, Tags: tags, TagForm: form}
+	p.Data = ImagePageVars{Name: name, Tags: tags, Form: form}
 
 	encoder.Render(p.Encoding, 200, "image", p, r)
 }

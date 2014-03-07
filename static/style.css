@@ -1,48 +1,59 @@
 html, body {
 	width: 100%;
-	height: 100%;
+	height: calc(100% - 89px);
 	margin: 0;
 	padding: 0;
-	background-color: #94c2cf;
 }
 
-body { margin: 2em auto; font-family: 'Open Sans', sans-serif; color: #333; }
+body { margin: 2em auto; font-family: 'Open Sans', sans-serif; color: #333;}
 
-@media screen {
-	body { width: 900px; }
+div#container {
+	width: 100%;
+	background-color: white;
 }
 
-@media handheld {
-	body { width: 100%; }
+div#content {
+	position:relative;
+	margin: 20px auto;
+	width: 800px;
 }
 
-body {
+div#nav {
+	background: url('/noisebg.png');
+	border-bottom: 1px dashed #ccc;
+	box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
+	color: white;
+	height: 3em;
+	left: 0;
+	position: fixed;
+	top: 0;
+	width: 100%;
+}
+
+#footerSpacer {
+	position:relative;
 	display: block;
-	min-height: 768px;
+	min-height: 200px;
+	background-color: rgba(0, 0, 0, 0);
 }
 
 footer {
 	display: block;
 	text-align: center;
 	width: 100%;
-}
-
-div#content {
-	background-color: white;
-}
-
-div#nav {
-	background-color: #94c2cf;
-	width: 100%;
-	position:absolute;
-	top: 0;
-	left: 0;
-	height: 3em;
-	color: white;
+	border-top: 1px dashed #ccc;
+	background: url('/noisebg.png');
+	box-shadow: 0px -1px 5px 0px rgba(0,0,0,0.75);
 }
 
 footer {
-	background-color: #94c2cf;
+    bottom: 0px;
+    left: 0px;
+    padding: 10px 0px;
+    position: fixed;
+    width: 100%;
+    font-size: 14px;
+    z-index: -1;
 }
 
 div#nav div#title {
@@ -77,13 +88,28 @@ img[src*="/i/"] {
 	max-width: 768px;
 }
 
-ul {
-	margin: 20px auto;
-	-webkit-column-width:175px;
-	-moz-column-width:175px;
-	column-width:175px;
-	-moz-column-width:175px; /* Firefox */
-	-webkit-column-width:175px; /* Safari and Chrome */
+@media screen and (min-width: 768px) {
+	div#content ul {
+		margin: 20px auto;
+		width: 780px;
+	}
+
+	body {
+		display: block;
+	}
+}
+
+@media screen and (max-width: 360px) {
+	div#content ul {
+		margin: 20px auto;
+		width: 180px;
+	}
+}
+
+@media screen and (max-width: 640px) {
+	div#content ul {
+		margin: 20px auto;
+	}
 }
 
 li {
@@ -105,14 +131,6 @@ li div span {
 	width: auto;
 	display: block;
 	padding-right:8px;
-}
-
-#ic {
-	margin: 20px auto;
-	width: 800px;
-}	
-#ic	li {
-	border: none;
 }
 
 h1 {
@@ -141,7 +159,6 @@ h1 {
 }
 
 form    {
-	background: -webkit-gradient(linear, bottom, left 175px, from(#CCCCCC), to(#EEEEEE));
 	margin:auto;
 	position:relative;
 	width:300px;

@@ -4,7 +4,12 @@
 {{ template "head" . }}
   </head>
   <body>
-{{ template "body" . }}
+<div id="container">
+	<div id="content">
+	{{ template "body" . }}
+	</div>
+</div>
+<div id="footerSpacer"></div>
   <footer>
 {{ template "foot" . }}
   </footer>

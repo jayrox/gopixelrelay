@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"F",
+				"FieldByName	reflect.Value ƒ"
+			],
+			[
+				"P",
+				"Panicln	 ƒ"
+			],
+			[
 				"min-",
 				"min-height"
 			],
@@ -26,26 +34,11 @@
 			[
 				"album",
 				"albumUser"
-			],
-			[
-				"P",
-				"Println	n int, err error ƒ"
 			]
 		]
 	},
 	"buffers":
 	[
-		{
-			"contents": "package main\n\nimport (\n	\"flag\"\n	\"fmt\"\n	\"log\"\n	\"net/http\"\n\n	\"github.com/3d0c/martini-contrib/config\"\n	\"github.com/codegangsta/martini\"\n	\"github.com/martini-contrib/binding\"\n	\"github.com/martini-contrib/gzip\"\n	\"github.com/martini-contrib/render\"\n	\"github.com/martini-contrib/sessions\"\n\n	\"pixelrelay/controllers\"\n	\"pixelrelay/db\"\n	\"pixelrelay/forms\"\n	\"pixelrelay/middleware\"\n	\"pixelrelay/models\"\n	\"pixelrelay/utils\"\n)\n\nvar (\n	flagInit    *bool\n	flagMigrate *bool\n)\n\nfunc init() {\n	log.SetFlags(log.Lshortfile | log.Ldate | log.Ltime)\n\n	config.Init(\"./pixelrelay.json\")\n	config.LoadInto(utils.AppCfg)\n	config.LoadInto(utils.DbCfg)\n	config.LoadInto(utils.ImageCfg)\n\n	flagInit = flag.Bool(\"init\", false, \"Initial Setup\")\n	flagMigrate = flag.Bool(\"migrate\", false, \"Migrate Database Changes\")\n	flag.Parse()\n}\n\nfunc main() {\n	m := martini.Classic()\n\n	// Gzip all\n	m.Use(gzip.All())\n\n	// Create sessions cookie store\n	store := sessions.NewCookieStore([]byte(utils.AppCfg.SecretKey()))\n	m.Use(sessions.Sessions(\"pixelrelay\", store))\n\n	// Setup render options\n	m.Use(render.Renderer(render.Options{\n		Directory: \"templates\", // Specify what path to load the templates from.\n		Layout:    \"layout\",    // Specify a layout template. Layouts can call {{ yield }} to render the current template.\n		Charset:   \"UTF-8\",     // Sets encoding for json and html content-types.\n	}))\n\n	// Setup DB\n	dbh := db.Init(&db.Dbh{})\n	m.Map(dbh)\n\n	// Setup Page\n	p := models.InitPage(&models.Page{})\n	m.Map(p)\n\n	// Setup static file handling\n	opts := martini.StaticOptions{SkipLogging: false}\n	m.Use(martini.Static(\"static\", opts))\n	m.Use(middleware.UserAuth(models.User{}, dbh))\n\n	// Set up routes\n	m.Get(\"/\", controllers.Index)\n\n	// Images\n	m.Get(\"/image/:name\", middleware.VerifyFile, controllers.ImagePage)\n	m.Get(\"/i/:name\", middleware.VerifyFile, controllers.Image)\n	m.Get(\"/t/:name\", middleware.VerifyFile, controllers.Thumb)\n	m.Get(\"/list\", middleware.AuthRequired, controllers.List)\n\n	// Albums\n	m.Get(\"/(?i)albums\", controllers.Albums)\n	m.Get(\"/album/:name\", controllers.Album)\n	m.Get(\"/:user/albums\", controllers.Albums)\n	m.Get(\"/:user/album/:name\", controllers.Album)\n	m.Get(\"/manage/album/:name/private/:state\", controllers.AlbumPrivate)\n\n	// Tag\n	m.Get(\"/tags\", controllers.Tags)\n	m.Get(\"/tag/:name\", controllers.Tagged)\n	m.Post(\"/tag\", middleware.AuthRequired, controllers.TagImage)\n\n	// Auth\n	m.Get(\"/login\", controllers.Login)\n	m.Post(\"/login\", binding.Bind(forms.Login{}), binding.ErrorHandler, controllers.LoginPost)\n	m.Get(\"/logout\", controllers.Logout)\n\n	// Upload\n	m.Post(\"/up\", middleware.Verify, controllers.UploadImage)\n\n	// 404\n	m.NotFound(controllers.NotFound)\n\n	// Start server and begin listening for requests\n	log.Printf(\"Listening for connections on \\x1b[32;1m%s\\x1b[0m\\n\", utils.AppCfg.ListenOn())\n\n	go http.ListenAndServe(utils.AppCfg.ListenOn(), m)\n\n	/******************************************\n	*	INITIAL SETUP\n	*\n	*   Creates the initial tables\n	*   Populates the default admin user\n	*\n	*   Potential security risks are present\n	*   if this mode is left running.\n	*	restart server with the \"-init\" flag\n	*   unset.\n	*\n	*   usage: -init\n	 */\n	if *flagInit {\n		fmt.Println(\"\\x1b[31;1mInitial Setup flag (-init) has been set to\\x1b[0m \\x1b[32;1mTRUE\\x1b[0m\")\n		fmt.Println(\"\\x1b[31;1mOnce setup is complete please restart server with this flag disabled.\\x1b[0m\")\n\n		// Add default tables\n		dbh.AddTables()\n\n		su := martini.Classic()\n\n		store := sessions.NewCookieStore([]byte(utils.AppCfg.SecretKey()))\n		su.Use(sessions.Sessions(\"pixelrelay\", store))\n		su.Use(render.Renderer(render.Options{\n			Directory: \"templates\", // Specify what path to load the templates from.\n			Layout:    \"layout\",    // Specify a layout template. Layouts can call {{ yield }} to render the current template.\n			Charset:   \"UTF-8\",     // Sets encoding for json and html content-types.\n		}))\n		su.Get(\"/setup\", controllers.SetupAdmin)\n		su.Post(\"/setup\", binding.Bind(forms.SetupAdmin{}), binding.ErrorHandler, controllers.SetupAdminPost)\n		// Start server and begin listening for requests\n		log.Printf(\"Listening for connections on \\x1b[32;1m%s\\x1b[0m\\n\", utils.AppCfg.ListenOnSetup())\n\n		go http.ListenAndServe(utils.AppCfg.ListenOnSetup(), su)\n	}\n\n	/******************************************\n	*	MIGRATE DATABASE UPDATES\n	*\n	*   Migrates changes to database tables\n	*\n	*   You should backup the database before\n	*   migrating. As there is a potential risk\n	*   of data loss\n	*\n	*   usage: -migrate\n	 */\n	if *flagMigrate {\n		dbh.MigrateDB()\n	}\n\n	select {}\n}\n",
-			"file": "server.go",
-			"file_size": 4535,
-			"file_write_time": 130384999215908331,
-			"settings":
-			{
-				"buffer_size": 4539,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -98,38 +91,49 @@
 	"file_history":
 	[
 		"/C/dev/gopixelrelay/templates/tags.tmpl",
-		"/C/dev/gopixelrelay/templates/layout.tmpl",
-		"/C/dev/gopixelrelay/templates/image.tmpl",
-		"/C/dev/gopixelrelay/templates/foot.tmpl",
-		"/C/dev/gopixelrelay/server.go",
-		"/C/dev/gopixelrelay/db/db.go",
-		"/C/dev/gopixelrelay/controllers/notfound.go",
-		"/C/dev/gopixelrelay/static/style.css",
+		"/C/dev/gopixelrelay/templates/index.tmpl",
 		"/C/dev/gopixelrelay/templates/body.tmpl",
-		"/C/dev/gopixelrelay/controllers/login.go",
-		"/C/dev/gopixelrelay/controllers/tagimage.go",
+		"/C/dev/gopixelrelay/templates/albums.tmpl",
+		"/C/dev/gopixelrelay/server.go",
+		"/C/dev/gopixelrelay/static/style.css",
+		"/C/dev/gopixelrelay/templates/layout.tmpl",
+		"/C/dev/gopixelrelay/controllers/albums.go",
+		"/C/dev/gopixelrelay/templates/image.tmpl",
 		"/C/dev/gopixelrelay/controllers/imagepage.go",
+		"/C/dev/gopixelrelay/models/user.go",
+		"/C/dev/gopixelrelay/controllers/tagged.go",
+		"/C/dev/gopixelrelay/controllers/login.go",
+		"/C/dev/gopixelrelay/encoder/encoder.go",
+		"/C/dev/gopixelrelay/controllers/tagimage.go",
+		"/C/dev/gopixelrelay/controllers/setup.go",
+		"/C/dev/gopixelrelay/controllers/notfound.go",
+		"/C/dev/gopixelrelay/controllers/list.go",
+		"/C/dev/gopixelrelay/controllers/index.go",
+		"/C/dev/gopixelrelay/controllers/image.go",
+		"/C/dev/gopixelrelay/controllers/auth.go",
+		"/C/dev/gopixelrelay/controllers/albumprivate.go",
+		"/C/dev/gopixelrelay/controllers/album.go",
+		"/C/dev/gopixelrelay/templates/image_link.tmpl",
+		"/C/dev/gopixelrelay/controllers/tags.go",
+		"/C/dev/gopixelrelay/controllers/upload.go",
+		"/C/dev/gopixelrelay/controllers/thumb.go",
+		"/C/dev/gopixelrelay/models/page.go",
+		"/C/dev/gopixelrelay/templates/head.tmpl",
+		"/C/dev/gopixelrelay/render/render.go",
+		"/C/dev/gopixelrelay/templates/foot.tmpl",
+		"/C/dev/gopixelrelay/db/db.go",
 		"/C/dev/gopixelrelay/utils/generateform.go",
 		"/C/dev/gopixelrelay/models/tag.go",
-		"/C/dev/gopixelrelay/models/user.go",
 		"/C/dev/gopixelrelay/models/users.go",
-		"/C/dev/gopixelrelay/controllers/index.go",
 		"/C/dev/gopixelrelay/models/pagevars.go",
 		"/C/dev/gopixelrelay/pixelrelay.json",
 		"/C/dev/gopixelrelay/utils/appcfg.go",
-		"/C/dev/gopixelrelay/templates/head.tmpl",
-		"/C/dev/gopixelrelay/templates/image_link.tmpl",
-		"/C/dev/gopixelrelay/controllers/upload.go",
 		"/C/dev/gopixelrelay/middleware/verifyfile.go",
-		"/C/dev/gopixelrelay/controllers/image.go",
 		"/C/dev/gopixelrelay/middleware/verifyuser.go",
 		"/C/dev/gopixelrelay/utils/imageinfo.go",
 		"/C/dev/gopixelrelay/auth/userauth.go",
 		"/C/Users/jboehm/AppData/Roaming/Sublime Text 3/Packages/GoSublime/CHANGELOG.md",
 		"/C/Users/jboehm/AppData/Roaming/Sublime Text 3/Packages/SublimeGit/Default (Windows).sublime-keymap",
-		"/C/dev/gopixelrelay/controllers/albums.go",
-		"/C/dev/gopixelrelay/controllers/albumprivate.go",
-		"/C/dev/gopixelrelay/templates/albums.tmpl",
 		"/C/dev/gopixelrelay/nohup.out",
 		"/C/dev/gopixelrelay/pixelrelay-sample.json",
 		"/C/Users/jboehm/AppData/Roaming/Sublime Text 3/Packages/GoSublime/Default (Windows).sublime-keymap",
@@ -137,7 +141,6 @@
 		"/C/dev/gopixelrelay/db/db2.go",
 		"/C/dev/gopixelrelay/models/usersession.go",
 		"/C/dev/gopixelrelay/templates/notfound.tmpl",
-		"/C/dev/gopixelrelay/controllers/album.go",
 		"/C/Users/jboehm/AppData/Roaming/Sublime Text 3/Packages/GoSublime/USAGE.md"
 	],
 	"find":
@@ -176,38 +179,8 @@
 	"groups":
 	[
 		{
-			"selected": 0,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "server.go",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4539,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1985,
-								1981
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": -0.0,
-						"translation.y": 1072.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
 			]
 		}
 	],

@@ -1,4 +1,3 @@
-<div id="ic">
 {{ if .Data.Name }}<a href="/i/{{.Data.Name}}"><img src="/i/{{.Data.Name}}" alt="{{.Data.Name}}"></a>{{ end }}
 {{ if .Data.Tags }}
 	<div><h4>TAGS</h4>
@@ -10,6 +9,5 @@
 	</div>
 {{ end }}
 	<div id="addtag">
-		{{ .Data.TagForm }}
+		{{ .Data.Form }}
 	</div>
-</div>
