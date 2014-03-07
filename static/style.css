@@ -3,22 +3,14 @@ html, body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
-	background-color: #94c2cf;
 }
 
 body { margin: 2em auto; font-family: 'Open Sans', sans-serif; color: #333; }
 
-@media screen {
-	body { width: 900px; }
-}
-
 @media handheld {
-	body { width: 100%; }
-}
-
-body {
-	display: block;
-	min-height: 768px;
+	body { width: 100%; 
+		background-color: yellow;
+	}
 }
 
 footer {
@@ -32,17 +24,27 @@ div#content {
 }
 
 div#nav {
-	background-color: #94c2cf;
-	width: 100%;
-	position:absolute;
-	top: 0;
-	left: 0;
-	height: 3em;
+	background: url('/noisebg.png');
+	border-bottom: 1px dashed #ccc;
+	box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.75);
 	color: white;
+	height: 3em;
+	left: 0;
+	position: fixed;
+	top: 0;
+	width: 100%;
 }
 
 footer {
-	background-color: #94c2cf;
+	background: url('/noisebg.png');
+	padding-top: 1em;
+	border-top: 1px dashed #ccc;
+	box-shadow: 0px -1px 5px 0px rgba(0,0,0,0.75);
+}
+
+footer a {
+	color: #333;
+	text-decoration: none;
 }
 
 div#nav div#title {
@@ -77,13 +79,29 @@ img[src*="/i/"] {
 	max-width: 768px;
 }
 
-ul {
-	margin: 20px auto;
-	-webkit-column-width:175px;
-	-moz-column-width:175px;
-	column-width:175px;
-	-moz-column-width:175px; /* Firefox */
-	-webkit-column-width:175px; /* Safari and Chrome */
+@media screen and (min-width: 768px) {
+	div#content ul {
+		margin: 20px auto;
+		width: 780px;
+	}
+
+	body {
+		display: block;
+		min-height: 768px;
+	}
+}
+
+@media screen and (max-width: 360px) {
+	div#content ul {
+		margin: 20px auto;
+		width: 180px;
+	}
+}
+
+@media screen and (max-width: 640px) {
+	div#content ul {
+		margin: 20px auto;
+	}
 }
 
 li {

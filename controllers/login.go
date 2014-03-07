@@ -15,21 +15,21 @@ import (
 
 	"pixelrelay/auth"
 	"pixelrelay/db"
+	"pixelrelay/encoder"
 	"pixelrelay/forms"
 	"pixelrelay/models"
 	"pixelrelay/utils"
 )
 
 type LoginVars struct {
-	LoginForm template.HTML
-	Page      *models.Page
+	Form template.HTML
 }
 
-func Login(session sessions.Session, su models.User, r render.Render, res http.ResponseWriter, req *http.Request, p *models.Page) {
+func Login(session sessions.Session, su models.User, r render.Render, p *models.Page) {
 
 	// Check if we are already logged in
 	if su.Id > 0 {
-		http.Redirect(res, req, strings.Join([]string{utils.AppCfg.Url(), "albums"}, "/"), http.StatusFound)
+		r.Redirect(strings.Join([]string{utils.AppCfg.Url(), "albums"}, "/"), http.StatusFound)
 		return
 	}
 
@@ -46,16 +46,14 @@ func Login(session sessions.Session, su models.User, r render.Render, res http.R
 
 	genform := utils.GenerateForm(&forms.Login{}, "/login", "POST", errs)
 
-	var loginVars LoginVars
-	loginVars.Page = p
-	loginVars.Page.SetUser(su)
-	loginVars.Page.SetTitle("Login")
-	loginVars.LoginForm = genform
+	p.SetUser(su)
+	p.SetTitle("Login")
+	p.Data = LoginVars{Form: genform}
 
-	r.HTML(200, "login", loginVars)
+	encoder.Render(p.Encoding, 200, "login", p, r)
 }
 
-func LoginPost(lu forms.Login, session sessions.Session, res http.ResponseWriter, req *http.Request, dbh *db.Dbh) {
+func LoginPost(lu forms.Login, session sessions.Session, r render.Render, dbh *db.Dbh) {
 	errs := ValidateLogin(&lu)
 	if len(errs) > 0 {
 		fmt.Printf(`{"errors":"%v"}`, errs)
@@ -76,15 +74,16 @@ func LoginPost(lu forms.Login, session sessions.Session, res http.ResponseWriter
 
 		dbh.CreateSession(models.UserSession{UserId: user.Id, SessionKey: sessionkey, Active: true, Timestamp: time.Now().Unix()})
 
-		http.Redirect(res, req, strings.Join([]string{utils.AppCfg.Url(), "albums"}, "/"), http.StatusFound)
+		r.Redirect(strings.Join([]string{utils.AppCfg.Url(), "albums"}, "/"), http.StatusFound)
 		return
 	}
 
 	session.Set("flash", "Invalid Email or Password")
-	http.Redirect(res, req, strings.Join([]string{utils.AppCfg.Url(), "login"}, "/"), http.StatusFound)
+
+	r.Redirect(strings.Join([]string{utils.AppCfg.Url(), "login"}, "/"), http.StatusFound)
 }
 
-func Logout(session sessions.Session, res http.ResponseWriter, req *http.Request, dbh *db.Dbh) {
+func Logout(session sessions.Session, r render.Render, dbh *db.Dbh) {
 	sessionkey := session.Get("key")
 	uid := session.Get("uid")
 
@@ -94,7 +93,7 @@ func Logout(session sessions.Session, res http.ResponseWriter, req *http.Request
 	session.Set("key", nil)
 
 	dbh.DestroySession(uid.(int64), sessionkey.(string))
-	http.Redirect(res, req, utils.AppCfg.Url(), http.StatusFound)
+	r.Redirect(utils.AppCfg.Url(), http.StatusFound)
 }
 
 func ValidateLogin(lu *forms.Login) map[string]string {

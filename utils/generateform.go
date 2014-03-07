@@ -3,7 +3,6 @@ package utils
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"reflect"
 	"strings"
 )
@@ -11,7 +10,6 @@ import (
 func GenerateForm(fields interface{}, action string, method string, errs map[string]string) template.HTML {
 	var form string
 	formname := strings.Split(reflect.TypeOf(fields).String(), ".")[1]
-	log.Println("formname: ", formname)
 
 	form += fmt.Sprintf("\t<form name=\"%s\" action=\"%s\" method=\"%s\">\n", formname, action, strings.ToUpper(method))
 
