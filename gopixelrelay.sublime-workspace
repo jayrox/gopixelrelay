@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"backgr",
+				"background-color"
+			],
+			[
+				"padding",
+				"padding-bottom"
+			],
+			[
 				"F",
 				"FieldByName	reflect.Value ƒ"
 			],
@@ -90,15 +98,15 @@
 	},
 	"file_history":
 	[
+		"/C/dev/gopixelrelay/static/style.css",
+		"/C/dev/gopixelrelay/templates/layout.tmpl",
+		"/C/dev/gopixelrelay/templates/image.tmpl",
+		"/C/dev/gopixelrelay/templates/albums.tmpl",
 		"/C/dev/gopixelrelay/templates/tags.tmpl",
 		"/C/dev/gopixelrelay/templates/index.tmpl",
 		"/C/dev/gopixelrelay/templates/body.tmpl",
-		"/C/dev/gopixelrelay/templates/albums.tmpl",
 		"/C/dev/gopixelrelay/server.go",
-		"/C/dev/gopixelrelay/static/style.css",
-		"/C/dev/gopixelrelay/templates/layout.tmpl",
 		"/C/dev/gopixelrelay/controllers/albums.go",
-		"/C/dev/gopixelrelay/templates/image.tmpl",
 		"/C/dev/gopixelrelay/controllers/imagepage.go",
 		"/C/dev/gopixelrelay/models/user.go",
 		"/C/dev/gopixelrelay/controllers/tagged.go",
@@ -145,7 +153,7 @@
 	],
 	"find":
 	{
-		"height": 23.0
+		"height": 34.0
 	},
 	"find_in_files":
 	{
@@ -159,6 +167,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"#content",
+			"form",
 			"fmt",
 			"db."
 		],

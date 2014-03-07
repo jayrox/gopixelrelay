@@ -8,14 +8,7 @@ html, body {
 body { margin: 2em auto; font-family: 'Open Sans', sans-serif; color: #333;}
 
 div#container {
-	width: 100%;
 	background-color: white;
-}
-
-div#content {
-	position:relative;
-	margin: 20px auto;
-	width: 800px;
 }
 
 div#nav {
@@ -28,6 +21,7 @@ div#nav {
 	position: fixed;
 	top: 0;
 	width: 100%;
+	z-index: 99999;
 }
 
 #footerSpacer {
@@ -89,10 +83,19 @@ img[src*="/i/"] {
 }
 
 @media screen and (min-width: 768px) {
+	div#container {
+		width: 100%;
+	}
+	div#content {
+		position:relative;
+		margin: 20px auto;
+		width: 800px;
+	}
 	div#content ul {
 		margin: 20px auto;
 		width: 780px;
 	}
+
 
 	body {
 		display: block;
@@ -100,13 +103,31 @@ img[src*="/i/"] {
 }
 
 @media screen and (max-width: 360px) {
-	div#content ul {
+	div#content {
 		margin: 20px auto;
-		width: 180px;
+		position:relative;
+	}
+	div#content ul {
+		display: block;
+		width: 273px;
+		margin: 20px auto;
+		-webkit-margin-before: 0;
+		-webkit-margin-after: 0;
+		-webkit-margin-start: 0;
+		-webkit-padding-start: 0;
+	}
+	img[src*="/t/"] {
+		width: 100px;
+		height: 100px;
+		margin: 10px 10px;
+		border: 1px solid black;
 	}
 }
 
 @media screen and (max-width: 640px) {
+	div#content {
+		position:relative;
+	}
 	div#content ul {
 		margin: 20px auto;
 	}
