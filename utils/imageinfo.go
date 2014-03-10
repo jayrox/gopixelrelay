@@ -2,9 +2,9 @@ package utils
 
 import (
 	"encoding/binary"
-	"fmt"
 	"image"
 	"image/jpeg"
+	"log"
 	"math"
 	"os"
 
@@ -24,13 +24,13 @@ type ImageInfo struct {
 func Load(ii *ImageInfo, ok chan bool) {
 	fn, err := os.Open(ii.FileName)
 	if err != nil {
-		fmt.Println("ir fn err: ", err)
+		log.Println("ir fn err: ", err)
 	}
 	defer fn.Close()
 
 	x, err := exif.Decode(fn)
 	if err != nil {
-		fmt.Printf("o err: %s\n", err)
+		log.Printf("o err: %s\n", err)
 	}
 
 	ImageOrientation(ii, x)
@@ -43,10 +43,17 @@ func Load(ii *ImageInfo, ok chan bool) {
 func ImageOrientation(ii *ImageInfo, x *exif.Exif) {
 	orientation, err := x.Get(exif.Orientation)
 	if err != nil {
-		fmt.Println("o err: ", err)
+		log.Println("o err: ", err)
 		return
 	}
-	ii.Orientation = int(orientation.Val[1])
+	or := 0
+	if orientation.Val[0] != 0 {
+		or = int(orientation.Val[0])
+	}
+	if orientation.Val[1] != 0 {
+		or = int(orientation.Val[1])
+	}
+	ii.Orientation = or
 }
 
 func ImageWidth(ii *ImageInfo, x *exif.Exif) {
@@ -88,13 +95,13 @@ func ImageRotate(ii *ImageInfo, ok chan bool) {
 
 	fn, err := os.Open(ii.TempFileName)
 	if err != nil {
-		fmt.Println("ir fn err: ", err)
+		log.Println("ir fn err: ", err)
 	}
 	defer fn.Close()
 
 	img, _, err := image.Decode(fn)
 	if err != nil {
-		fmt.Println("err: ", err)
+		log.Println("err: ", err)
 	}
 
 	r := 0.0
@@ -108,6 +115,8 @@ func ImageRotate(ii *ImageInfo, ok chan bool) {
 	case 1:
 		r = 0.0
 	}
+
+	log.Println("Orientation: ", ii.Orientation, "r: ", r)
 
 	if r == 0 {
 		ok <- true
@@ -128,7 +137,7 @@ func ImageRotate(ii *ImageInfo, ok chan bool) {
 
 	toimg, err := os.Create(ii.TempFileName)
 	if err != nil {
-		fmt.Println("rotate err: ", err)
+		log.Println("rotate err: ", err)
 	}
 	defer toimg.Close()
 
