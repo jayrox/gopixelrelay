@@ -88,6 +88,7 @@ func main() {
 	// Albums
 	m.Get("/albums", controllers.Albums)
 	m.Get("/album/:name", controllers.Album)
+	m.Get("/album/:name/:key", controllers.Album)
 	m.Get("/:user/albums", controllers.Albums)
 	m.Get("/:user/album/:name", controllers.Album)
 	m.Get("/manage/album/:name/private/:state", controllers.AlbumPrivate)
@@ -103,10 +104,16 @@ func main() {
 	m.Get("/logout", controllers.Logout)
 
 	// Upload
-	m.Post("/up", middleware.Verify, controllers.UploadImage)
+	m.Post("/up", middleware.Verify, binding.MultipartForm(models.ImageUpload{}), controllers.UploadImage)
 
 	// 404
 	m.NotFound(controllers.NotFound)
+
+	// Account
+	m.Get("/account", middleware.AuthRequired, controllers.Account)
+
+	// Profile
+	m.Get("/profile/:name", controllers.Profile)
 
 	// Start server and begin listening for requests
 	log.Printf("Listening for connections on \x1b[32;1m%s\x1b[0m\n", utils.AppCfg.ListenOn())
