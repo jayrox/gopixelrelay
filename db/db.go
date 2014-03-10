@@ -24,7 +24,7 @@ func Init(db *Dbh) *Dbh {
 		utils.DbCfg.User(), utils.DbCfg.Pass(), utils.DbCfg.Host(), utils.DbCfg.Name())
 	db.DB, err = gorm.Open("mysql", sqlConnection)
 	if err != nil {
-		log.Fatalf("Got error when connect database, the error is '%v'", err)
+		log.Fatalf("Error connecting to database: '%v'", err)
 	}
 
 	if utils.AppCfg.Debug() {
@@ -82,6 +82,11 @@ func (db *Dbh) GetAllAlbumsByUserId(uid int64) (albums []models.Album) {
 // GetAllAlbumImages returns all Images in the album database
 func (db *Dbh) GetAllAlbumImages(album string) (images []models.Image) {
 	db.DB.Where("album = ?", album).Find(&images)
+	return
+}
+
+func (db *Dbh) GetAlbumByName(name string) (album models.Album) {
+	db.DB.First(&album, "name = ?", name)
 	return
 }
 
@@ -153,7 +158,6 @@ func (db *Dbh) TagImage(tag, name string) (imagetag models.ImageTag) {
 // Get Images with Tag
 func (db *Dbh) GetImagesWithTag(tag string) (images []models.TaggedImage) {
 	db.DB.Table("images").Select("images.id as image_id, images.name as name, tags.name as tag").Joins("LEFT JOIN image_tags ON (image_tags.img_id = images.id) LEFT JOIN tags ON (image_tags.tag_id = tags.id AND image_tags.img_id = images.id)").Where("tags.name = ?", tag).Order("images.id ASC").Scan(&images)
-	log.Println(images)
 	return
 }
 
