@@ -21,34 +21,30 @@ type UploadResult struct {
 	Name  string `json:"name"`
 }
 
-func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render, dbh *db.Dbh) {
-	file, header, _ := req.FormFile("uploaded_file")
-	defer file.Close()
-
+func UploadImage(w http.ResponseWriter, upload models.ImageUpload, req *http.Request, r render.Render, dbh *db.Dbh) {
 	ur := &UploadResult{}
 
-	rEmail := req.FormValue("user_email")
-	rAlbum := req.FormValue("file_album")
-	rPrivateKey := req.FormValue("user_private_key")
+	log.Println(upload)
 
-	log.Printf("header.Filename: %s\n", header.Filename)
-	log.Printf("version: %s\n", req.FormValue("version"))
-	log.Printf("user_email: %s\n", rEmail)
-	log.Printf("user_private_key: %s\n", rPrivateKey)
-	log.Printf("file_host: %s\n", req.FormValue("file_host"))
-	log.Printf("file_album: %s\n", rAlbum)
-	log.Printf("file_name: %s\n", req.FormValue("file_name"))
-	log.Printf("file_mime: %s\n", req.FormValue("file_mime"))
+	rEmail := upload.Email
+	rAlbum := upload.Album
+	rPrivateKey := upload.PrivateKey
 
+	fiName := upload.File.Filename
+	fiMime := upload.File.Header
+	mime := fiMime["Content-Type"][0]
+	log.Println("fiName: ", fiName)
+	log.Println("fiMime: ", mime)
 
 	ur.SetError(200)
 	ur.SetCode("success")
 
-	ur.SetName(header.Filename)
+	ur.SetName(fiName)
 
 	tmp_file := utils.ImageCfg.Root() + ur.GetName()
 
 	if Exists(tmp_file) {
+		log.Println("Error: File exists.")
 		ur.SetError(2)
 		ur.SetCode("File exists")
 		r.JSON(500, ur)
@@ -57,6 +53,7 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render, dbh 
 
 	out, err := os.Create(tmp_file)
 	if err != nil {
+		log.Println("Error: Unable to open file.")
 		ur.SetError(500)
 		ur.SetCode("Failed to open the file for writing.")
 		r.JSON(500, ur)
@@ -64,15 +61,8 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render, dbh 
 	}
 
 	defer out.Close()
-	_, err = io.Copy(out, file)
-	if err != nil {
-		ur.SetError(500)
-		ur.SetCode("Failed to copy file to new location.")
-		r.JSON(500, ur)
-		return
-	}
 
-	fi, err := os.Open(tmp_file)
+	fi, err := upload.File.Open()
 	if err != nil {
 		log.Println("fi err: ", err)
 		ur.SetError(500)
@@ -82,18 +72,11 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render, dbh 
 	}
 	defer fi.Close()
 
-	buf := make([]byte, 512)
-	n, err := fi.Read(buf)
+	_, err = io.Copy(out, fi)
 	if err != nil {
-		log.Println("mime err: ", err)
-		r.JSON(500, ur)
-	}
-
-	mime := http.DetectContentType(buf[:n])
-
-	if mime != req.FormValue("file_mime") {
-		ur.SetError(3)
-		ur.SetCode("Invalid file type: " + mime)
+		log.Println("Error: Failed to copy file.")
+		ur.SetError(500)
+		ur.SetCode("Failed to copy file to new location.")
 		r.JSON(500, ur)
 		return
 	}
@@ -115,15 +98,13 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render, dbh 
 
 	var user models.User
 	user = dbh.GetUserByEmail(rEmail)
-	log.Println("user: ", user)
 	if user.Id == 0 {
 		user = dbh.GetUploaderByEmail(rEmail)
-		log.Println("uploader: ", user)
-	} 
-	log.Println("user: ", user)
+	}
+	log.Println("user: ", user.Email)
 
 	// Add image
-	image := models.Image{Name: header.Filename, Album: rAlbum, User: user.Id, Timestamp: time.Now().Unix()}
+	image := models.Image{Name: fiName, Album: rAlbum, User: user.Id, Timestamp: time.Now().Unix()}
 	ai := dbh.AddImage(image)
 	log.Println("ai: ", ai)
 
@@ -132,7 +113,7 @@ func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render, dbh 
 	dbh.AddAlbum(album)
 	log.Println("album: ", album)
 
-	ur.SetName(utils.AppCfg.Url() + "/i/" + header.Filename)
+	ur.SetName(strings.Join([]string{utils.AppCfg.Url(), fiName}, "/i/"))
 	log.Println("ur: ", ur)
 
 	r.JSON(200, ur)
