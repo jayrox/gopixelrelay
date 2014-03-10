@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"fi",
+				"fiName	 ν"
+			],
+			[
 				"backgr",
 				"background-color"
 			],
@@ -98,6 +102,12 @@
 	},
 	"file_history":
 	[
+		"/C/dev/gopixelrelay/utils/imageinfo.go",
+		"/C/dev/gopixelrelay/controllers/upload.go",
+		"/C/dev/gopixelrelay/models/imageview.go",
+		"/C/dev/gopixelrelay/models/upload.go",
+		"/C/dev/gopixelrelay/server.go",
+		"/C/dev/gopixelrelay/middleware/verify.go",
 		"/C/dev/gopixelrelay/static/style.css",
 		"/C/dev/gopixelrelay/templates/layout.tmpl",
 		"/C/dev/gopixelrelay/templates/image.tmpl",
@@ -105,7 +115,6 @@
 		"/C/dev/gopixelrelay/templates/tags.tmpl",
 		"/C/dev/gopixelrelay/templates/index.tmpl",
 		"/C/dev/gopixelrelay/templates/body.tmpl",
-		"/C/dev/gopixelrelay/server.go",
 		"/C/dev/gopixelrelay/controllers/albums.go",
 		"/C/dev/gopixelrelay/controllers/imagepage.go",
 		"/C/dev/gopixelrelay/models/user.go",
@@ -123,7 +132,6 @@
 		"/C/dev/gopixelrelay/controllers/album.go",
 		"/C/dev/gopixelrelay/templates/image_link.tmpl",
 		"/C/dev/gopixelrelay/controllers/tags.go",
-		"/C/dev/gopixelrelay/controllers/upload.go",
 		"/C/dev/gopixelrelay/controllers/thumb.go",
 		"/C/dev/gopixelrelay/models/page.go",
 		"/C/dev/gopixelrelay/templates/head.tmpl",
@@ -138,7 +146,6 @@
 		"/C/dev/gopixelrelay/utils/appcfg.go",
 		"/C/dev/gopixelrelay/middleware/verifyfile.go",
 		"/C/dev/gopixelrelay/middleware/verifyuser.go",
-		"/C/dev/gopixelrelay/utils/imageinfo.go",
 		"/C/dev/gopixelrelay/auth/userauth.go",
 		"/C/Users/jboehm/AppData/Roaming/Sublime Text 3/Packages/GoSublime/CHANGELOG.md",
 		"/C/Users/jboehm/AppData/Roaming/Sublime Text 3/Packages/SublimeGit/Default (Windows).sublime-keymap",
@@ -167,6 +174,9 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"fmt.Println",
+			"fimime",
+			"mime",
 			"#content",
 			"form",
 			"fmt",
@@ -178,6 +188,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"log.Println",
 			"db.db."
 		],
 		"reverse": false,
@@ -244,7 +255,7 @@
 	"project": "gopixelrelay.sublime-project",
 	"replace":
 	{
-		"height": 42.0
+		"height": 62.0
 	},
 	"save_all_on_build": true,
 	"select_file":

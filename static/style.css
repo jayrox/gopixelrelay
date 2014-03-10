@@ -50,6 +50,14 @@ footer {
     z-index: -1;
 }
 
+footer a {
+	color: white;
+}
+
+a {
+	text-decoration: none;
+}
+
 div#nav div#title {
 	display: block;
 	margin: 1em;
@@ -115,6 +123,9 @@ img[src*="/i/"] {
 		-webkit-margin-after: 0;
 		-webkit-margin-start: 0;
 		-webkit-padding-start: 0;
+	}
+	div#content ul div {
+		width: 122px;
 	}
 	img[src*="/t/"] {
 		width: 100px;

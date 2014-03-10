@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/martini-contrib/render"
@@ -26,5 +27,6 @@ func Verify(res http.ResponseWriter, req *http.Request, r render.Render, dbh *db
 		r.JSON(http.StatusUnauthorized, Response{"error": http.StatusUnauthorized, "code": "Invalid Private Key", "name": a})
 	}
 
+	log.Println("verify: good")
 	return
 }
