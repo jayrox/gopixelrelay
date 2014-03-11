@@ -50,6 +50,48 @@ footer {
     z-index: -1;
 }
 
+footer {
+	text-align: left;
+}
+
+footer h3 {
+	margin: 0;
+}
+
+footer div:first-child {
+	border: 0;
+}
+
+footer div {
+	border-left: 1px dotted white;
+	margin-left: 1em;
+	padding-left: 1em;
+}
+
+footer > div {
+	 width:600px;
+	 margin:auto;
+}
+
+footer div div {
+	float: left;
+	height: 100px;
+}
+
+footer div ul {
+	max-width: 250px;
+	margin-left: 0;
+	padding-left: 0;
+}
+
+footer div ul li {
+	border: 0;
+	background-color: inherit;
+	display: block;
+	max-width: 200px;
+	margin-left: 0;
+}
+
 footer a {
 	color: white;
 }
@@ -172,7 +214,7 @@ h1 {
 
 .sprite {
 	background: url('/sprite.png');
-	text-indent: 9999;
+	text-indent: 9999px;
 	text-decoration: none;
 }
 
@@ -239,7 +281,7 @@ input[type="submit"] {
 	font-family: Tahoma, Geneva, sans-serif;
 	height:30px;
 	border-radius: 15px;
-	border: 1p solid #999;
+	border: 1px solid #999;
 }
 input[type="submit"]:hover {
 	background:#fff;
