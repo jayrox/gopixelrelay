@@ -69,7 +69,7 @@ footer div {
 }
 
 footer > div {
-	 width:600px;
+	 width:700px;
 	 margin:auto;
 }
 
@@ -80,7 +80,7 @@ footer div div {
 
 footer div ul {
 	max-width: 250px;
-	margin-left: 0;
+	margin: 0;
 	padding-left: 0;
 }
 
