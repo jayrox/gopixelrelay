@@ -34,7 +34,7 @@ func Albums(args martini.Params, su models.User, session sessions.Session, r ren
 	if albumUser.Id > 0 {
 		albums = dbh.GetAllAlbumsByUserId(albumUser.Id)
 	} else {
-		albums = dbh.GetAllAlbums()
+		albums = dbh.GetAllAlbums("DESC")
 	}
 
 	var albumList []models.AlbumList

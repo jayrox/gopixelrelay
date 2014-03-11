@@ -62,8 +62,12 @@ func (db *Dbh) GetAlbum(name string) (album models.Album) {
 }
 
 // GetAllAlbums returns all albums
-func (db *Dbh) GetAllAlbums() (albums []models.Album) {
-	db.DB.Where("name != ''").Find(&albums)
+func (db *Dbh) GetAllAlbums(sort string) (albums []models.Album) {
+	if sort == "" {
+		sort = "ASC"
+	}
+	order := fmt.Sprintf("id %s", sort)
+	db.DB.Where("name != ''").Order(order).Find(&albums)
 	return
 }
 
