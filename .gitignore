@@ -2,5 +2,9 @@ nohup.out
 pixelrelay.json
 tmp/*
 uploads/*
+<<<<<<< HEAD
 qrcache/*
 *sublime*
+=======
+*sublime*
+>>>>>>> e98a6d507e20d44278ad6f3c98496e9c8660ee12
