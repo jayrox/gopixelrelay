@@ -42,6 +42,6 @@ func Thumb(args martini.Params, res http.ResponseWriter, req *http.Request) {
 	}
 
 	res.Header().Set("X-Content-Type-Options", "nosniff")
-	res.Header().Set("Expires", "access plus 1 week")
+	res.Header().Set("Expires", utils.ExpiresHeader())
 	http.ServeContent(res, req, file, fi.ModTime(), f)
 }
