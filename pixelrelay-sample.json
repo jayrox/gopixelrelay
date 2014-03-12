@@ -10,6 +10,7 @@
 	},
 
 	"image" : {
+		"qr"    : "./qrcache/",
 		"root"  : "./uploads/",
 		"secretkey" : "asdfzxcvqwertyhb",
 		"thumbs": "./uploads/thumbs/"
