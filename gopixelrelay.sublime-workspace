@@ -55,38 +55,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "static/style.css",
-			"settings":
-			{
-				"buffer_size": 4132,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "templates/foot.tmpl",
-			"settings":
-			{
-				"buffer_size": 798,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "controllers/albums.go",
-			"settings":
-			{
-				"buffer_size": 1305,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "db/db.go",
-			"settings":
-			{
-				"buffer_size": 7009,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -138,8 +106,17 @@
 	},
 	"file_history":
 	[
-		"/C/dev/gopixelrelay/templates/foot.tmpl",
+		"/C/dev/gopixelrelay/controllers/thumb.go",
+		"/C/dev/gopixelrelay/controllers/qr.go",
+		"/C/dev/gopixelrelay/utils/appcfg.go",
+		"/C/dev/gopixelrelay/controllers/image.go",
+		"/C/dev/gopixelrelay/pixelrelay-sample.json",
+		"/C/dev/gopixelrelay/pixelrelay.json",
+		"/C/dev/gopixelrelay/utils/createthumb.go",
 		"/C/dev/gopixelrelay/static/style.css",
+		"/C/dev/gopixelrelay/templates/foot.tmpl",
+		"/C/dev/gopixelrelay/controllers/albums.go",
+		"/C/dev/gopixelrelay/db/db.go",
 		"/C/dev/gopixelrelay/utils/imageinfo.go",
 		"/C/dev/gopixelrelay/controllers/upload.go",
 		"/C/dev/gopixelrelay/models/imageview.go",
@@ -152,7 +129,6 @@
 		"/C/dev/gopixelrelay/templates/tags.tmpl",
 		"/C/dev/gopixelrelay/templates/index.tmpl",
 		"/C/dev/gopixelrelay/templates/body.tmpl",
-		"/C/dev/gopixelrelay/controllers/albums.go",
 		"/C/dev/gopixelrelay/controllers/imagepage.go",
 		"/C/dev/gopixelrelay/models/user.go",
 		"/C/dev/gopixelrelay/controllers/tagged.go",
@@ -163,30 +139,24 @@
 		"/C/dev/gopixelrelay/controllers/notfound.go",
 		"/C/dev/gopixelrelay/controllers/list.go",
 		"/C/dev/gopixelrelay/controllers/index.go",
-		"/C/dev/gopixelrelay/controllers/image.go",
 		"/C/dev/gopixelrelay/controllers/auth.go",
 		"/C/dev/gopixelrelay/controllers/albumprivate.go",
 		"/C/dev/gopixelrelay/controllers/album.go",
 		"/C/dev/gopixelrelay/templates/image_link.tmpl",
 		"/C/dev/gopixelrelay/controllers/tags.go",
-		"/C/dev/gopixelrelay/controllers/thumb.go",
 		"/C/dev/gopixelrelay/models/page.go",
 		"/C/dev/gopixelrelay/templates/head.tmpl",
 		"/C/dev/gopixelrelay/render/render.go",
-		"/C/dev/gopixelrelay/db/db.go",
 		"/C/dev/gopixelrelay/utils/generateform.go",
 		"/C/dev/gopixelrelay/models/tag.go",
 		"/C/dev/gopixelrelay/models/users.go",
 		"/C/dev/gopixelrelay/models/pagevars.go",
-		"/C/dev/gopixelrelay/pixelrelay.json",
-		"/C/dev/gopixelrelay/utils/appcfg.go",
 		"/C/dev/gopixelrelay/middleware/verifyfile.go",
 		"/C/dev/gopixelrelay/middleware/verifyuser.go",
 		"/C/dev/gopixelrelay/auth/userauth.go",
 		"/C/Users/jboehm/AppData/Roaming/Sublime Text 3/Packages/GoSublime/CHANGELOG.md",
 		"/C/Users/jboehm/AppData/Roaming/Sublime Text 3/Packages/SublimeGit/Default (Windows).sublime-keymap",
 		"/C/dev/gopixelrelay/nohup.out",
-		"/C/dev/gopixelrelay/pixelrelay-sample.json",
 		"/C/Users/jboehm/AppData/Roaming/Sublime Text 3/Packages/GoSublime/Default (Windows).sublime-keymap",
 		"/C/Users/jboehm/AppData/Roaming/Sublime Text 3/Packages/GoSublime/GoSublime.sublime-settings",
 		"/C/dev/gopixelrelay/db/db2.go",
@@ -236,125 +206,8 @@
 	"groups":
 	[
 		{
-			"selected": 3,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "static/style.css",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4132,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1071,
-								1071
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/CSS/CSS.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": -0.0,
-						"translation.y": 990.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "templates/foot.tmpl",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 798,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								626,
-								626
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "controllers/albums.go",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1305,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								885,
-								885
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 180.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "db/db.go",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 7009,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1213,
-								1213
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1380.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
 			]
 		}
 	],
