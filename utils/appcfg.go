@@ -39,6 +39,7 @@ type ImageScheme struct {
 		Root      string `json:"root"`
 		Secretkey string `json:"secretkey"`
 		Thumbs    string `json:"thumbs"`
+		QR        string `json:"qr"`
 	} `json:"image"`
 }
 
@@ -93,6 +94,10 @@ func (this *DBScheme) Debug() bool {
 }
 
 // Image Storage Config
+func (this *ImageScheme) QR() string {
+	return this.Image.QR
+}
+
 func (this *ImageScheme) Root() string {
 	return this.Image.Root
 }
