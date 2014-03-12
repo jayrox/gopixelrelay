@@ -62,8 +62,7 @@ func main() {
 	m.Map(dbh)
 
 	// Setup static file handling
-	// Set expires to something like "access plus 1 week"
-	opts := martini.StaticOptions{SkipLogging: false, Expires: ""}
+	opts := martini.StaticOptions{SkipLogging: false, Expires: utils.ExpiresHeader}
 	m.Use(martini.Static("static", opts))
 
 	// Auth user and assign to session
@@ -88,10 +87,12 @@ func main() {
 	// Albums
 	m.Get("/albums", controllers.Albums)
 	m.Get("/album/:name", controllers.Album)
-	m.Get("/album/:name/:key", controllers.Album)
+	m.Get("/album/:name/qr", controllers.QR)
 	m.Get("/:user/albums", controllers.Albums)
 	m.Get("/:user/album/:name", controllers.Album)
-	m.Get("/manage/album/:name/private/:state", controllers.AlbumPrivate)
+	m.Get("/album/:name/private/:state", controllers.AlbumPrivate)
+
+	m.Get("/album/:name/:key", controllers.Album)
 
 	// Tag
 	m.Get("/tags", controllers.Tags)
