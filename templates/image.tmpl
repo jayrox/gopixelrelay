@@ -1,13 +1,13 @@
-{{ if .Data.Name }}<a href="/i/{{.Data.Name}}"><img src="/i/{{.Data.Name}}" alt="{{.Data.Name}}"></a>{{ end }}
-{{ if .Data.Tags }}
+<< if .Data.Name >><a href="/i/<< .Data.Name >>"><img src="/i/<< .Data.Name >>" alt="<< .Data.Name >>"></a><< end >>
+<< if .Data.Tags >>
 	<div><h4>TAGS</h4>
 		<ul>
-		{{range .Data.Tags}}
-			<li>{{.Tag}}</li>
-		{{end}}
+		<< range .Data.Tags >>
+			<li><< .Tag >></li>
+		<< end >>
 		</ul>
 	</div>
-{{ end }}
+<< end >>
 	<div id="addtag">
-		{{ .Data.Form }}
+		<< .Data.Form >>
 	</div>
