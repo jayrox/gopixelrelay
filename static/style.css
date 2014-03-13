@@ -69,8 +69,12 @@ footer div {
 }
 
 footer > div {
-	 width:700px;
+	 width:600px;
 	 margin:auto;
+}
+
+footer div > p {
+	margin: 0;
 }
 
 footer div div {
@@ -197,7 +201,7 @@ li {
 li div h4 {
 	text-align:center;
 	margin: 0;
-	padding-top: 1em;
+	padding-top: 0.5em;
 }
 
 li div span {
@@ -216,20 +220,25 @@ h1 {
 	background: url('/sprite.png');
 	text-indent: 9999px;
 	text-decoration: none;
+	display: inline-block;
 }
 
 .lock {
 	background-position: -0px -0px;
 	width: 11px;
 	height: 15px;
-	display: inline-block;
 }
 
 .unlock {
 	background-position: -0px -25px;
 	width: 11px;
 	height: 15px;
-	display: inline-block;
+}
+
+.qr {
+	background-position: 0px -50px;
+	width: 15px;
+	height: 15px;
 }
 
 form    {
@@ -286,4 +295,18 @@ input[type="submit"] {
 input[type="submit"]:hover {
 	background:#fff;
 	color:#09C;
+}
+
+.album > ul {
+	border: 0;
+	width: auto !important;
+	float: right;
+	list-style-type: none;
+	margin: 0 !important;
+}
+
+.album > ul > li{
+	border: 0;
+	float: left;
+	list-style-type: none;
 }

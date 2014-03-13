@@ -3,9 +3,9 @@ package controllers
 import (
 	"crypto/sha1"
 	"encoding/base64"
+	"fmt"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"strings"
 
@@ -68,21 +68,10 @@ func createQR(album, key string) (qrname string) {
 		return
 	}
 
-	u := &url.URL{
-		Scheme: "PixelRelay",
-		Host:   "scan",
-		Path:   "",
-	}
+	host := strings.Join([]string{utils.AppCfg.Url(), "up"}, "/")
+	qrstr := fmt.Sprintf("PixelRelay://scan?host=%s&album=%s&privatekey=%s", host, album, key)
 
-	params := url.Values{
-		"host":       {strings.Join([]string{utils.AppCfg.Url(), "up"}, "/")},
-		"album":      {album},
-		"privatekey": {key},
-	}
-
-	u.RawQuery = params.Encode()
-
-	c, err := qr.Encode(u.String(), qr.M)
+	c, err := qr.Encode(qrstr, qr.M)
 
 	if err != nil {
 		log.Println("qr err: ", err)

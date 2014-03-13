@@ -43,7 +43,7 @@ func Albums(args martini.Params, su models.User, session sessions.Session, r ren
 		if f.Private && su.Id != f.User {
 			continue
 		}
-		albumList = append(albumList, models.AlbumList{Name: f.Name, Poster: i[0].Name, Private: f.Private})
+		albumList = append(albumList, models.AlbumList{Name: f.Name, Poster: i[0].Name, Private: f.Private, Owner: f.User})
 	}
 
 	p.SetTitle("Albums")

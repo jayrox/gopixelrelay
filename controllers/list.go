@@ -19,6 +19,7 @@ type ListVars struct {
 type ImageLink struct {
 	Title    string
 	FileName string
+	Owner    int64
 }
 
 func List(args martini.Params, su models.User, r render.Render, p *models.Page) {

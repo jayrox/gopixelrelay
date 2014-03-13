@@ -42,7 +42,7 @@ func Album(args martini.Params, su models.User, session sessions.Session, r rend
 
 	var imageLinks []ImageLink
 	for _, f := range images {
-		imageLinks = append(imageLinks, ImageLink{Title: f.Name, FileName: f.Name})
+		imageLinks = append(imageLinks, ImageLink{Title: f.Name, FileName: f.Name, Owner: f.User})
 	}
 
 	p.SetTitle("Album", name)
