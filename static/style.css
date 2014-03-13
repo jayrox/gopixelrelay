@@ -147,7 +147,7 @@ img[src*="/i/"] {
 	}
 	div#content ul {
 		margin: 20px auto;
-		width: 780px;
+		<!-- width: 780px; -->
 	}
 
 
