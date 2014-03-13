@@ -52,9 +52,10 @@ func main() {
 
 	// Setup render options
 	m.Use(render.Renderer(render.Options{
-		Directory: "templates", // Specify what path to load the templates from.
-		Layout:    "layout",    // Specify a layout template. Layouts can call {{ yield }} to render the current template.
-		Charset:   "UTF-8",     // Sets encoding for json and html content-types.
+		Directory: "templates",               // Specify what path to load the templates from.
+		Layout:    "layout",                  // Specify a layout template. Layouts can call {{ yield }} to render the current template.
+		Charset:   "UTF-8",                   // Sets encoding for json and html content-types.
+		Delims:    render.Delims{"<<", ">>"}, // Sets delimiters to the specified strings.
 	}))
 
 	// Setup DB

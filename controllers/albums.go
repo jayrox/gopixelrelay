@@ -20,6 +20,9 @@ type AlbumsVars struct {
 func Albums(args martini.Params, su models.User, session sessions.Session, r render.Render, res http.ResponseWriter, req *http.Request, dbh *db.Dbh, p *models.Page) {
 	auser := args["user"]
 	var albumUser models.User
+	if su.Id == 0 {
+		albumUser.Name = "Public"
+	}
 	if auser != "" {
 		albumUser = dbh.GetUserByUserName(auser)
 	}

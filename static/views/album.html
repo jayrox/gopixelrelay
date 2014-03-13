@@ -1,0 +1,19 @@
+     <ul>
+      <li ng-repeat="album in albums | filter:searchText">
+       <div class="album">
+        <h4>{{album.Name}}</h4>
+        <a href="/album/{{album.Name}}"><img ng-src="/t/{{album.Poster}}"></a>
+        <div style="clear: both;"></div>
+        <ul>
+         <li><a href="/album/{{album.Name}}/qr" class="sprite qr">&nbsp;</a></li>
+         <li ng-if="album.Private == true">
+          <a href="album/{{ album.Name }}/private/false" class="sprite lock" title="Private">&nbsp;</a>
+         </li>
+         <li ng-if="album.Private == false">
+          <a href="/album/{{ album.Name }}/private/true" class="sprite unlock" title="Not Private">&nbsp;</a>
+         </li>
+        </ul>
+       </div>
+      </li>
+
+

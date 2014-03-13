@@ -1,18 +1,9 @@
-	{{if .Data.AlbumUser.Name}}<h1 id="albumowner">{{.Data.AlbumUser.Name}}</h1>{{end}}
-     <ul>
-{{range .Data.AlbumsList}}
-      <li>
-       <div class="album">
-        <h4>{{.Name}}</h4>
-        <a href="/album/{{.Name}}"><img src="/t/{{.Poster}}" /></a>
-        <div style="clear: both;"></div>
-        <ul>
-         <li><a href="/album/{{.Name}}/qr" class="sprite qr">&nbsp;</a></li>
-         <li>{{if .Private}}<a href="/manage/album/{{.Name}}/private/false" class="sprite lock" title="Private">&nbsp;</a>{{else}}<a href="/manage/album/{{.Name}}/private/true" class="sprite unlock" title="Not Private">&nbsp;</a>{{end}}</li>
-        </ul>
-       </div>
-      </li>
-{{ end }}
-     </ul>
-
-     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.1/angular.min.js"></script>
+    << if .Data.AlbumUser.Name >><h1 id="albumowner"><< .Data.AlbumUser.Name >></h1><< end >>
+    <div ng-app="albumsApp">
+     Search: <input type="text" ng-model="searchText"> {{ searchText }}
+     <br>
+     <div ng-view></div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.1/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.1/angular-route.min.js"></script>
+    <script src="/app.js"></script>
