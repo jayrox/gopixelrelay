@@ -220,6 +220,7 @@ h1 {
 	background: url('/sprite.png');
 	text-decoration: none;
 	display: inline-block;
+	padding: 0;
 }
 
 .lock {
@@ -296,6 +297,10 @@ input[type="submit"]:hover {
 	color:#09C;
 }
 
+.album {
+	position: relative;
+}
+
 .album > ul {
 	border: 0;
 	width: auto !important;
@@ -308,4 +313,17 @@ input[type="submit"]:hover {
 	border: 0;
 	float: left;
 	list-style-type: none;
+}
+
+.qrholder {
+	position: absolute;
+	z-index: 99999;
+	bottom: 0;
+	left: 0;
+	background-color: white;
+}
+
+.qrholder > img {
+	width: 172px;
+	height: 172px;
 }

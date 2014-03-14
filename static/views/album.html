@@ -2,10 +2,13 @@
       <li ng-repeat="album in albums | filter:searchText">
        <div class="album">
         <h4>{{album.Name}}</h4>
-        <a href="/album/{{album.Name}}"><img ng-src="/t/{{album.Poster}}"></a>
+        <div>
+         <a href="/album/{{album.Name}}"><img ng-src="/t/{{album.Poster}}"></a>
+        </div>
+        <div ng-show="album.Id" class="qrholder"><img ng-src="/album/{{album.Name}}/qr"></div>
         <div style="clear: both;"></div>
         <ul>
-         <li><a href="/album/{{album.Name}}/qr" class="sprite qr" title="PixelRelay QR Code">&nbsp;</a></li>
+         <li><span ng-mouseenter="album.Id = true" ng-mouseleave="album.Id = false"  class="sprite qr" title="PixelRelay QR Code">&nbsp;</span></li>
          <li ng-if="album.Private == true">
           <a href="album/{{ album.Name }}/private/false" class="sprite lock" title="Private">&nbsp;</a>
          </li>
