@@ -1,0 +1,26 @@
+<form name="editForm" ng-controller="albumController">
+  <div class="control-group" ng-class="{error: editForm.name.$invalid && !editForm.name.$pristine}">
+    <label for="name">Name</label>
+    <input type="text" name="name" id="name" required>
+    <span ng-show="editForm.name.$error.required && !editForm.name.$pristine" class="help-inline">
+        Required</span>
+  </div>
+ 
+  <div class="control-group" ng-class="{error: editForm.privatekey.$invalid && !editForm.privatekey.$pristine}">
+    <label for="privatekey">Private Key</label>
+    <input type="text" name="privatekey" id="privatekey" required>
+    <span ng-show="editForm.privatekey.$error.required && !editForm.name.$pristine" class="help-inline">
+        Required</span>
+  </div>
+ 
+  <label for="description">Description</label>
+  <textarea name="description" id="description"></textarea>
+
+  <input type="checkbox" name="private" id="private">
+  <label for="private">Private</label>
+
+  <br>
+  <a href="#/" class="btn" ng-click="edit({album:albumIndex})">Cancel</a>
+  <button ng-click="save()" ng-disabled="editForm.$invalid"
+          class="btn btn-primary">Save</button>
+</form>

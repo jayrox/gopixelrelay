@@ -1,21 +1,21 @@
-     <ul>
-      <li ng-repeat="album in albums | filter:searchText">
-       <div class="album">
+       <!-- album.html -->
+       <div class="album" ng-controller="albumController">
         <h4>{{album.Name}}</h4>
         <div>
          <a href="/album/{{album.Name}}"><img ng-src="/t/{{album.Poster}}"></a>
         </div>
-        <div ng-show="album.Id" class="qrholder"><img ng-src="/album/{{album.Name}}/qr"></div>
+        <div ng-show="album.ShowQR" class="qrholder"><img ng-src="/album/{{album.Name}}/qr"></div>
         <div style="clear: both;"></div>
         <ul>
-         <li><span ng-mouseenter="album.Id = true" ng-mouseleave="album.Id = false"  class="sprite qr" title="PixelRelay QR Code">&nbsp;</span></li>
+         <li><span ng-mouseenter="album.ShowQR = true" ng-mouseleave="album.ShowQR = false" title="PixelRelay QR Code"><i class="fa fa-qrcode"></i></span></li>
          <li ng-if="album.Private == true">
-          <a href="album/{{ album.Name }}/private/false" class="sprite lock" title="Private">&nbsp;</a>
+          <a href="album/{{ album.Name }}/private/false" title="Private"><i class="fa fa-lock"></i></a>
          </li>
          <li ng-if="album.Private == false">
-          <a href="/album/{{ album.Name }}/private/true" class="sprite unlock" title="Not Private">&nbsp;</a>
+          <a href="/album/{{ album.Name }}/private/true" title="Not Private"><i class="fa fa-unlock"></i></a>
          </li>
+         <li><a href="#/edit/"><i class="fa fa-pencil" ng-click="edit({album:albumIndex})"></i></a></li>
         </ul>
+        <album-edit-dialog ng-show="showEdit({album:albumIndex})" class="editAlbum" album="album"></album-edit-dialog>
+        </div>
        </div>
-      </li>
-     </ul>

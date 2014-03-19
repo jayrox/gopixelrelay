@@ -41,14 +41,17 @@ func Albums(args martini.Params, su models.User, session sessions.Session, r ren
 	}
 
 	var albumList []models.AlbumList
-	//	var i int64
 	for _, f := range albums {
 		image := dbh.FirstImageByAlbum(f.Name)
 		if f.Private && su.Id != f.User {
 			continue
 		}
-		//		i++
-		albumList = append(albumList, models.AlbumList{Name: f.Name, Poster: image[0].Name, Private: f.Private, Owner: f.User})
+		var pk string
+		if su.Id == f.User {
+			pk = f.Privatekey
+		}
+
+		albumList = append(albumList, models.AlbumList{Id: f.Id, Name: f.Name, Poster: image[0].Name, Private: f.Private, Privatekey: pk, Description: f.Description, Owner: f.User})
 	}
 
 	p.SetTitle("Albums")
