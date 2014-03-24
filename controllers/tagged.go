@@ -10,7 +10,7 @@ import (
 )
 
 type TaggedVars struct {
-	ImageLinks []ImageLink `json:"images"`
+	ImageLinks []imageLink `json:"images"`
 }
 
 func Tagged(args martini.Params, r render.Render, su models.User, dbh *db.Dbh, p *models.Page) {
@@ -19,9 +19,9 @@ func Tagged(args martini.Params, r render.Render, su models.User, dbh *db.Dbh, p
 
 	images := dbh.GetImagesWithTag(tag)
 
-	var imageLinks []ImageLink
+	var imageLinks []imageLink
 	for _, f := range images {
-		imageLinks = append(imageLinks, ImageLink{Title: f.Name, FileName: f.Name})
+		imageLinks = append(imageLinks, imageLink{Title: f.Name, FileName: f.Name})
 	}
 
 	p.SetUser(su)
