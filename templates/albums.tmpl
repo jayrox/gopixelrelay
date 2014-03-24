@@ -1,8 +1,9 @@
     << if .Data.AlbumUser.Name >><h1 id="albumowner"><< .Data.AlbumUser.Name >></h1><< end >>
     <div ng-app="albumsApp">
-     <div style="margin-top: 25px; display: block;">
+     <div style="margin-top: 25px; display: block;" ng-controller="albumController">
       <input type="text" ng-model="searchText" placeholder="Search" style="float:left; width: 85%;">
-      <button class="button">Create Album</button>
+      <button class="button" ng-click="createShow()">Create Album</button>
+      <create-album-dialog ng-show="showCreateAlbum"></create-album-dialog>
      </div>
      <div style="clear: both;"></div>
      <div ng-view></div>
