@@ -24,8 +24,6 @@ type UploadResult struct {
 func UploadImage(w http.ResponseWriter, upload models.ImageUpload, req *http.Request, r render.Render, dbh *db.Dbh) {
 	ur := &UploadResult{}
 
-	log.Println(upload)
-
 	rEmail := upload.Email
 	rAlbum := upload.Album
 	rPrivateKey := upload.PrivateKey
