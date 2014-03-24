@@ -29,10 +29,8 @@ func UploadImage(w http.ResponseWriter, upload models.ImageUpload, req *http.Req
 	rPrivateKey := upload.PrivateKey
 
 	fiName := upload.File.Filename
-	fiMime := upload.File.Header
-	mime := fiMime["Content-Type"][0]
-	log.Println("fiName: ", fiName)
-	log.Println("fiMime: ", mime)
+	//fiMime := upload.File.Header
+	//mime := fiMime["Content-Type"][0]
 
 	ur.SetError(200)
 	ur.SetCode("success")
