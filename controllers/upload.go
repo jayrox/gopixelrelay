@@ -99,6 +99,10 @@ func UploadImage(w http.ResponseWriter, upload models.ImageUpload, req *http.Req
 	}
 	log.Println("user: ", user.Email)
 
+	// Create default album description
+	const layout = "Auto-created 2 January 2006"
+	t := time.Now()
+	description := t.Format(layout)
 	// Add image
 	image := models.Image{Name: fiName, Album: rAlbum, User: user.Id, Timestamp: time.Now().Unix()}
 	ai := dbh.AddImage(image)
