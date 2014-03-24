@@ -16,8 +16,16 @@ import (
 )
 
 type AlbumVars struct {
-	ImageLinks []ImageLink
-	AlbumUser  models.User
+	ImageLinks  []imageLink
+	AlbumUser   models.User
+	Title       string
+	Description string
+}
+
+type imageLink struct {
+	Title    string
+	FileName string
+	Owner    int64
 }
 
 func Album(args martini.Params, su models.User, session sessions.Session, r render.Render, dbh *db.Dbh, p *models.Page) {
@@ -30,24 +38,22 @@ func Album(args martini.Params, su models.User, session sessions.Session, r rend
 	}
 
 	album := dbh.GetAlbumByName(name)
-	log.Println("private: ", album.Private)
 	if su.Id != album.User && album.Private && album.Privatekey != key {
 		session.Set("flash", "Login Required")
 		r.Redirect(strings.Join([]string{utils.AppCfg.Url(), "login"}, "/"), http.StatusFound)
 		return
 	}
 
-	log.Println("album: ", album)
-	images := dbh.GetAllAlbumImages(name)
+	images := dbh.GetAllImagesByAlbumId(album.Id)
 
-	var imageLinks []ImageLink
+	var imageLinks []imageLink
 	for _, f := range images {
-		imageLinks = append(imageLinks, ImageLink{Title: f.Name, FileName: f.Name, Owner: f.User})
+		imageLinks = append(imageLinks, imageLink{Title: f.Name, FileName: f.Name, Owner: f.User})
 	}
 
 	p.SetTitle("Album", name)
 	p.SetUser(su)
-	p.Data = AlbumVars{ImageLinks: imageLinks}
+	p.Data = AlbumVars{Title: name, Description: album.Description, ImageLinks: imageLinks}
 
 	encoder.Render(p.Encoding, 200, "image_link", p, r)
 }
