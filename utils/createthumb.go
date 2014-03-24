@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"image"
 	"image/jpeg"
 	"image/png"
@@ -12,7 +11,7 @@ import (
 )
 
 func CreateThumb(okc chan bool, fname string, tname string) {
-	fmt.Printf("creating thumb for %s\n", fname)
+	log.Printf("creating thumb for %s\n", fname)
 
 	ok := make(chan bool, 1)
 	go CreateThumbJpeg(ok, fname, tname, 150, 150)
@@ -25,7 +24,7 @@ func CreateThumb(okc chan bool, fname string, tname string) {
 	go ImageRotate(ii, ok)
 	<-ok
 
-	fmt.Printf("thumb created for %s\n", fname)
+	log.Printf("thumb created for %s\n", fname)
 	okc <- true
 }
 
