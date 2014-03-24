@@ -125,11 +125,15 @@ div#nav a {
 	text-decoration: none;
 }
 
-img[src*="/t/"] {
+img[src*="/t/"], img[src="/gallery.png"] {
 	width: 150px;
 	height: 150px;
-	margin: 10px 10px;
+	margin: 10px;
 	border: 1px solid black;
+}
+
+img[src="/gallery.png"] {
+	border: 0;
 }
 
 img[src*="/i/"] {
@@ -266,9 +270,24 @@ input[type="submit"] {
 	border-radius: 15px;
 	border: 1px solid #999;
 }
+
 input[type="submit"]:hover {
 	background:#fff;
 	color:#09C;
+}
+
+.albumtitle { 
+	text-align: center;
+	width: 100%;
+}
+
+.albumtitle > h3 {
+}
+
+.albumtitle > span {
+	font-size: 0.75em;
+	margin-top: -15px;
+	display: block;
 }
 
 .album {
@@ -281,6 +300,16 @@ input[type="submit"]:hover {
 	float: right;
 	list-style-type: none;
 	margin: 0 !important;
+}
+
+.albumdesc { 
+	width: 152px;
+	word-wrap: break-word;
+	overflow: hidden;
+	margin: 10px;
+	font-size: 0.7em;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .album > ul > li{

@@ -1,6 +1,5 @@
      <ul>
       <li ng-repeat="album in albums | filter:searchText">
-       <!-- {{album}} -->
-       <div album-viewer album="album" album-index="$index"></div>
+       <album-viewer album="album" album-index="$index"></album-viewer>
       </li>
      </ul>

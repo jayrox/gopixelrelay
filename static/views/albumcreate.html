@@ -1,0 +1,16 @@
+<div style="z-index:99998;width:100%;background-color:white;position:absolute;top:75px;">
+ <div style="width:100%;text-align:center;">
+  <h3>Create Album</h3>
+ </div>
+ <form action="/album/create.json" method="POST">
+  <label for="name">Name</label>
+   <input type="text" id="name" name="name" placeholder="Name" ng-model="name">
+  <label for="privatekey">Private Key</label>
+   <input type="text" id="privatekey" name="privatekey" placeholder="Private Key" ng-model="privatekey">
+  <label for="description" style="display: block;">Description</label>
+   <textarea id="description" name="description" placeholder="Description" style="width:100%;" ng-model="description"></textarea>
+  <br>
+  <a href="#/" ng-click="createShow()">Cancel</a> 
+  <button ng-click="createSave({name:name, privatekey:privatekey, description:description})">Create Album</button>
+ </form>
+</div>
