@@ -19,6 +19,7 @@ import (
 	"pixelrelay/forms"
 	"pixelrelay/middleware"
 	"pixelrelay/models"
+	"pixelrelay/test"
 	"pixelrelay/utils"
 )
 
@@ -83,7 +84,6 @@ func main() {
 	m.Get("/image/:name", middleware.VerifyFile, controllers.ImagePage)
 	m.Get("/i/:name", middleware.VerifyFile, controllers.Image)
 	m.Get("/t/:name", middleware.VerifyFile, controllers.Thumb)
-	m.Get("/list", middleware.AuthRequired, controllers.List)
 
 	// Albums
 	m.Get("/albums", controllers.Albums)
@@ -94,6 +94,9 @@ func main() {
 	m.Get("/album/:name/private/:state", controllers.AlbumPrivate)
 
 	m.Get("/album/:name/:key", controllers.Album)
+
+	m.Post("/album/update", middleware.AuthRequired, controllers.AlbumUpdate)
+	m.Post("/album/create", middleware.AuthRequired, controllers.AlbumCreate)
 
 	// Tag
 	m.Get("/tags", controllers.Tags)
@@ -116,6 +119,12 @@ func main() {
 
 	// Profile
 	m.Get("/profile/:name", controllers.Profile)
+
+	// Testing
+	m.Get("/test/hash", test.Hash)
+	m.Get("/test/hash/:id", test.Hash)
+	m.Get("/test/list", middleware.AuthRequired, test.List)
+	m.Get("/test/listdb", middleware.AuthRequired, test.ListDB)
 
 	// Start server and begin listening for requests
 	log.Printf("Listening for connections on \x1b[32;1m%s\x1b[0m\n", utils.AppCfg.ListenOn())
