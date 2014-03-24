@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/codegangsta/martini"
 	"github.com/martini-contrib/render"
@@ -41,8 +42,9 @@ func Albums(args martini.Params, su models.User, session sessions.Session, r ren
 	}
 
 	var albumList []models.AlbumList
+	var image []models.Image
 	for _, f := range albums {
-		image := dbh.FirstImageByAlbum(f.Name)
+		image = dbh.FirstImageByAlbumId(f.Id)
 		if f.Private && su.Id != f.User {
 			continue
 		}
@@ -51,7 +53,13 @@ func Albums(args martini.Params, su models.User, session sessions.Session, r ren
 			pk = f.Privatekey
 		}
 
-		albumList = append(albumList, models.AlbumList{Id: f.Id, Name: f.Name, Poster: image[0].Name, Private: f.Private, Privatekey: pk, Description: f.Description, Owner: f.User})
+		// Select the best album poster image
+		var poster string = "/gallery.png"
+		if len(image) > 0 {
+			poster = strings.Join([]string{"/t", image[0].Name}, "/")
+		}
+
+		albumList = append(albumList, models.AlbumList{Id: f.Id, Name: f.Name, Poster: poster, Private: f.Private, Privatekey: pk, Description: f.Description, Owner: f.User})
 	}
 
 	p.SetTitle("Albums")
