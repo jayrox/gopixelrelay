@@ -103,17 +103,21 @@ func UploadImage(w http.ResponseWriter, upload models.ImageUpload, req *http.Req
 	const layout = "Auto-created 2 January 2006"
 	t := time.Now()
 	description := t.Format(layout)
+
+	// Add album
+	album := models.Album{Name: rAlbum, User: user.Id, Privatekey: rPrivateKey, Private: true, Description: description, Timestamp: time.Now().Unix()}
+	dbh.AddAlbum(album)
+
+	nAlbum := dbh.GetAlbum(rAlbum)
+	log.Println("nalbum: ", nAlbum)
+
 	// Add image
-	image := models.Image{Name: fiName, Album: rAlbum, User: user.Id, Timestamp: time.Now().Unix()}
+	// FIXME: needs to use album.Id instead of Album.Name
+	image := models.Image{Name: fiName, Album: rAlbum, User: user.Id, AlbumId: nAlbum.Id, Timestamp: time.Now().Unix()}
 	ai := dbh.AddImage(image)
 	log.Println("ai: ", ai)
 
-	// Add album
-	album := models.Album{Name: rAlbum, User: user.Id, Privatekey: rPrivateKey, Private: true, Timestamp: time.Now().Unix()}
-	dbh.AddAlbum(album)
-	log.Println("album: ", album)
-
-	ur.SetName(strings.Join([]string{utils.AppCfg.Url(), fiName}, "/i/"))
+	ur.SetName(strings.Join([]string{utils.AppCfg.Url(), fiName}, "/image/"))
 	log.Println("ur: ", ur)
 
 	r.JSON(200, ur)
