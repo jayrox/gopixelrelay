@@ -89,6 +89,12 @@ func (db *Dbh) GetAllAlbumImages(album string) (images []models.Image) {
 	return
 }
 
+// GetAllAlbumImages returns all Images in the album database
+func (db *Dbh) GetAllImagesByAlbumId(albumid int64) (images []models.Image) {
+	db.DB.Where("album_id = ?", albumid).Find(&images)
+	return
+}
+
 func (db *Dbh) GetAlbumByName(name string) (album models.Album) {
 	db.DB.First(&album, "name = ?", name)
 	return
@@ -102,6 +108,14 @@ func (db *Dbh) SetAlbumPrivacy(uid int64, name string, state bool) {
 	album.Private = state
 	db.DB.Model(&udb).Where("id = ? and user = ?", album.Id, uid).Limit(1).Updates(&album)
 
+	return
+}
+
+//Update Album
+func (db *Dbh) AlbumUpdate(mAlbum models.Album) {
+	var udb models.Album
+
+	db.DB.Model(&udb).Where("id = ? and user = ?", mAlbum.Id, mAlbum.User).Limit(1).Updates(&mAlbum)
 	return
 }
 
@@ -125,9 +139,26 @@ func (db *Dbh) FirstImageByAlbum(album string) (image []models.Image) {
 	return
 }
 
+// Get first image in album for album thumbnail
+func (db *Dbh) FirstImageByAlbumId(albumid int64) (image []models.Image) {
+	db.DB.First(&image, "album_id = ?", albumid)
+	return
+}
+
 // Get first image by image name
 func (db *Dbh) FirstImageByName(name string) (image models.Image) {
 	db.DB.First(&image, "name = ?", name)
+	return
+}
+
+// Get all images
+func (db *Dbh) GetAllImages() (images []models.Image) {
+	db.DB.Where("id > 0").Find(&images)
+	return
+}
+
+func (db *Dbh) UpdateImage(image models.Image) (udb models.Image) {
+	db.DB.Model(&udb).Where("id = ?", image.Id).Limit(1).Updates(&image)
 	return
 }
 
@@ -257,10 +288,9 @@ func (db *Dbh) InsertUser(user models.User) models.User {
 	return user
 }
 
-func (db *Dbh) UpdateUser(user models.User) models.User {
-	var udb models.User
+func (db *Dbh) UpdateUser(user models.User) (udb models.User) {
 	db.DB.Model(&udb).Where("id = ?", user.Id).Limit(1).Updates(&user)
-	return user
+	return
 }
 
 /****************
