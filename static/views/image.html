@@ -1,0 +1,20 @@
+<div ng-controller="imageCtrl">
+<div style="width:100%;" ng-show="!loaded">
+ <span style="margin:20px auto;font-size:2em;font-weight:700;">
+  LOADING
+ </span>
+</div>
+<div class="imageHolder" ng-show="loaded">
+ <a ng-href="{{ image.fullsrc }}">
+  <img ng-src="{{ image.src }}" alt="{{ image.src }}" imageonload>
+ </a>
+</div>
+<div>
+ <h4>TAGS</h4>
+ <ul>
+  <li ng-repeat="tag in image.tags">
+   <span data-id="{{ tag.Id }}">{{ tag.Tag }}</span>
+  </li>
+ </ul>
+</div>
+</div>

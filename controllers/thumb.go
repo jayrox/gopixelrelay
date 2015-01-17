@@ -1,12 +1,24 @@
+/*
+ Route:  /t/:name
+
+ Method: GET
+
+ Params:
+  - name string
+
+ Return:
+  - image/* thumb
+*/
+
 package controllers
 
 import (
+	"log"
 	"net/http"
-	"strings"
-
-	"github.com/codegangsta/martini"
 
 	"pixelrelay/utils"
+
+	"github.com/go-martini/martini"
 )
 
 func Thumb(args martini.Params, res http.ResponseWriter, req *http.Request) {
@@ -18,20 +30,17 @@ func Thumb(args martini.Params, res http.ResponseWriter, req *http.Request) {
 	org_file := org_dir + file
 	temp_file := temp_dir + file
 
-	if !Exists(temp_file) && strings.Contains(temp_file, "jpg") {
+	if !Exists(temp_file) {
 		okc := make(chan bool, 1)
-		utils.CreateThumb(okc, org_file, temp_file)
+		go utils.CreateThumb(okc, org_file, temp_file, 150, 150)
 		<-okc
-	} else if !strings.Contains(temp_file, "jpg") {
-		temp_file = org_file
-		temp_dir = org_dir
 	}
 
 	dir := http.Dir(temp_dir)
 
 	f, err := dir.Open(file)
 	if err != nil {
-		// discard the error?
+		log.Println(err)
 		return
 	}
 	defer f.Close()
@@ -42,6 +51,6 @@ func Thumb(args martini.Params, res http.ResponseWriter, req *http.Request) {
 	}
 
 	res.Header().Set("X-Content-Type-Options", "nosniff")
-	res.Header().Set("Expires", "access plus 1 week")
+	res.Header().Set("Expires", utils.ExpiresHeader())
 	http.ServeContent(res, req, file, fi.ModTime(), f)
 }

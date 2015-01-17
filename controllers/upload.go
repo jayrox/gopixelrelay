@@ -1,3 +1,18 @@
+/*
+ Route:  /up
+
+ Method: POST
+
+ Return: JSON
+  Params:
+   - Error
+   - Code
+   - Name
+
+ TODO:
+  - Change return params on android to better describe their contents
+*/
+
 package controllers
 
 import (
@@ -5,9 +20,10 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
+	"path/filepath"
 	"time"
 
+	"github.com/kr/pretty"
 	"github.com/martini-contrib/render"
 
 	"pixelrelay/db"
@@ -15,151 +31,148 @@ import (
 	"pixelrelay/utils"
 )
 
-type UploadResult struct {
-	Error int    `json:"error"`
-	Code  string `json:"code"`
-	Name  string `json:"name"`
-}
+func UploadImage(w http.ResponseWriter, upload models.ImageUpload, req *http.Request, r render.Render, dbh *db.Dbh) {
+	ur := &models.UploadResult{}
 
-func UploadImage(w http.ResponseWriter, req *http.Request, r render.Render, dbh *db.Dbh) {
-	file, header, _ := req.FormFile("uploaded_file")
-	defer file.Close()
+	rEmail := upload.Email
+	rAlbum := upload.Album
+	rPrivateKey := upload.PrivateKey
 
-	ur := &UploadResult{}
+	fiName := upload.File.Filename
 
-	rEmail := req.FormValue("user_email")
-	rAlbum := req.FormValue("file_album")
-	rPrivateKey := req.FormValue("user_private_key")
+	upload_time := time.Now().Unix()
 
-	log.Printf("header.Filename: %s\n", header.Filename)
-	log.Printf("version: %s\n", req.FormValue("version"))
-	log.Printf("user_email: %s\n", rEmail)
-	log.Printf("user_private_key: %s\n", rPrivateKey)
-	log.Printf("file_host: %s\n", req.FormValue("file_host"))
-	log.Printf("file_album: %s\n", rAlbum)
-	log.Printf("file_name: %s\n", req.FormValue("file_name"))
-	log.Printf("file_mime: %s\n", req.FormValue("file_mime"))
-
-
-	ur.SetError(200)
-	ur.SetCode("success")
-
-	ur.SetName(header.Filename)
+	ur.SetCode(200)
+	ur.SetResult("success")
+	ur.SetName(fiName)
 
 	tmp_file := utils.ImageCfg.Root() + ur.GetName()
 
 	if Exists(tmp_file) {
-		ur.SetError(2)
-		ur.SetCode("File exists")
+		log.Println("Error: File exists. (" + tmp_file + ")")
+		ur.SetCode(2)
+		ur.SetResult("File exists")
 		r.JSON(500, ur)
 		return
 	}
 
 	out, err := os.Create(tmp_file)
 	if err != nil {
-		ur.SetError(500)
-		ur.SetCode("Failed to open the file for writing.")
+		log.Println("Error: Unable to open file.")
+		ur.SetCode(500)
+		ur.SetResult("Failed to open the file for writing.")
 		r.JSON(500, ur)
 		return
 	}
-
 	defer out.Close()
-	_, err = io.Copy(out, file)
-	if err != nil {
-		ur.SetError(500)
-		ur.SetCode("Failed to copy file to new location.")
-		r.JSON(500, ur)
-		return
-	}
 
-	fi, err := os.Open(tmp_file)
+	fi, err := upload.File.Open()
 	if err != nil {
 		log.Println("fi err: ", err)
-		ur.SetError(500)
-		ur.SetCode(err.Error())
+		ur.SetCode(500)
+		ur.SetResult(err.Error())
 		r.JSON(500, ur)
 		return
 	}
 	defer fi.Close()
 
-	buf := make([]byte, 512)
-	n, err := fi.Read(buf)
+	_, err = io.Copy(out, fi)
 	if err != nil {
-		log.Println("mime err: ", err)
-		r.JSON(500, ur)
-	}
-
-	mime := http.DetectContentType(buf[:n])
-
-	if mime != req.FormValue("file_mime") {
-		ur.SetError(3)
-		ur.SetCode("Invalid file type: " + mime)
+		log.Println("Error: Failed to copy file.")
+		ur.SetCode(500)
+		ur.SetResult("Failed to copy file to new location.")
 		r.JSON(500, ur)
 		return
 	}
 
 	log.Printf("tmp_file: %s\n", tmp_file)
 
-	// Create Thumb
-	tname := utils.ImageCfg.Thumbs() + ur.GetName()
-	log.Printf("tname: %s\n", tname)
+	// Add image uploader to database
+	dbh.AddUploader(models.Uploader{Email: rEmail, Timestamp: upload_time})
 
-	if !Exists(string(tname)) && strings.Contains(tmp_file, "jpg") {
+	// Setup hashid to create unique file name
+	var hid models.HashID
+	hid.Init(utils.AppCfg.SecretKey(), 10)
+
+	// Get user id
+	user := dbh.GetUserByEmail(rEmail)
+	log.Println("user: ", user.Id)
+	if user.Id > 0 {
+		// Add user id to hashid - seg 1
+		hid.AddId(int(user.Id))
+	} else {
+		hid.AddId(0)
+	}
+
+	// Get uploader id
+	user2 := dbh.GetUploaderByEmail(rEmail)
+	log.Println("uploader user: ", user2.Id)
+	if user2.Id > 0 {
+		// Add uploader id to hashid - seg 2
+		hid.AddId(int(user2.Id))
+	} else {
+		hid.AddId(0)
+	}
+
+	// Create default album description
+	album := models.Album{
+		Name:       rAlbum,
+		User:       user.Id,
+		Privatekey: rPrivateKey,
+		Private:    true,
+		Timestamp:  upload_time}
+	album.DefaultDescription()
+	log.Println(album)
+
+	// Add album
+	dbh.AddAlbum(album)
+
+	log.Println("album: ", album)
+
+	nAlbum := dbh.GetAlbum(rAlbum)
+
+	// Add image
+	image := dbh.AddImage(models.Image{
+		Name:      fiName,
+		Album:     rAlbum,
+		User:      user.Id,
+		AlbumId:   nAlbum.Id,
+		Timestamp: upload_time})
+
+	// Add image id to hashid - seg 3
+	hid.AddId(int(image.Id))
+
+	// Add upload time to hashid - seg 4
+	hid.AddId(int(upload_time))
+
+	// Get file extension and create new file name
+	extension := filepath.Ext(fiName)
+	nname := hid.Encrypt() + extension
+	log.Printf("New name: %s\n", nname)
+
+	image.HashId = nname
+	dbh.UpdateImage(image)
+
+	// Rename file to new name
+	hash_name := utils.ImageCfg.Root() + nname
+	os.Rename(tmp_file, hash_name)
+
+	ur.SetName(utils.AppCfg.Url() + "/image/" + nname)
+
+	// Create Thumb
+	tname := utils.ImageCfg.Thumbs() + nname
+
+	if !Exists(string(tname)) {
 		okc := make(chan bool, 1)
-		utils.CreateThumb(okc, tmp_file, tname)
+		utils.CreateThumb(okc, hash_name, tname, 150, 150)
 		<-okc
 	}
 
-	// Add image to database
-	dbh.AddUploader(models.Uploader{Email: rEmail, Timestamp: time.Now().Unix()})
-
-	var user models.User
-	user = dbh.GetUserByEmail(rEmail)
-	log.Println("user: ", user)
-	if user.Id == 0 {
-		user = dbh.GetUploaderByEmail(rEmail)
-		log.Println("uploader: ", user)
-	} 
-	log.Println("user: ", user)
-
-	// Add image
-	image := models.Image{Name: header.Filename, Album: rAlbum, User: user.Id, Timestamp: time.Now().Unix()}
-	ai := dbh.AddImage(image)
-	log.Println("ai: ", ai)
-
-	// Add album
-	album := models.Album{Name: rAlbum, User: user.Id, Privatekey: rPrivateKey, Private: true, Timestamp: time.Now().Unix()}
-	dbh.AddAlbum(album)
-	log.Println("album: ", album)
-
-	ur.SetName(utils.AppCfg.Url() + "/i/" + header.Filename)
-	log.Println("ur: ", ur)
+	log.Printf("%# v\n", pretty.Formatter(album))
+	log.Printf("%# v\n", image)
+	log.Printf("%# v\n", pretty.Formatter(ur))
 
 	r.JSON(200, ur)
-}
-
-func (ur *UploadResult) SetError(error int) {
-	ur.Error = error
-}
-
-func (ur UploadResult) GetError() int {
-	return ur.Error
-}
-
-func (ur *UploadResult) SetCode(code string) {
-	ur.Code = code
-}
-
-func (ur UploadResult) GetCode() string {
-	return ur.Code
-}
-
-func (ur *UploadResult) SetName(name string) {
-	ur.Name = name
-}
-
-func (ur UploadResult) GetName() string {
-	return ur.Name
 }
 
 // https://github.com/noll/mjau/blob/master/util/util.go#L42

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/codegangsta/martini"
+	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
 
@@ -27,8 +27,7 @@ func SetupAdmin(args martini.Params, session sessions.Session, r render.Render) 
 func SetupAdminPost(sa forms.SetupAdmin, args martini.Params, session sessions.Session, r render.Render, res http.ResponseWriter, dbh *db.Dbh) {
 	errs := Validate(&sa)
 	if len(errs) > 0 {
-		fmt.Printf(`{"errors":"%v"}`, errs)
-		fmt.Println("\n")
+		fmt.Printf("%+v\n", errs)
 	}
 
 	v := session.Get("setup")
@@ -48,7 +47,7 @@ func SetupAdminPost(sa forms.SetupAdmin, args martini.Params, session sessions.S
 		fmt.Println("id: 0")
 		hash, salt, err := auth.EncryptPassword(sa.Password)
 		if err != nil {
-			fmt.Println("hash err: ", err, "\n")
+			fmt.Println("hash err: ", err)
 		}
 		newuser := models.User{Name: sa.Name, Email: sa.Email, Password: hash, Salt: salt, Timestamp: time.Now().Unix()}
 		dbh.InsertUser(newuser)

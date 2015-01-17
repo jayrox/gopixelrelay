@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/martini-contrib/render"
@@ -22,9 +23,17 @@ func Verify(res http.ResponseWriter, req *http.Request, r render.Render, dbh *db
 	}
 
 	if pk == "" || pk != utils.ImageCfg.SecretKey() {
-		http.Error(res, "Invalid Private Key", http.StatusUnauthorized)
+		log.Printf("Upload failed: Invalid Private Key (%s)\n", pk)
 		r.JSON(http.StatusUnauthorized, Response{"error": http.StatusUnauthorized, "code": "Invalid Private Key", "name": a})
+		return
 	}
 
+	if a == "" {
+		log.Printf("Upload failed: Invalid Album Name (%s)\n", a)
+		r.JSON(http.StatusUnauthorized, Response{"error": http.StatusUnauthorized, "code": "Invalid Album Name", "name": a})
+		return
+	}
+
+	log.Println("verify: good")
 	return
 }

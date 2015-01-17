@@ -1,3 +1,15 @@
+/*
+ Route:  /album/:name/private/:state
+
+ Method: GET
+
+ Return:
+  - None, redirects back to album
+
+ TODO:
+  - Convert to PUT method with JSON return
+*/
+
 package controllers
 
 import (
@@ -6,7 +18,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/codegangsta/martini"
+	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
 

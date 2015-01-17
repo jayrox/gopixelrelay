@@ -1,10 +1,20 @@
+/*
+ Route:  /image/:name
+
+ Method: GET
+
+ Return:
+  - Image page with image, tags, tag form
+*/
+
 package controllers
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 
-	"github.com/codegangsta/martini"
+	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
 
 	"pixelrelay/db"
@@ -16,6 +26,7 @@ import (
 
 type ImagePageVars struct {
 	Name string
+	Full string
 	Tags []models.TagList
 	Form template.HTML `json:"-"`
 }
@@ -31,7 +42,10 @@ func ImagePage(args martini.Params, su models.User, res http.ResponseWriter, req
 
 	p.SetUser(su)
 	p.SetTitle("Image")
-	p.Data = ImagePageVars{Name: name, Tags: tags, Form: form}
+
+	src := fmt.Sprintf("%s/i/%s", utils.AppCfg.Url(), name)
+	fullsrc := fmt.Sprintf("%s/o/%s", utils.AppCfg.Url(), name)
+	p.Data = ImagePageVars{Name: src, Full: fullsrc, Tags: tags, Form: form}
 
 	encoder.Render(p.Encoding, 200, "image", p, r)
 }

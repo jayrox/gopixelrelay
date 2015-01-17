@@ -1,3 +1,12 @@
+/*
+ Route:  /
+
+ Method: GET
+
+ Return:
+  - index page
+*/
+
 package controllers
 
 import (

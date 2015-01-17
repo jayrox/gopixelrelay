@@ -3,13 +3,15 @@
 		"mobile_album_creation" : "all",
 		"debug"		: true,
 		"listen_on" : ":3000",
+		"tls_listen_on" :   ":8000",
 		"listen_on_setup" : ":3001",
 		"secretkey" : "CHANGE_ME",
-		"url"		: "http://example.com",
+		"url"		: "https://example.com",
 		"title"		: "PixelRelay"
 	},
 
 	"image" : {
+		"qr"    : "./qrcache/",
 		"root"  : "./uploads/",
 		"secretkey" : "asdfzxcvqwertyhb",
 		"thumbs": "./uploads/thumbs/"

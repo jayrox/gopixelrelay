@@ -1,0 +1,25 @@
+<div> <!-- album.html -->
+<div class="albumSettings">
+ <ul>
+  <li ng-show="selImages()"><button ng-click="albumMoveShower({show:true})" button-action><i class="fa fa-gear"></i>&nbsp;Move to Album</button></li>
+ </ul>
+ <div id="albummover" ng-show="albumMoveShow()">
+  <h1>Moving: {{ selectedImages.length }} Image{{ selectedImages.length == 1 ? '' : 's' }}</h1>
+  <label for="albumMoveSelect">New Album:</label>
+  <select ng-model="selectAlbum" id="albumMoveSelect" name="albumMoveSelect" 
+          ng-options="a.Id as a.Name for a in albums"></select><br>
+  <br>
+  <a ng-href="#" ng-click="albumMoveShower({show:false})">Cancel</a> <button ng-click="moveImages({album:selectAlbum,images:selectedImages})">Move</button>
+ </div>
+</div>
+<div class="cf albumtitle">
+ <h3>{{ title }}</h3>
+ <span>{{ description }}</span>
+</div>
+
+<ul class="list">
+ <li ng-repeat="image in images | filter:searchText">
+  <thumb-viewer image="image" image-index="$index"></thumb-viewer>
+ </li>
+</ul>
+<div>

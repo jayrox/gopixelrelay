@@ -1,13 +1,24 @@
 <!DOCTYPE html>
+<!--
+ _____ _         _ _____     _         
+|  _  |_|_ _ ___| | __  |___| |___ _ _ 
+|   __| |_'_| -_| |    -| -_| | .'| | |
+|__|  |_|_,_|___|_|__|__|___|_|__,|_  |
+                                  |___|
+-->
 <html>
-  <head>
-{{ template "head" . }}
-  </head>
-  <body>
-  <script type="text/javascript">//alert("w:"+window.screen.availWidth);</script>
-{{ template "body" . }}
+ <head>
+{[ template "head" . ]}
+ </head>
+ <body>
+  <div id="container">
+   <div id="content">
+{[ template "body" . ]}
+   </div>
+  </div>
+  <div id="footerSpacer"></div>
   <footer>
-{{ template "foot" . }}
+{[ template "foot" . ]}
   </footer>
-  </body>
+ </body>
 </html>

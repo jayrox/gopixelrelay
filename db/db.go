@@ -24,7 +24,7 @@ func Init(db *Dbh) *Dbh {
 		utils.DbCfg.User(), utils.DbCfg.Pass(), utils.DbCfg.Host(), utils.DbCfg.Name())
 	db.DB, err = gorm.Open("mysql", sqlConnection)
 	if err != nil {
-		log.Fatalf("Got error when connect database, the error is '%v'", err)
+		log.Fatalf("Error connecting to database: '%v'", err)
 	}
 
 	if utils.AppCfg.Debug() {
@@ -49,10 +49,11 @@ func (db *Dbh) Logger(enable bool) {
  */
 
 // Add new album
-func (db *Dbh) AddAlbum(album models.Album) {
+func (db *Dbh) AddAlbum(album models.Album) *models.Album {
 	db.DB.NewRecord(&album)
 	db.DB.Save(&album)
 	db.DB.NewRecord(&album)
+	return &album
 }
 
 // GetAlbum returns album
@@ -61,9 +62,19 @@ func (db *Dbh) GetAlbum(name string) (album models.Album) {
 	return
 }
 
+// GetAlbumById returns album
+func (db *Dbh) GetAlbumById(id int64) (album models.Album) {
+	db.DB.Where("id = ?", id).Find(&album)
+	return
+}
+
 // GetAllAlbums returns all albums
-func (db *Dbh) GetAllAlbums() (albums []models.Album) {
-	db.DB.Where("name != ''").Find(&albums)
+func (db *Dbh) GetAllAlbums(sort string) (albums []models.Album) {
+	if sort == "" {
+		sort = "ASC"
+	}
+	order := fmt.Sprintf("id %s", sort)
+	db.DB.Where("name != ''").Order(order).Find(&albums)
 	return
 }
 
@@ -85,6 +96,17 @@ func (db *Dbh) GetAllAlbumImages(album string) (images []models.Image) {
 	return
 }
 
+// GetAllAlbumImages returns all Images in the album database
+func (db *Dbh) GetAllImagesByAlbumId(albumid int64) (images []models.Image) {
+	db.DB.Where("album_id = ?", albumid).Find(&images)
+	return
+}
+
+func (db *Dbh) GetAlbumByName(name string) (album models.Album) {
+	db.DB.First(&album, "name = ?", name)
+	return
+}
+
 // SetAlbumPrivacy changes private state
 func (db *Dbh) SetAlbumPrivacy(uid int64, name string, state bool) {
 	var udb models.Album
@@ -93,6 +115,38 @@ func (db *Dbh) SetAlbumPrivacy(uid int64, name string, state bool) {
 	album.Private = state
 	db.DB.Model(&udb).Where("id = ? and user = ?", album.Id, uid).Limit(1).Updates(&album)
 
+	return
+}
+
+//Update Album
+func (db *Dbh) AlbumUpdate(album models.Album) (udb models.Album) {
+	err := db.DB.Model(&udb).Where("id = ? and user = ?", album.Id, album.User).Limit(1).Updates(&album)
+	if err != nil {
+		log.Printf("AlbumUpdate Err: %+v\n", err)
+	}
+	return
+}
+
+//Delete Album
+func (db *Dbh) AlbumDelete(album models.Album) *models.Album {
+	db.DB.Delete(&album)
+	return &album
+}
+
+//Recover Album
+func (db *Dbh) AlbumRecover(album models.Album) (udb models.Album) {
+	album.DeletedAt = time.Date(1, 1, 1, 0, 0, 0, 0, time.UTC)
+	//db.AlbumUpdate(album)
+	err := db.DB.Unscoped().Model(models.Album{}).Where("id = ? and user = ?", album.Id, album.User).Limit(1).Updates(&album)
+	if err != nil {
+		log.Printf("AlbumUpdate Err: %+v\n", err)
+	}
+	return album
+}
+
+//Delete Album
+func (db *Dbh) GetAlbumDeletedByName(name string) (udb models.Album) {
+	db.DB.Unscoped().Where("name = ?", name).Find(&udb)
 	return
 }
 
@@ -116,9 +170,33 @@ func (db *Dbh) FirstImageByAlbum(album string) (image []models.Image) {
 	return
 }
 
+// Get first image in album for album thumbnail
+func (db *Dbh) FirstImageByAlbumId(albumid int64) (image []models.Image) {
+	db.DB.First(&image, "album_id = ? AND (trashed IS NULL OR trashed = 0)", albumid)
+	return
+}
+
 // Get first image by image name
 func (db *Dbh) FirstImageByName(name string) (image models.Image) {
 	db.DB.First(&image, "name = ?", name)
+	return
+}
+
+// Get first image by id
+func (db *Dbh) GetImageById(id int64) (image models.Image) {
+	db.DB.First(&image, "id = ?", id)
+	return
+}
+
+// Get all images
+func (db *Dbh) GetAllImages() (images []models.Image) {
+	db.DB.Where("id > 0").Find(&images)
+	return
+}
+
+// Update Image
+func (db *Dbh) UpdateImage(image models.Image) (udb models.Image) {
+	db.DB.Model(&udb).Where("id = ?", image.Id).Limit(1).Updates(&image)
 	return
 }
 
@@ -152,8 +230,7 @@ func (db *Dbh) TagImage(tag, name string) (imagetag models.ImageTag) {
 
 // Get Images with Tag
 func (db *Dbh) GetImagesWithTag(tag string) (images []models.TaggedImage) {
-	db.DB.Table("images").Select("images.id as image_id, images.name as name, tags.name as tag").Joins("LEFT JOIN image_tags ON (image_tags.img_id = images.id) LEFT JOIN tags ON (image_tags.tag_id = tags.id AND image_tags.img_id = images.id)").Where("tags.name = ?", tag).Order("images.id ASC").Scan(&images)
-	log.Println(images)
+	db.DB.Table("images").Select("images.id as image_id, images.name as name, tags.name as tag, images.trashed as trashed").Joins("LEFT JOIN image_tags ON (image_tags.img_id = images.id) LEFT JOIN tags ON (image_tags.tag_id = tags.id AND image_tags.img_id = images.id)").Where("tags.name = ?", tag).Order("images.id ASC").Scan(&images)
 	return
 }
 
@@ -249,10 +326,9 @@ func (db *Dbh) InsertUser(user models.User) models.User {
 	return user
 }
 
-func (db *Dbh) UpdateUser(user models.User) models.User {
-	var udb models.User
+func (db *Dbh) UpdateUser(user models.User) (udb models.User) {
 	db.DB.Model(&udb).Where("id = ?", user.Id).Limit(1).Updates(&user)
-	return user
+	return
 }
 
 /****************
@@ -286,7 +362,18 @@ func (db *Dbh) AddUploader(upload models.Uploader) {
 }
 
 //
-func (db *Dbh) GetUploaderByEmail(email string) (user models.User) {
-	db.DB.Where("email = ?", email).Find(&user)
+func (db *Dbh) GetUploaderByEmail(email string) (uploader models.Uploader) {
+	db.DB.Where("email = ?", email).Find(&uploader)
 	return
+}
+
+func (db *Dbh) GetAllUploaders() (uploaders []models.Uploader) {
+	db.DB.Where("id > 0").Find(&uploaders)
+	return
+}
+
+func (db *Dbh) UploaderEmpty() {
+	//alter table tablename AUTO_INCREMENT = 1;
+	db.DB.Exec("TRUNCATE TABLE uploaders;")
+	db.DB.Exec("ALTER TABLE uploaders AUTO_INCREMENT = 1;")
 }

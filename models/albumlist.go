@@ -1,7 +1,12 @@
 package models
 
 type AlbumList struct {
-	Name    string
-	Poster  string
-	Private bool
+	Id          int64
+	Name        string
+	Poster      string
+	Private     bool
+	Privatekey  string
+	Owner       int64
+	Description string
+	Editable    bool
 }

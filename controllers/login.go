@@ -1,10 +1,13 @@
+// Route: /login
+// Route: /logout
+
 package controllers
 
 import (
 	"crypto/sha1"
 	"encoding/base64"
-	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -56,8 +59,7 @@ func Login(session sessions.Session, su models.User, r render.Render, p *models.
 func LoginPost(lu forms.Login, session sessions.Session, r render.Render, dbh *db.Dbh) {
 	errs := ValidateLogin(&lu)
 	if len(errs) > 0 {
-		fmt.Printf(`{"errors":"%v"}`, errs)
-		fmt.Println("\n")
+		log.Printf("errors: %+v\n", errs)
 	}
 
 	user := dbh.GetUserByEmail(lu.Email)
@@ -92,7 +94,9 @@ func Logout(session sessions.Session, r render.Render, dbh *db.Dbh) {
 	session.Set("email", nil)
 	session.Set("key", nil)
 
-	dbh.DestroySession(uid.(int64), sessionkey.(string))
+	if uid != "" && uid != nil {
+		dbh.DestroySession(uid.(int64), sessionkey.(string))
+	}
 	r.Redirect(utils.AppCfg.Url(), http.StatusFound)
 }
 

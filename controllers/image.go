@@ -1,9 +1,21 @@
+/*
+ Route:  /o/:name
+
+ Method: GET
+
+ Params:
+  - name string
+
+ Return:
+  - image/* unmodified
+*/
+
 package controllers
 
 import (
 	"net/http"
 
-	"github.com/codegangsta/martini"
+	"github.com/go-martini/martini"
 
 	"pixelrelay/utils"
 )
@@ -29,6 +41,6 @@ func Image(args martini.Params, res http.ResponseWriter, req *http.Request) {
 	}
 
 	res.Header().Set("X-Content-Type-Options", "nosniff")
-	res.Header().Set("Expires", "access plus 1 week")
+	res.Header().Set("Expires", utils.ExpiresHeader())
 	http.ServeContent(res, req, file, fi.ModTime(), f)
 }

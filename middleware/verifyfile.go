@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/codegangsta/martini"
+	"github.com/go-martini/martini"
 
 	"pixelrelay/utils"
 )

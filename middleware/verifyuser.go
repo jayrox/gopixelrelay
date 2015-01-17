@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"reflect"
 
-	"github.com/codegangsta/martini"
+	"github.com/go-martini/martini"
 	"github.com/martini-contrib/sessions"
 
 	"pixelrelay/db"

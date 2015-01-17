@@ -1,3 +1,12 @@
+/*
+ Route:  /tags
+
+ Method: GET
+
+ Return:
+  - List of all tags
+*/
+
 package controllers
 
 import (
@@ -14,6 +23,7 @@ func Tags(su models.User, dbh *db.Dbh, p *models.Page, r render.Render) {
 	p.SetUser(su)
 	p.SetTitle("Tags")
 	p.Data = tags
+	p.Encoding = "json"
 
 	encoder.Render(p.Encoding, 200, "tags", p, r)
 }

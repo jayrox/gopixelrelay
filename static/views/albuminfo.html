@@ -1,0 +1,49 @@
+ <div class="album">
+ <!-- albuminfo.html -->
+  <div>
+   <a ng-href="#/album/{{album.Name}}"><img ng-src="{{album.Poster}}"></a>
+  </div>
+  <div ng-show="album.ShowQR" class="qrholder"><img ng-src="/album/{{album.Name}}/qr"></div>
+  <div style="clear: both;"></div>
+  <span title="{{album.Name}}" class="aname">{{album.Name}}</span>
+  <div class="albumdesc">{{album.Description}}</div>
+  <div style="clear: both;"></div>
+  <ul>
+   <li><i class="fa fa-qrcode" ng-mouseenter="album.ShowQR = true" ng-mouseleave="album.ShowQR = false" title="PixelRelay QR Code"></i></li>
+   <li ng-if="album.Private == true">
+    <a ng-href="album/{{ album.Name }}/private/false" title="Private"><i class="fa fa-lock"></i></a>
+   </li>
+   <li ng-if="album.Private == false">
+    <a ng-href="/album/{{ album.Name }}/private/true" title="Not Private"><i class="fa fa-unlock"></i></a>
+   </li>
+   <li ng-show="album.Editable"><a ng-click="edit({i:albumIndex})"><i class="fa fa-pencil"></i></a></li>
+  </ul>
+  <div ng-show="showEdit({i:albumIndex})" class="editAlbum" album="album">
+    <form name="editForm">
+      <div class="control-group" ng-class="{error: editForm.name.$invalid && !editForm.name.$pristine}">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" value="{{album.Name}}" ng-model="album.Name" required>
+        <span ng-show="editForm.name.$error.required && !editForm.name.$pristine" class="help-inline">
+            Required</span>
+      </div>
+     
+      <div class="control-group" ng-class="{error: editForm.privatekey.$invalid && !editForm.privatekey.$pristine}">
+        <label for="privatekey">Private Key</label>
+        <input type="text" name="privatekey" id="privatekey" value="{{album.Privatekey}}" ng-model="album.Privatekey" required>
+        <span ng-show="editForm.privatekey.$error.required && !editForm.name.$pristine" class="help-inline">
+            Required</span>
+      </div>
+     
+      <label for="description">Description</label>
+      <textarea name="description" id="description" ng-model="album.Description">{{album.Description}}</textarea>
+
+      <input type="checkbox" name="private" id="private" checked="{{album.Private}}" ng-model="album.Private">
+      <label for="private">Private</label>
+
+      <br>
+      <a ng-href="#/" class="btn" ng-click="edit({i:albumIndex})">Cancel</a>
+      <button ng-click="save({album:album, i:albumIndex})" ng-disabled="editForm.$invalid"
+              class="btn btn-primary">Save</button>
+    </form>
+  </div>
+  </div>

@@ -1,4 +1,9 @@
 nohup.out
 pixelrelay.json
+pixelrelay.yaml
+*.sublime-workspace
+
+qrcache/*
+tls/*
 tmp/*
 uploads/*

@@ -1,5 +1,7 @@
 package utils
 
+import "strings"
+
 // https://github.com/3d0c/skeleton/blob/master/utils/appcfg.go
 
 var AppCfg *ConfigScheme
@@ -17,6 +19,7 @@ type ConfigScheme struct {
 		MobileAlbumCreation string `json:"mobile_album_creation"`
 		Debug               bool   `json:"debug"`
 		ListenOn            string `json:"listen_on"`
+		TLSListenOn         string `json:"tls_listen_on"`
 		ListenOnSetup       string `json:"listen_on_setup"`
 		SecretKey           string `json:"secretkey"`
 		Url                 string `json:"url"`
@@ -39,6 +42,7 @@ type ImageScheme struct {
 		Root      string `json:"root"`
 		Secretkey string `json:"secretkey"`
 		Thumbs    string `json:"thumbs"`
+		QR        string `json:"qr"`
 	} `json:"image"`
 }
 
@@ -55,11 +59,21 @@ func (this *ConfigScheme) ListenOn() string {
 	return this.App.ListenOn
 }
 
+func (this *ConfigScheme) TLSListenOn() string {
+	return this.App.TLSListenOn
+}
+
 func (this *ConfigScheme) ListenOnSetup() string {
 	return this.App.ListenOnSetup
 }
 
 func (this *ConfigScheme) Url() string {
+	if strings.HasPrefix(this.App.Url, "http://") {
+		this.App.Url = strings.Replace(this.App.Url, "http://", "https://", 1)
+	}
+	if !strings.HasPrefix(this.App.Url, "https://") {
+		this.App.Url = strings.Join([]string{"https://", this.App.Url}, "")
+	}
 	return this.App.Url
 }
 
@@ -93,6 +107,10 @@ func (this *DBScheme) Debug() bool {
 }
 
 // Image Storage Config
+func (this *ImageScheme) QR() string {
+	return this.Image.QR
+}
+
 func (this *ImageScheme) Root() string {
 	return this.Image.Root
 }

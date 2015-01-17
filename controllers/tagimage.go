@@ -1,3 +1,20 @@
+/*
+ Route:  /tag
+
+ Method: POST
+
+ Params:
+  - tag string
+  - image string
+
+ Return:
+  - Redirect back to image.
+
+ TODO:
+  - Convert to Martini Bind and return JSON success message.
+  - POST with redirect?
+*/
+
 package controllers
 
 import (

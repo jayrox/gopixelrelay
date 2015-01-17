@@ -1,0 +1,15 @@
+    <div id="content">
+     <div class="cf albumtitle">
+      <h3>{[ .Data.Title ]}</h3>
+      <span>{[ .Data.Description ]}</span>
+     </div>
+     <ul id="il">
+{[ range .Data.ImageLinks ]}
+      <li>
+       <div>
+        <a href="/t/{[ .FileName ]}">{[ .FileName ]}</a>
+       </div>
+      </li>
+{[ end ]}
+     </ul>
+    </div>
