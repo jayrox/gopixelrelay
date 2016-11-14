@@ -28,8 +28,8 @@ func (p *Page) SetTitle(title ...string) {
 		p.Title = utils.AppCfg.Title()
 		return
 	}
-	ntitle := strings.Join(title, Seperator)
-	p.Title = strings.Join([]string{utils.AppCfg.Title(), ntitle}, Seperator)
+	ntitle := strings.Join(title, Separator)
+	p.Title = strings.Join([]string{utils.AppCfg.Title(), ntitle}, Separator)
 }
 
 func (p *Page) SetSiteTitle(title string) {
@@ -53,7 +53,7 @@ func InitPage(p *Page) *Page {
 }
 
 var (
-	// Seperator is used to seperate the parts of the title
+	// Separator is used to separate the parts of the title
 	// Set this to whatever value you prefer; default is " :: "
-	Seperator = string(" :: ")
+	Separator = string(" :: ")
 )
